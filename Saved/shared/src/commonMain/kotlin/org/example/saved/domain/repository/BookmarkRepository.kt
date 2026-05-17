@@ -1,0 +1,13 @@
+package org.example.saved.domain.repository
+
+import org.example.saved.domain.model.AnalyzeResult
+import org.example.saved.domain.model.Bookmark
+import org.example.saved.domain.model.Folder
+
+interface BookmarkRepository {
+    suspend fun getFolders(): Result<List<Folder>>
+    suspend fun getBookmarks(folderId: String): Result<List<Bookmark>>
+    suspend fun createFolder(name: String): Result<Folder>
+    suspend fun analyzeUrl(url: String): Result<AnalyzeResult>
+    suspend fun saveBookmark(url: String, folderId: String, title: String): Result<Bookmark>
+}
