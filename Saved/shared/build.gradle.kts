@@ -33,6 +33,8 @@ kotlin {
             implementation(libs.androidx.datastore.preferences.core)
             implementation(libs.okio)
             implementation(libs.koin.core)
+            implementation(libs.orbit.core)
+            implementation(libs.orbit.viewmodel)
         }
         androidMain.dependencies {
             implementation(libs.ktor.client.okhttp)
