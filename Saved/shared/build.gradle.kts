@@ -30,6 +30,7 @@ kotlin {
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.ktor.client.auth)
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.androidx.datastore.preferences.core)
         }
         androidMain.dependencies {
             implementation(libs.ktor.client.okhttp)
