@@ -9,6 +9,7 @@ import org.example.saved.domain.repository.BookmarkRepository
 import org.example.saved.domain.repository.TokenStorage
 import org.example.saved.domain.usecase.SaveAnalyzedBookmarkUseCase
 import org.example.saved.presentation.auth.AuthViewModel
+import org.example.saved.presentation.bookmarks.BookmarksViewModel
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
@@ -25,6 +26,7 @@ val commonModule = module {
     single<BookmarkRepository> { BookmarkRepositoryImpl(get()) }
     factoryOf(::AuthViewModel)
     factoryOf(::SaveAnalyzedBookmarkUseCase)
+    factoryOf(::BookmarksViewModel)
 }
 
 fun initKoin(appDeclaration: KoinAppDeclaration = {}) {
