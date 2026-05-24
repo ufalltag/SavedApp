@@ -1,4 +1,4 @@
-package org.example.saved.ui.components
+package org.example.saved.ui.components.bookmarks
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
