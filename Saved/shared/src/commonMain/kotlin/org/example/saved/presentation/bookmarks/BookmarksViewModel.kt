@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import org.example.saved.domain.repository.BookmarkRepository
 import org.example.saved.domain.usecase.SaveAnalyzedBookmarkUseCase
 import org.orbitmvi.orbit.ContainerHost
-import org.orbitmvi.orbit.container
 import org.orbitmvi.orbit.viewmodel.container
 
 class BookmarksViewModel(
@@ -15,7 +14,6 @@ class BookmarksViewModel(
     override val container = container<BookmarksState, BookmarksSideEffect>(BookmarksState()) {
         loadFolders()
     }
-
 
     private fun loadFolders() = intent {
         reduce { state.copy(isFoldersLoading = true, errorMessage = null) }
