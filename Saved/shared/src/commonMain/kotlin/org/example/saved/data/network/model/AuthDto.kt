@@ -18,11 +18,11 @@ data class RegisterRequestDto(
 
 @Serializable
 data class TokenResponseDto(
-    @SerialName("access_token") val accessToken: String,
-    @SerialName("refresh_token") val refreshToken: String
+    @SerialName("accessToken") val accessToken: String,
+    @SerialName("refreshToken") val refreshToken: String
 )
 
 @Serializable
 data class RefreshRequestDto(
-    @SerialName("refresh_token") val refreshToken: String
+    @SerialName("refreshToken") val refreshToken: String
 )

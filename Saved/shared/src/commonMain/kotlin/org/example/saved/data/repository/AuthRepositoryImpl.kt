@@ -43,10 +43,10 @@ class AuthRepositoryImpl(
             if (response.status.isSuccess()) {
                 Result.success(Unit)
             } else {
-                Result.failure(Exception("Ошибка регистрации. Код: ${response.status.value}"))
+                Result.failure(Exception("Ошибка сервера: ${response.status.value}"))
             }
         } catch (e: Exception) {
-            Result.failure(Exception("Ошибка сети: ${e.message}"))
+            Result.failure(Exception(e.message))
         }
     }
 

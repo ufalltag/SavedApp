@@ -8,6 +8,7 @@ import org.example.saved.domain.repository.AuthRepository
 import org.example.saved.domain.repository.BookmarkRepository
 import org.example.saved.domain.repository.TokenStorage
 import org.example.saved.domain.usecase.SaveAnalyzedBookmarkUseCase
+import org.example.saved.presentation.app.AppViewModel
 import org.example.saved.presentation.auth.AuthViewModel
 import org.example.saved.presentation.bookmarks.BookmarksViewModel
 import org.koin.core.context.startKoin
@@ -27,6 +28,7 @@ val commonModule = module {
     factoryOf(::AuthViewModel)
     factoryOf(::SaveAnalyzedBookmarkUseCase)
     factoryOf(::BookmarksViewModel)
+    factoryOf(::AppViewModel)
 }
 
 fun initKoin(appDeclaration: KoinAppDeclaration = {}) {

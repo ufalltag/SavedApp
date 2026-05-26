@@ -26,9 +26,11 @@ class AuthViewModel(
     fun submit() = intent {
         if (state.isLoading) return@intent
 
+        val isLogin = state.isLoginMode
+
         reduce { state.copy(isLoading = true) }
 
-        val result = if (state.isLoginMode) {
+        val result = if (isLogin) {
             authRepository.login(state.email, state.password)
         } else {
             authRepository.register(state.email, state.password)
@@ -36,10 +38,22 @@ class AuthViewModel(
 
         reduce { state.copy(isLoading = false) }
 
-        result.onSuccess {
-            postSideEffect(AuthSideEffect.NavigateToHome)
-        }.onFailure { error ->
-            postSideEffect(AuthSideEffect.ShowError(error.message ?: "Unknown error"))
-        }
+        result
+            .onSuccess {
+                if (isLogin) {
+                    postSideEffect(AuthSideEffect.NavigateToHome)
+                } else {
+                    reduce {
+                        state.copy(
+                            isLoginMode = true,
+                            password = ""
+                        )
+                    }
+                    postSideEffect(AuthSideEffect.ShowMessage("Регистрация успешна. Теперь войди в аккаунт."))
+                }
+            }
+            .onFailure { error ->
+                postSideEffect(AuthSideEffect.ShowError(error.message ?: "Unknown error"))
+            }
     }
 }
