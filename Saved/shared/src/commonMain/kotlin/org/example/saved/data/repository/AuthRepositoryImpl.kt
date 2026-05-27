@@ -6,8 +6,8 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.isSuccess
 import org.example.saved.data.network.model.LoginRequestDto
+import org.example.saved.data.network.model.LoginTokenResponseDto
 import org.example.saved.data.network.model.RegisterRequestDto
-import org.example.saved.data.network.model.TokenResponseDto
 import org.example.saved.domain.repository.AuthRepository
 import org.example.saved.domain.repository.TokenStorage
 
@@ -23,14 +23,14 @@ class AuthRepositoryImpl(
             }
 
             if (response.status.isSuccess()) {
-                val tokens = response.body<TokenResponseDto>()
+                val tokens = response.body<LoginTokenResponseDto>()
                 tokenStorage.saveTokens(tokens.accessToken, tokens.refreshToken)
                 Result.success(Unit)
             } else {
-                Result.failure(Exception("Ошибка авторизации. Код: ${response.status.value}"))
+                Result.failure(Exception("HTTP ${response.status.value}"))
             }
         } catch (e: Exception) {
-            Result.failure(Exception("Ошибка сети: ${e.message}"))
+            Result.failure(e)
         }
     }
 
@@ -43,10 +43,10 @@ class AuthRepositoryImpl(
             if (response.status.isSuccess()) {
                 Result.success(Unit)
             } else {
-                Result.failure(Exception("Ошибка сервера: ${response.status.value}"))
+                Result.failure(Exception("HTTP ${response.status.value}"))
             }
         } catch (e: Exception) {
-            Result.failure(Exception(e.message))
+            Result.failure(e)
         }
     }
 

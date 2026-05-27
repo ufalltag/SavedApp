@@ -16,17 +16,19 @@ import io.ktor.http.isSuccess
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.example.saved.data.network.model.RefreshRequestDto
-import org.example.saved.data.network.model.TokenResponseDto
+import org.example.saved.data.network.model.RefreshTokenResponseDto
 import org.example.saved.domain.repository.TokenStorage
 
 fun createHttpClient(tokenStorage: TokenStorage): HttpClient {
     return HttpClient {
         install(ContentNegotiation) {
-            json(Json {
-                prettyPrint = true
-                isLenient = true
-                ignoreUnknownKeys = true
-            })
+            json(
+                Json {
+                    prettyPrint = true
+                    isLenient = true
+                    ignoreUnknownKeys = true
+                }
+            )
         }
 
         defaultRequest {
@@ -43,8 +45,7 @@ fun createHttpClient(tokenStorage: TokenStorage): HttpClient {
                 }
 
                 refreshTokens {
-                    val oldRefreshToken =
-                        tokenStorage.getRefreshToken() ?: return@refreshTokens null
+                    val oldRefreshToken = tokenStorage.getRefreshToken() ?: return@refreshTokens null
 
                     try {
                         val response = client.post("http://192.168.31.134:8080/refresh") {
@@ -56,22 +57,25 @@ fun createHttpClient(tokenStorage: TokenStorage): HttpClient {
                             return@refreshTokens null
                         }
 
-                        val newTokens = response.body<TokenResponseDto>()
-                        tokenStorage.saveTokens(newTokens.accessToken, newTokens.refreshToken)
+                        val refreshed = response.body<RefreshTokenResponseDto>()
+                        tokenStorage.saveTokens(
+                            accessToken = refreshed.accessToken,
+                            refreshToken = oldRefreshToken
+                        )
 
-                        return@refreshTokens BearerTokens(
-                            newTokens.accessToken,
-                            newTokens.refreshToken
+                        BearerTokens(
+                            accessToken = refreshed.accessToken,
+                            refreshToken = oldRefreshToken
                         )
                     } catch (e: Exception) {
                         tokenStorage.clearTokens()
-                        return@refreshTokens null
+                        null
                     }
                 }
 
                 sendWithoutRequest { request ->
                     val path = request.url.encodedPath
-                    !path.contains("/login") || !path.contains("/register")
+                    !path.contains("login") && !path.contains("register")
                 }
             }
         }
