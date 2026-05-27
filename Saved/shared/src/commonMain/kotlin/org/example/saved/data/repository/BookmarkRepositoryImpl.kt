@@ -6,7 +6,15 @@ import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.isSuccess
-import org.example.saved.data.network.model.*
+import org.example.saved.data.network.model.AnalyzeRequestDto
+import org.example.saved.data.network.model.AnalyzeResponseDto
+import org.example.saved.data.network.model.BookmarksListResponseDto
+import org.example.saved.data.network.model.CreateBookmarkRequestDto
+import org.example.saved.data.network.model.CreateFolderRequestDto
+import org.example.saved.data.network.model.FoldersListResponseDto
+import org.example.saved.data.network.model.SingleBookmarkResponseDto
+import org.example.saved.data.network.model.SingleFolderResponseDto
+import org.example.saved.data.network.model.toDomain
 import org.example.saved.domain.model.AnalyzeResult
 import org.example.saved.domain.model.Bookmark
 import org.example.saved.domain.model.Folder
@@ -20,8 +28,8 @@ class BookmarkRepositoryImpl(
         return try {
             val response = client.get("folders")
             if (response.status.isSuccess()) {
-                val dtos = response.body<List<FolderDto>>()
-                Result.success(dtos.map { it.toDomain() })
+                val responseDto = response.body<FoldersListResponseDto>()
+                Result.success(responseDto.folders.map { it.toDomain() })
             } else {
                 Result.failure(Exception("HTTP ${response.status.value}"))
             }
@@ -36,8 +44,8 @@ class BookmarkRepositoryImpl(
                 setBody(CreateFolderRequestDto(name))
             }
             if (response.status.isSuccess()) {
-                val dto = response.body<FolderDto>()
-                Result.success(dto.toDomain())
+                val responseDto = response.body<SingleFolderResponseDto>()
+                Result.success(responseDto.folder.toDomain())
             } else {
                 Result.failure(Exception("HTTP ${response.status.value}"))
             }
@@ -69,14 +77,18 @@ class BookmarkRepositoryImpl(
         }
     }
 
-    override suspend fun saveBookmark(url: String, folderId: String, title: String): Result<Bookmark> {
+    override suspend fun saveBookmark(
+        url: String,
+        folderId: String,
+        title: String
+    ): Result<Bookmark> {
         return try {
             val response = client.post("bookmarks") {
-                setBody(CreateBookmarkRequestDto(url, folderId, title))
+                setBody(CreateBookmarkRequestDto(url, folderId.toInt(), title))
             }
             if (response.status.isSuccess()) {
-                val dto = response.body<BookmarkDto>()
-                Result.success(dto.toDomain())
+                val responseDto = response.body<SingleBookmarkResponseDto>()
+                Result.success(responseDto.bookmark.toDomain())
             } else {
                 Result.failure(Exception("HTTP ${response.status.value}"))
             }
@@ -89,8 +101,8 @@ class BookmarkRepositoryImpl(
         return try {
             val response = client.get("folders/$folderId/bookmarks")
             if (response.status.isSuccess()) {
-                val dtos = response.body<List<BookmarkDto>>()
-                Result.success(dtos.map { it.toDomain() })
+                val responseDto = response.body<BookmarksListResponseDto>()
+                Result.success(responseDto.bookmarks.map { it.toDomain() })
             } else {
                 Result.failure(Exception("HTTP ${response.status.value}"))
             }

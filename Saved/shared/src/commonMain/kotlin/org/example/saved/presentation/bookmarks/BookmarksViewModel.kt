@@ -71,6 +71,39 @@ class BookmarksViewModel(
         }
     }
 
+    /**
+     * Создает новую папку.
+     *
+     * Вызывать из формы создания папки (например, при подтверждении в алерт-диалоге).
+     */
+    fun createFolder(name: String) = intent {
+        if (name.isBlank()) {
+            postSideEffect(BookmarksSideEffect.ShowToast("Имя папки не может быть пустым"))
+            return@intent
+        }
+
+        // Опционально: можно добавить стейт isFolderCreating, если хочется блокировать UI
+
+        repository.createFolder(name).onSuccess { newFolder ->
+            postSideEffect(BookmarksSideEffect.ShowToast("Папка '$name' создана"))
+
+            // Вариант 1: Просто перезапрашиваем папки с сервера
+            // loadFolders()
+
+            // Вариант 2: Локально добавляем папку в стейт (быстрее для UI)
+            val updatedFolders = state.folders + newFolder
+            reduce {
+                state.copy(
+                    folders = updatedFolders,
+                    // Опционально: сразу выбираем свежесозданную папку
+                    // selectedFolderId = newFolder.id
+                )
+            }
+        }.onFailure { error ->
+            postSideEffect(BookmarksSideEffect.ShowToast(error.message ?: "Ошибка создания папки"))
+        }
+    }
+
     fun dismissError() = intent {
         reduce { state.copy(errorMessage = null) }
     }

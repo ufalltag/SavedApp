@@ -12,17 +12,26 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.example.saved.presentation.bookmarks.BookmarksViewModel
 import org.example.saved.ui.components.bookmarks.BookmarkItem
+import org.example.saved.ui.components.bookmarks.FloatingInputBar
 import org.example.saved.ui.components.bookmarks.FolderItem
 import org.example.saved.ui.components.bookmarks.ScreenHeader
 import org.example.saved.ui.components.bookmarks.SectionTitle
@@ -34,16 +43,29 @@ fun BookmarksScreen(
 ) {
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
 
+    // Стейт для диалога создания папки
+    var showCreateFolderDialog by remember { mutableStateOf(false) }
+    var newFolderName by remember { mutableStateOf("") }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.background,
-        // TODO: BottomBar (Инпут для ввода ссылки)
+        bottomBar = {
+            // Нижний инпут-бар
+            FloatingInputBar(
+                isAnalyzing = state.isAnalyzing,
+                onSendClick = { url ->
+                    viewModel.analyzeAndSaveUrl(url)
+                }
+            )
+        }
     ) { paddingValues ->
 
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
             modifier = Modifier
                 .fillMaxSize()
+                // Scaffold автоматически резервирует место под bottomBar через paddingValues
                 .padding(paddingValues),
             contentPadding = PaddingValues(16.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -57,11 +79,15 @@ fun BookmarksScreen(
                 SectionTitle(title = "My folders", actionText = "See all >")
             }
 
+            // Кнопка создания папки
             item {
                 FolderItem(
                     title = "Add folder",
                     linksCount = null,
-                    onClick = { /* TODO: Диалог создания папки */ }
+                    onClick = {
+                        newFolderName = ""
+                        showCreateFolderDialog = true
+                    }
                 )
             }
 
@@ -102,6 +128,41 @@ fun BookmarksScreen(
                     )
                 }
             }
+        }
+
+        // --- ДИАЛОГ СОЗДАНИЯ ПАПКИ ---
+        if (showCreateFolderDialog) {
+            AlertDialog(
+                onDismissRequest = { showCreateFolderDialog = false },
+                title = { Text(text = "Создать папку") },
+                text = {
+                    OutlinedTextField(
+                        value = newFolderName,
+                        onValueChange = { newFolderName = it },
+                        label = { Text("Название папки") },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            if (newFolderName.isNotBlank()) {
+                                viewModel.createFolder(newFolderName)
+                                showCreateFolderDialog = false
+                            }
+                        },
+                        enabled = newFolderName.isNotBlank()
+                    ) {
+                        Text("Создать")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showCreateFolderDialog = false }) {
+                        Text("Отмена")
+                    }
+                }
+            )
         }
     }
 }
