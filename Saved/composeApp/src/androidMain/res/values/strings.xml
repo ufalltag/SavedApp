@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">Saved</string>
+    <string name="bookmarks_header_name">Artur</string>
+    <string name="bookmarks_header_date">Sunday, 17 May</string>
+    <string name="bookmarks_section_folders_title">My folders</string>
+    <string name="bookmarks_section_folders_action">See all ></string>
+    <string name="bookmarks_add_folder_title">Add folder</string>
+    <string name="bookmarks_section_links_title">Last links</string>
+    <string name="bookmark_date_placeholder">16.05.2026</string>
+    <string name="dialog_create_folder_title">Создать папку</string>
+    <string name="dialog_create_folder_label">Название папки</string>
+    <string name="dialog_create_folder_confirm">Создать</string>
+    <string name="dialog_create_folder_dismiss">Отмена</string>
 </resources>

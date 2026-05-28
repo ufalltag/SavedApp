@@ -27,9 +27,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import org.example.saved.presentation.bookmarks.BookmarksViewModel
+import org.example.saved.R
+import org.example.saved.presentation.main.BookmarksViewModel
 import org.example.saved.ui.components.bookmarks.BookmarkItem
 import org.example.saved.ui.components.bookmarks.FloatingInputBar
 import org.example.saved.ui.components.bookmarks.FolderItem
@@ -38,7 +40,10 @@ import org.example.saved.ui.components.bookmarks.SectionTitle
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun BookmarksScreen(viewModel: BookmarksViewModel = koinViewModel()) {
+fun BookmarksScreen(
+    viewModel: BookmarksViewModel = koinViewModel(),
+    onFolderClick: (String, String) -> Unit,
+) {
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
 
     var showCreateFolderDialog by remember { mutableStateOf(false) }
@@ -68,16 +73,22 @@ fun BookmarksScreen(viewModel: BookmarksViewModel = koinViewModel()) {
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             item(span = { GridItemSpan(maxLineSpan) }) {
-                ScreenHeader(name = "Artur", date = "Sunday, 17 May")
+                ScreenHeader(
+                    name = stringResource(R.string.bookmarks_header_name),
+                    date = stringResource(R.string.bookmarks_header_date)
+                )
             }
 
             item(span = { GridItemSpan(maxLineSpan) }) {
-                SectionTitle(title = "My folders", actionText = "See all >")
+                SectionTitle(
+                    title = stringResource(R.string.bookmarks_section_folders_title),
+                    actionText = stringResource(R.string.bookmarks_section_folders_action)
+                )
             }
 
             item {
                 FolderItem(
-                    title = "Add folder",
+                    title = stringResource(R.string.bookmarks_add_folder_title),
                     linksCount = null,
                     onClick = {
                         newFolderName = ""
@@ -100,14 +111,14 @@ fun BookmarksScreen(viewModel: BookmarksViewModel = koinViewModel()) {
                     FolderItem(
                         title = folder.name,
                         linksCount = 0,
-                        onClick = { viewModel.selectFolder(folder.id) }
+                        onClick = { onFolderClick(folder.id, folder.name) }
                     )
                 }
             }
 
             item(span = { GridItemSpan(maxLineSpan) }) {
                 Spacer(modifier = Modifier.height(16.dp))
-                SectionTitle(title = "Last links", actionText = null)
+                SectionTitle(title = stringResource(R.string.bookmarks_section_links_title), actionText = null)
             }
 
             if (state.isBookmarksLoading) {
@@ -125,8 +136,8 @@ fun BookmarksScreen(viewModel: BookmarksViewModel = koinViewModel()) {
                     BookmarkItem(
                         title = bookmark.title,
                         url = bookmark.url,
-                        date = "16.05.2026",
-                        onClick = { /* TODO: Открыть URL в браузере */ },
+                        date = stringResource(R.string.bookmark_date_placeholder),
+                        onClick = { viewModel.onBookmarkClick(bookmark.url) },
                         onDelete = { viewModel.deleteBookmark(bookmark.id) },
                     )
                 }
@@ -136,12 +147,12 @@ fun BookmarksScreen(viewModel: BookmarksViewModel = koinViewModel()) {
         if (showCreateFolderDialog) {
             AlertDialog(
                 onDismissRequest = { showCreateFolderDialog = false },
-                title = { Text(text = "Создать папку") },
+                title = { Text(text = stringResource(R.string.dialog_create_folder_title)) },
                 text = {
                     OutlinedTextField(
                         value = newFolderName,
                         onValueChange = { newFolderName = it },
-                        label = { Text("Название папки") },
+                        label = { Text(stringResource(R.string.dialog_create_folder_label)) },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(),
                     )
@@ -156,12 +167,12 @@ fun BookmarksScreen(viewModel: BookmarksViewModel = koinViewModel()) {
                         },
                         enabled = newFolderName.isNotBlank(),
                     ) {
-                        Text("Создать")
+                        Text(stringResource(R.string.dialog_create_folder_confirm))
                     }
                 },
                 dismissButton = {
                     TextButton(onClick = { showCreateFolderDialog = false }) {
-                        Text("Отмена")
+                        Text(stringResource(R.string.dialog_create_folder_dismiss))
                     }
                 },
             )

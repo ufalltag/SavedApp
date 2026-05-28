@@ -7,3 +7,5 @@ object AuthRoute
 
 @Serializable
 object BookmarksRoute
+@Serializable
+data class FolderRoute(val id: String, val name: String)

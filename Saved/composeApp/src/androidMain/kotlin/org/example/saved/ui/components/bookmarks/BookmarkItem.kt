@@ -30,6 +30,7 @@ import org.example.saved.ui.theme.AccentBlue
 import org.example.saved.ui.theme.FolderIconBackground
 import org.jetbrains.compose.resources.painterResource
 import saved.composeapp.generated.resources.Res
+import saved.composeapp.generated.resources.ic_delete
 import saved.composeapp.generated.resources.ic_send
 
 @Composable
@@ -94,16 +95,11 @@ fun BookmarkItem(
             }
             IconButton(onClick = onDelete) {
                 Icon(
-                    painter = painterResource(Res.drawable.ic_send),
+                    painter = painterResource(Res.drawable.ic_delete),
                     contentDescription = "Delete bookmark",
                     tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                 )
             }
-            Text(
-                text = "...",
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-                style = MaterialTheme.typography.titleMedium,
-            )
         }
     }
 }
