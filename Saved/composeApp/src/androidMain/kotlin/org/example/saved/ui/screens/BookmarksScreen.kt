@@ -68,7 +68,7 @@ fun BookmarksScreen(viewModel: BookmarksViewModel = koinViewModel()) {
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             item(span = { GridItemSpan(maxLineSpan) }) {
-                ScreenHeader(name = "Tagir", date = "Sunday, 17 May")
+                ScreenHeader(name = "Artur", date = "Sunday, 17 May")
             }
 
             item(span = { GridItemSpan(maxLineSpan) }) {
@@ -93,11 +93,14 @@ fun BookmarksScreen(viewModel: BookmarksViewModel = koinViewModel()) {
                     }
                 }
             } else {
-                items(state.folders, key = { it.id }) { folder ->
+                items(
+                    items = state.folders,
+                    key = { folder -> "folder_${folder.id}" }
+                ) { folder ->
                     FolderItem(
                         title = folder.name,
                         linksCount = 0,
-                        onClick = { viewModel.selectFolder(folder.id) },
+                        onClick = { viewModel.selectFolder(folder.id) }
                     )
                 }
             }
@@ -114,7 +117,11 @@ fun BookmarksScreen(viewModel: BookmarksViewModel = koinViewModel()) {
                     }
                 }
             } else {
-                items(state.bookmarks, span = { GridItemSpan(maxLineSpan) }, key = { it.id }) { bookmark ->
+                items(
+                    items = state.bookmarks,
+                    span = { GridItemSpan(maxLineSpan) },
+                    key = { bookmark -> "bookmark_${bookmark.id}" }
+                ) { bookmark ->
                     BookmarkItem(
                         title = bookmark.title,
                         url = bookmark.url,
