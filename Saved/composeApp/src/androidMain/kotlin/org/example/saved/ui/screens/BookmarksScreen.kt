@@ -43,7 +43,6 @@ fun BookmarksScreen(
 ) {
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
 
-    // Стейт для диалога создания папки
     var showCreateFolderDialog by remember { mutableStateOf(false) }
     var newFolderName by remember { mutableStateOf("") }
 
@@ -51,7 +50,6 @@ fun BookmarksScreen(
         modifier = Modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
-            // Нижний инпут-бар
             FloatingInputBar(
                 isAnalyzing = state.isAnalyzing,
                 onSendClick = { url ->
@@ -65,7 +63,6 @@ fun BookmarksScreen(
             columns = GridCells.Fixed(3),
             modifier = Modifier
                 .fillMaxSize()
-                // Scaffold автоматически резервирует место под bottomBar через paddingValues
                 .padding(paddingValues),
             contentPadding = PaddingValues(16.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -79,7 +76,6 @@ fun BookmarksScreen(
                 SectionTitle(title = "My folders", actionText = "See all >")
             }
 
-            // Кнопка создания папки
             item {
                 FolderItem(
                     title = "Add folder",
@@ -124,13 +120,13 @@ fun BookmarksScreen(
                         title = bookmark.title,
                         url = bookmark.url,
                         date = "16.05.2026",
-                        onClick = { /* TODO: Открыть URL в браузере */ }
+                        onClick = { /* TODO: Открыть URL в браузере */ },
+                        onDelete = { viewModel.deleteBookmark(bookmark.id) }
                     )
                 }
             }
         }
 
-        // --- ДИАЛОГ СОЗДАНИЯ ПАПКИ ---
         if (showCreateFolderDialog) {
             AlertDialog(
                 onDismissRequest = { showCreateFolderDialog = false },

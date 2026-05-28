@@ -179,6 +179,23 @@ class BookmarksViewModel(
         }
     }
 
+    /**
+     * Удаляет закладку по ID.
+     *
+     * Вызывать при удалении закладки (например, swipe-to-delete в List).
+     */
+    fun deleteBookmark(bookmarkId: String) = intent {
+        repository.deleteBookmark(bookmarkId).onSuccess {
+            postSideEffect(BookmarksSideEffect.ShowToast("Закладка удалена"))
+
+            val updatedBookmarks = state.bookmarks.filter { it.id != bookmarkId }
+            reduce { state.copy(bookmarks = updatedBookmarks) }
+
+        }.onFailure { error ->
+            postSideEffect(BookmarksSideEffect.ShowToast(error.message ?: "Ошибка при удалении закладки"))
+        }
+    }
+
     fun dismissError() = intent {
         reduce { state.copy(errorMessage = null) }
     }
