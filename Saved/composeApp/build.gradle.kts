@@ -46,12 +46,21 @@ kotlin {
 
 android {
     namespace = "org.example.saved"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
+    compileSdk =
+        libs.versions.android.compileSdk
+            .get()
+            .toInt()
 
     defaultConfig {
         applicationId = "org.example.saved"
-        minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
+        minSdk =
+            libs.versions.android.minSdk
+                .get()
+                .toInt()
+        targetSdk =
+            libs.versions.android.targetSdk
+                .get()
+                .toInt()
         versionCode = 1
         versionName = "1.0"
     }
@@ -74,4 +83,3 @@ android {
 dependencies {
     debugImplementation(libs.compose.uiTooling)
 }
-

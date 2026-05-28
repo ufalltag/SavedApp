@@ -20,22 +20,26 @@ import org.example.saved.ui.theme.AvatarBackground
 import org.example.saved.ui.theme.AvatarText
 
 @Composable
-fun ScreenHeader(name: String, date: String) {
+fun ScreenHeader(
+    name: String,
+    date: String,
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(bottom = 16.dp)
+        modifier = Modifier.padding(bottom = 16.dp),
     ) {
         Box(
-            modifier = Modifier
-                .size(50.dp)
-                .clip(CircleShape)
-                .background(AvatarBackground),
-            contentAlignment = Alignment.Center
+            modifier =
+                Modifier
+                    .size(50.dp)
+                    .clip(CircleShape)
+                    .background(AvatarBackground),
+            contentAlignment = Alignment.Center,
         ) {
             Text(
                 text = name.take(1),
                 color = AvatarText,
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium,
             )
         }
         Spacer(modifier = Modifier.width(16.dp))

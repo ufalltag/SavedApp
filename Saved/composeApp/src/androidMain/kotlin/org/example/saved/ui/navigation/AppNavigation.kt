@@ -26,9 +26,7 @@ import org.example.saved.ui.screens.BookmarksScreen
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun AppNavigation(
-    navController: NavHostController = rememberNavController()
-) {
+fun AppNavigation(navController: NavHostController = rememberNavController()) {
     val snackbarHostState = remember { SnackbarHostState() }
     val appViewModel = koinViewModel<AppViewModel>()
     val state by appViewModel.container.stateFlow.collectAsStateWithLifecycle()
@@ -40,11 +38,11 @@ fun AppNavigation(
     } else {
         NavHost(
             navController = navController,
-            startDestination = if (state.isLoggedIn) BookmarksRoute else AuthRoute
+            startDestination = if (state.isLoggedIn) BookmarksRoute else AuthRoute,
         ) {
             authGraph(
                 navController = navController,
-                snackbarHostState = snackbarHostState
+                snackbarHostState = snackbarHostState,
             )
             bookmarksGraph()
         }
@@ -53,7 +51,7 @@ fun AppNavigation(
 
 private fun NavGraphBuilder.authGraph(
     navController: NavHostController,
-    snackbarHostState: SnackbarHostState
+    snackbarHostState: SnackbarHostState,
 ) {
     composable<AuthRoute> {
         val authViewModel = koinViewModel<AuthViewModel>()
@@ -71,14 +69,14 @@ private fun NavGraphBuilder.authGraph(
                         snackbarHostState.showSnackbar(
                             message = effect.message,
                             withDismissAction = true,
-                            duration = SnackbarDuration.Long
+                            duration = SnackbarDuration.Long,
                         )
                     }
 
                     is AuthSideEffect.ShowMessage -> {
                         snackbarHostState.showSnackbar(
                             message = effect.message,
-                            duration = SnackbarDuration.Short
+                            duration = SnackbarDuration.Short,
                         )
                     }
                 }

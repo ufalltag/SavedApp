@@ -29,38 +29,40 @@ fun FolderItem(
     title: String,
     linksCount: Int?,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val isAddButton = linksCount == null
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
-            .clickable(onClick = onClick)
-            .padding(8.dp)
+        modifier =
+            modifier
+                .clip(RoundedCornerShape(16.dp))
+                .clickable(onClick = onClick)
+                .padding(8.dp),
     ) {
         Box(
-            modifier = Modifier
-                .size(100.dp)
-                .clip(RoundedCornerShape(24.dp))
-                .background(
-                    if (isAddButton) {
-                        Brush.linearGradient(listOf(Color.White, Color.White))
-                    } else {
-                        Brush.linearGradient(
-                            colors = listOf(FolderGradientStart, FolderGradientEnd)
-                        )
-                    }
-                ),
-            contentAlignment = Alignment.Center
+            modifier =
+                Modifier
+                    .size(100.dp)
+                    .clip(RoundedCornerShape(24.dp))
+                    .background(
+                        if (isAddButton) {
+                            Brush.linearGradient(listOf(Color.White, Color.White))
+                        } else {
+                            Brush.linearGradient(
+                                colors = listOf(FolderGradientStart, FolderGradientEnd),
+                            )
+                        },
+                    ),
+            contentAlignment = Alignment.Center,
         ) {
             if (isAddButton) {
                 // TODO: Позже заменим на твою иконку плюса из ресурсов
                 Text(
                     text = "+",
                     color = AccentBlue,
-                    style = MaterialTheme.typography.titleLarge.copy(fontSize = 40.sp)
+                    style = MaterialTheme.typography.titleLarge.copy(fontSize = 40.sp),
                 )
             }
         }
@@ -71,7 +73,7 @@ fun FolderItem(
             text = title,
             style = MaterialTheme.typography.bodyLarge,
             textAlign = TextAlign.Center,
-            maxLines = 1
+            maxLines = 1,
         )
 
         if (!isAddButton) {
@@ -79,7 +81,7 @@ fun FolderItem(
             Text(
                 text = "$linksCount links",
                 style = MaterialTheme.typography.labelMedium,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
         }
     }

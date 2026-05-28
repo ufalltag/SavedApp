@@ -11,20 +11,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 
 @Composable
-fun SectionTitle(title: String, actionText: String?) {
+fun SectionTitle(
+    title: String,
+    actionText: String?,
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.Bottom
+        verticalAlignment = Alignment.Bottom,
     ) {
         Text(text = title, style = MaterialTheme.typography.titleLarge)
         if (actionText != null) {
             Text(
                 text = actionText,
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.SemiBold
-                )
+                style =
+                    MaterialTheme.typography.bodyMedium.copy(
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.SemiBold,
+                    ),
             )
         }
     }

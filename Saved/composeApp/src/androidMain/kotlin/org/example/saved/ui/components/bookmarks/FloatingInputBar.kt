@@ -40,32 +40,34 @@ import saved.composeapp.generated.resources.ic_send
 fun FloatingInputBar(
     isAnalyzing: Boolean,
     onSendClick: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     var text by remember { mutableStateOf("") }
 
     Surface(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-            .shadow(
-                elevation = 8.dp,
-                shape = RoundedCornerShape(32.dp)
-            ),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .shadow(
+                    elevation = 8.dp,
+                    shape = RoundedCornerShape(32.dp),
+                ),
         shape = RoundedCornerShape(32.dp),
-        color = MaterialTheme.colorScheme.surface
+        color = MaterialTheme.colorScheme.surface,
     ) {
         Row(
-            modifier = Modifier
-                .padding(horizontal = 8.dp, vertical = 4.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+            modifier =
+                Modifier
+                    .padding(horizontal = 8.dp, vertical = 4.dp)
+                    .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             IconButton(onClick = { /* TODO: Чтение из буфера обмена */ }) {
                 Icon(
                     painter = painterResource(Res.drawable.ic_add),
                     contentDescription = "Paste",
-                    tint = MaterialTheme.colorScheme.onSurface
+                    tint = MaterialTheme.colorScheme.onSurface,
                 )
             }
 
@@ -73,7 +75,7 @@ fun FloatingInputBar(
                 Icon(
                     painter = painterResource(Res.drawable.ic_search),
                     contentDescription = "Search",
-                    tint = MaterialTheme.colorScheme.onSurface
+                    tint = MaterialTheme.colorScheme.onSurface,
                 )
             }
 
@@ -83,12 +85,13 @@ fun FloatingInputBar(
                 modifier = Modifier.weight(1f),
                 placeholder = { Text("Type Here") },
                 singleLine = true,
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
-                )
+                colors =
+                    TextFieldDefaults.colors(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                    ),
             )
 
             IconButton(
@@ -98,17 +101,18 @@ fun FloatingInputBar(
                         text = ""
                     }
                 },
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(CircleShape)
-                    .background(if (isAnalyzing) Color.Gray else AccentBlue),
-                enabled = !isAnalyzing
+                modifier =
+                    Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .background(if (isAnalyzing) Color.Gray else AccentBlue),
+                enabled = !isAnalyzing,
             ) {
                 Icon(
                     painter = painterResource(Res.drawable.ic_send),
                     contentDescription = "Send",
                     tint = Color.White,
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier.size(20.dp),
                 )
             }
             Spacer(modifier = Modifier.width(4.dp))

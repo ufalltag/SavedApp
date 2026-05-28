@@ -39,34 +39,37 @@ fun BookmarkItem(
     date: String,
     onClick: () -> Unit,
     onDelete: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Surface(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 6.dp)
-            .shadow(elevation = 2.dp, shape = RoundedCornerShape(20.dp)),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 6.dp)
+                .shadow(elevation = 2.dp, shape = RoundedCornerShape(20.dp)),
         shape = RoundedCornerShape(20.dp),
-        color = MaterialTheme.colorScheme.surface
+        color = MaterialTheme.colorScheme.surface,
     ) {
         Row(
-            modifier = Modifier
-                .clickable(onClick = onClick)
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+            modifier =
+                Modifier
+                    .clickable(onClick = onClick)
+                    .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Box(
-                modifier = Modifier
-                    .size(48.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(FolderIconBackground),
-                contentAlignment = Alignment.Center
+                modifier =
+                    Modifier
+                        .size(48.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(FolderIconBackground),
+                contentAlignment = Alignment.Center,
             ) {
                 // TODO: Заменить на реальную иконку из ресурсов
                 Text(
                     text = "🔗",
                     color = AccentBlue,
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.titleMedium,
                 )
             }
 
@@ -77,7 +80,7 @@ fun BookmarkItem(
                     text = title,
                     style = MaterialTheme.typography.bodyLarge,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
@@ -86,20 +89,20 @@ fun BookmarkItem(
                     text = "${url.substringBefore("/").removePrefix("https://")} | $date",
                     style = MaterialTheme.typography.labelMedium,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
             IconButton(onClick = onDelete) {
                 Icon(
                     painter = painterResource(Res.drawable.ic_send),
                     contentDescription = "Delete bookmark",
-                    tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                    tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                 )
             }
             Text(
                 text = "...",
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium,
             )
         }
     }

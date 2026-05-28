@@ -5,5 +5,5 @@ data class AnalyzeResult(
     val title: String,
     val suggestedFolder: String?,
     val isNewFolder: Boolean,
-    val confidence: Float
+    val confidence: Float,
 )

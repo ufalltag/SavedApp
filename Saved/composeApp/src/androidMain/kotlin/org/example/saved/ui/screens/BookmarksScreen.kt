@@ -38,9 +38,7 @@ import org.example.saved.ui.components.bookmarks.SectionTitle
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun BookmarksScreen(
-    viewModel: BookmarksViewModel = koinViewModel()
-) {
+fun BookmarksScreen(viewModel: BookmarksViewModel = koinViewModel()) {
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
 
     var showCreateFolderDialog by remember { mutableStateOf(false) }
@@ -54,19 +52,20 @@ fun BookmarksScreen(
                 isAnalyzing = state.isAnalyzing,
                 onSendClick = { url ->
                     viewModel.analyzeAndSaveUrl(url)
-                }
+                },
             )
-        }
+        },
     ) { paddingValues ->
 
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
             contentPadding = PaddingValues(16.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             item(span = { GridItemSpan(maxLineSpan) }) {
                 ScreenHeader(name = "Tagir", date = "Sunday, 17 May")
@@ -83,7 +82,7 @@ fun BookmarksScreen(
                     onClick = {
                         newFolderName = ""
                         showCreateFolderDialog = true
-                    }
+                    },
                 )
             }
 
@@ -98,7 +97,7 @@ fun BookmarksScreen(
                     FolderItem(
                         title = folder.name,
                         linksCount = 0,
-                        onClick = { viewModel.selectFolder(folder.id) }
+                        onClick = { viewModel.selectFolder(folder.id) },
                     )
                 }
             }
@@ -121,7 +120,7 @@ fun BookmarksScreen(
                         url = bookmark.url,
                         date = "16.05.2026",
                         onClick = { /* TODO: Открыть URL в браузере */ },
-                        onDelete = { viewModel.deleteBookmark(bookmark.id) }
+                        onDelete = { viewModel.deleteBookmark(bookmark.id) },
                     )
                 }
             }
@@ -137,7 +136,7 @@ fun BookmarksScreen(
                         onValueChange = { newFolderName = it },
                         label = { Text("Название папки") },
                         singleLine = true,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
                     )
                 },
                 confirmButton = {
@@ -148,7 +147,7 @@ fun BookmarksScreen(
                                 showCreateFolderDialog = false
                             }
                         },
-                        enabled = newFolderName.isNotBlank()
+                        enabled = newFolderName.isNotBlank(),
                     ) {
                         Text("Создать")
                     }
@@ -157,7 +156,7 @@ fun BookmarksScreen(
                     TextButton(onClick = { showCreateFolderDialog = false }) {
                         Text("Отмена")
                     }
-                }
+                },
             )
         }
     }

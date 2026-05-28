@@ -27,26 +27,25 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.example.saved.presentation.auth.AuthViewModel
 
 @Composable
-fun AuthScreen(
-    viewModel: AuthViewModel
-) {
+fun AuthScreen(viewModel: AuthViewModel) {
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        containerColor = MaterialTheme.colorScheme.background
+        containerColor = MaterialTheme.colorScheme.background,
     ) { paddingValues ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(32.dp),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(32.dp),
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
                 text = if (state.isLoginMode) "Вход в Saved" else "Регистрация",
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleLarge,
             )
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -58,7 +57,7 @@ fun AuthScreen(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
-                enabled = !state.isLoading
+                enabled = !state.isLoading,
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -71,22 +70,23 @@ fun AuthScreen(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
-                enabled = !state.isLoading
+                enabled = !state.isLoading,
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
                 onClick = { viewModel.submit() },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp),
-                enabled = !state.isLoading && state.email.isNotBlank() && state.password.isNotBlank()
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(50.dp),
+                enabled = !state.isLoading && state.email.isNotBlank() && state.password.isNotBlank(),
             ) {
                 if (state.isLoading) {
                     CircularProgressIndicator(
                         color = MaterialTheme.colorScheme.onPrimary,
-                        modifier = Modifier.padding(4.dp)
+                        modifier = Modifier.padding(4.dp),
                     )
                 } else {
                     Text(text = if (state.isLoginMode) "Войти" else "Зарегистрироваться")
@@ -97,11 +97,11 @@ fun AuthScreen(
 
             TextButton(
                 onClick = { viewModel.toggleMode() },
-                enabled = !state.isLoading
+                enabled = !state.isLoading,
             ) {
                 Text(
                     text = if (state.isLoginMode) "Нет аккаунта? Создать" else "Уже есть аккаунт? Войти",
-                    color = MaterialTheme.colorScheme.primary
+                    color = MaterialTheme.colorScheme.primary,
                 )
             }
         }

@@ -23,6 +23,7 @@ navigation-compose = "2.9.2"
 okio = "3.17.0"
 orbit = "11.0.0"
 skie = "0.10.11"
+ktLint = "14.2.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -70,3 +71,4 @@ composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "k
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 skie = { id = "co.touchlab.skie", version.ref = "skie" }
+ktLint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktLint" }
