@@ -1,6 +1,8 @@
 package org.example.saved.presentation.auth
 
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 import org.example.saved.domain.repository.AuthRepository
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
@@ -18,6 +20,11 @@ class AuthViewModel(
 ) : ViewModel(), ContainerHost<AuthState, AuthSideEffect> {
 
     override val container = container<AuthState, AuthSideEffect>(AuthState())
+
+    // Типизированные свойства для iOS/SKIE — без них SKIE теряет тип AuthState/AuthSideEffect
+    // при экспорте через нетипизированный ContainerHost.container
+    val viewStates: StateFlow<AuthState> get() = container.stateFlow
+    val viewSideEffects: Flow<AuthSideEffect> get() = container.sideEffectFlow
 
     /**
      * Вызывать при каждом изменении символа в поле Email.

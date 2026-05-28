@@ -18,5 +18,5 @@ data class BookmarksState(
 
 sealed interface BookmarksSideEffect {
     data class ShowToast(val message: String) : BookmarksSideEffect
-    object OpenUrl : BookmarksSideEffect
+    data class OpenUrl(val url: String) : BookmarksSideEffect
 }

@@ -66,3 +66,14 @@ fun BookmarkDto.toDomain(): Bookmark = Bookmark(
     title = title,
     description = description
 )
+
+@Serializable
+data class UpdateFolderRequestDto(
+    @SerialName("name") val name: String
+)
+
+@Serializable
+data class UpdateBookmarkRequestDto(
+    @SerialName("title") val title: String? = null,
+    @SerialName("folder_id") val folderId: Int? = null
+)

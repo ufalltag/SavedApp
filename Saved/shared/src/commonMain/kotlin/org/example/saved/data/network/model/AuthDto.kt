@@ -37,6 +37,6 @@ data class RefreshTokenResponseDto(
 
 @Serializable
 data class RefreshRequestDto(
-    @SerialName("refreshtoken")
+    @SerialName("refresh_token")
     val refreshToken: String
 )

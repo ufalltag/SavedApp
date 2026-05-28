@@ -104,6 +104,85 @@ class BookmarksViewModel(
         }
     }
 
+    fun openBookmark(url: String) = intent {
+        postSideEffect(BookmarksSideEffect.OpenUrl(url))
+    }
+
+    fun renameFolder(folderId: String, newName: String) = intent {
+        if (newName.isBlank()) {
+            postSideEffect(BookmarksSideEffect.ShowToast("Имя папки не может быть пустым"))
+            return@intent
+        }
+
+        repository.renameFolder(folderId, newName).onSuccess {
+            val updatedFolders = state.folders.map { folder ->
+                if (folder.id == folderId) folder.copy(name = newName) else folder
+            }
+            reduce { state.copy(folders = updatedFolders) }
+            postSideEffect(BookmarksSideEffect.ShowToast("Папка переименована"))
+        }.onFailure { error ->
+            postSideEffect(BookmarksSideEffect.ShowToast(error.message ?: "Ошибка переименования папки"))
+        }
+    }
+
+    fun deleteFolder(folderId: String) = intent {
+        repository.deleteFolder(folderId).onSuccess {
+            val updatedFolders = state.folders.filter { it.id != folderId }
+            val newSelectedId = if (state.selectedFolderId == folderId) {
+                updatedFolders.firstOrNull()?.id
+            } else {
+                state.selectedFolderId
+            }
+            reduce {
+                state.copy(
+                    folders = updatedFolders,
+                    selectedFolderId = newSelectedId,
+                    bookmarks = if (state.selectedFolderId == folderId) emptyList() else state.bookmarks
+                )
+            }
+            postSideEffect(BookmarksSideEffect.ShowToast("Папка удалена"))
+            if (newSelectedId != null && state.selectedFolderId == folderId) {
+                loadBookmarks(newSelectedId)
+            }
+        }.onFailure { error ->
+            postSideEffect(BookmarksSideEffect.ShowToast(error.message ?: "Ошибка удаления папки"))
+        }
+    }
+
+    fun deleteBookmark(bookmarkId: String) = intent {
+        repository.deleteBookmark(bookmarkId).onSuccess {
+            reduce { state.copy(bookmarks = state.bookmarks.filter { it.id != bookmarkId }) }
+            postSideEffect(BookmarksSideEffect.ShowToast("Закладка удалена"))
+        }.onFailure { error ->
+            postSideEffect(BookmarksSideEffect.ShowToast(error.message ?: "Ошибка удаления закладки"))
+        }
+    }
+
+    fun moveBookmark(bookmarkId: String, targetFolderId: String) = intent {
+        repository.updateBookmark(bookmarkId, folderId = targetFolderId).onSuccess {
+            reduce { state.copy(bookmarks = state.bookmarks.filter { it.id != bookmarkId }) }
+            postSideEffect(BookmarksSideEffect.ShowToast("Закладка перемещена"))
+        }.onFailure { error ->
+            postSideEffect(BookmarksSideEffect.ShowToast(error.message ?: "Ошибка перемещения закладки"))
+        }
+    }
+
+    fun renameBookmark(bookmarkId: String, newTitle: String) = intent {
+        if (newTitle.isBlank()) {
+            postSideEffect(BookmarksSideEffect.ShowToast("Название не может быть пустым"))
+            return@intent
+        }
+
+        repository.updateBookmark(bookmarkId, title = newTitle).onSuccess {
+            val updatedBookmarks = state.bookmarks.map { bookmark ->
+                if (bookmark.id == bookmarkId) bookmark.copy(title = newTitle) else bookmark
+            }
+            reduce { state.copy(bookmarks = updatedBookmarks) }
+        }.onFailure { error ->
+            postSideEffect(BookmarksSideEffect.ShowToast(error.message ?: "Ошибка переименования закладки"))
+        }
+    }
+
     fun dismissError() = intent {
         reduce { state.copy(errorMessage = null) }
     }

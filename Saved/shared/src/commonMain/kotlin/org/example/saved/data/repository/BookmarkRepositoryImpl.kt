@@ -2,8 +2,10 @@ package org.example.saved.data.repository
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.post
+import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.http.isSuccess
 import org.example.saved.data.network.model.AnalyzeRequestDto
@@ -14,6 +16,8 @@ import org.example.saved.data.network.model.CreateFolderRequestDto
 import org.example.saved.data.network.model.FoldersListResponseDto
 import org.example.saved.data.network.model.SingleBookmarkResponseDto
 import org.example.saved.data.network.model.SingleFolderResponseDto
+import org.example.saved.data.network.model.UpdateBookmarkRequestDto
+import org.example.saved.data.network.model.UpdateFolderRequestDto
 import org.example.saved.data.network.model.toDomain
 import org.example.saved.domain.model.AnalyzeResult
 import org.example.saved.domain.model.Bookmark
@@ -46,6 +50,62 @@ class BookmarkRepositoryImpl(
             if (response.status.isSuccess()) {
                 val responseDto = response.body<SingleFolderResponseDto>()
                 Result.success(responseDto.folder.toDomain())
+            } else {
+                Result.failure(Exception("HTTP ${response.status.value}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun renameFolder(folderId: String, name: String): Result<Unit> {
+        return try {
+            val response = client.put("folders/$folderId") {
+                setBody(UpdateFolderRequestDto(name))
+            }
+            if (response.status.isSuccess()) {
+                Result.success(Unit)
+            } else {
+                Result.failure(Exception("HTTP ${response.status.value}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun deleteFolder(folderId: String): Result<Unit> {
+        return try {
+            val response = client.delete("folders/$folderId")
+            if (response.status.isSuccess()) {
+                Result.success(Unit)
+            } else {
+                Result.failure(Exception("HTTP ${response.status.value}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun updateBookmark(bookmarkId: String, title: String?, folderId: String?): Result<Unit> {
+        return try {
+            val response = client.put("bookmarks/$bookmarkId") {
+                setBody(UpdateBookmarkRequestDto(title = title, folderId = folderId?.toInt()))
+            }
+            if (response.status.isSuccess()) {
+                Result.success(Unit)
+            } else {
+                Result.failure(Exception("HTTP ${response.status.value}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun deleteBookmark(bookmarkId: String): Result<Unit> {
+        return try {
+            val response = client.delete("bookmarks/$bookmarkId")
+            if (response.status.isSuccess()) {
+                Result.success(Unit)
             } else {
                 Result.failure(Exception("HTTP ${response.status.value}"))
             }
