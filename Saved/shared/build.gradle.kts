@@ -37,6 +37,7 @@ kotlin {
             implementation(libs.koin.core)
             api(libs.orbit.core)
             api(libs.orbit.viewmodel)
+            implementation(libs.ktor.client.logging)
         }
         androidMain.dependencies {
             implementation(libs.ktor.client.okhttp)
