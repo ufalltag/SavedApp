@@ -7,6 +7,8 @@ plugins {
     alias(libs.plugins.composeCompiler) apply false
     alias(libs.plugins.kotlinMultiplatform) apply false
     alias(libs.plugins.ktLint)
+    alias(libs.plugins.google.services) apply false
+    alias(libs.plugins.crashlytics) apply false
 }
 subprojects {
     apply(plugin = "org.jlleitschuh.gradle.ktlint")

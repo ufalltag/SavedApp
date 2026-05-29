@@ -30,6 +30,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.example.saved.presentation.folder.FolderDetailSideEffect
 import org.example.saved.presentation.folder.FolderDetailViewModel
 import org.example.saved.ui.components.bookmarks.BookmarkItem
+import org.example.saved.ui.theme.LocalSnackbarHostState
 import org.jetbrains.compose.resources.painterResource
 import org.koin.androidx.compose.koinViewModel
 import saved.composeapp.generated.resources.Res
@@ -45,7 +46,7 @@ fun FolderDetailScreen(
 ) {
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackbarHostState = LocalSnackbarHostState.current
 
     LaunchedEffect(folderId) {
         viewModel.initFolder(folderId, folderName)
@@ -84,7 +85,6 @@ fun FolderDetailScreen(
                 }
             )
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) },
         containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
         Box(

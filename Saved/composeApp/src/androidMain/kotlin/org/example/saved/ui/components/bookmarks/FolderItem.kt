@@ -1,5 +1,6 @@
 package org.example.saved.ui.components.bookmarks
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -15,14 +16,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.example.saved.ui.theme.AccentBlue
-import org.example.saved.ui.theme.FolderGradientEnd
-import org.example.saved.ui.theme.FolderGradientStart
+import org.jetbrains.compose.resources.painterResource
+import saved.composeapp.generated.resources.Res
+import saved.composeapp.generated.resources.folder
 
 @Composable
 fun FolderItem(
@@ -44,25 +45,24 @@ fun FolderItem(
         Box(
             modifier =
                 Modifier
-                    .size(100.dp)
+                    .size(80.dp)
                     .clip(RoundedCornerShape(24.dp))
                     .background(
-                        if (isAddButton) {
-                            Brush.linearGradient(listOf(Color.White, Color.White))
-                        } else {
-                            Brush.linearGradient(
-                                colors = listOf(FolderGradientStart, FolderGradientEnd),
-                            )
-                        },
+                        if (isAddButton) Color.White else Color.Transparent
                     ),
             contentAlignment = Alignment.Center,
         ) {
             if (isAddButton) {
-                // TODO: Позже заменим на твою иконку плюса из ресурсов
                 Text(
                     text = "+",
                     color = AccentBlue,
                     style = MaterialTheme.typography.titleLarge.copy(fontSize = 40.sp),
+                )
+            } else {
+                Image(
+                    painter = painterResource(Res.drawable.folder),
+                    contentDescription = null,
+                    modifier = Modifier.size(70.dp)
                 )
             }
         }

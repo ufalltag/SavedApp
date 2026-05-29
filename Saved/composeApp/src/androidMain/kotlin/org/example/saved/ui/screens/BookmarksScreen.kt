@@ -1,5 +1,6 @@
 package org.example.saved.ui.screens
 
+import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -18,25 +19,33 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.flow.collectLatest
 import org.example.saved.R
+import org.example.saved.presentation.main.BookmarksSideEffect
 import org.example.saved.presentation.main.BookmarksViewModel
 import org.example.saved.ui.components.bookmarks.BookmarkItem
 import org.example.saved.ui.components.bookmarks.FloatingInputBar
 import org.example.saved.ui.components.bookmarks.FolderItem
 import org.example.saved.ui.components.bookmarks.ScreenHeader
 import org.example.saved.ui.components.bookmarks.SectionTitle
+import org.example.saved.ui.theme.LocalSnackbarHostState
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -45,9 +54,33 @@ fun BookmarksScreen(
     onFolderClick: (String, String) -> Unit,
 ) {
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
+    val snackbarHostState = LocalSnackbarHostState.current
+    val context = LocalContext.current
 
     var showCreateFolderDialog by remember { mutableStateOf(false) }
     var newFolderName by remember { mutableStateOf("") }
+
+    // Слушаем ошибки и другие эффекты прямо здесь
+    LaunchedEffect(Unit) {
+        viewModel.container.sideEffectFlow.collectLatest { effect ->
+            when (effect) {
+                is BookmarksSideEffect.ShowToast -> {
+                    snackbarHostState.showSnackbar(effect.message)
+                }
+                is BookmarksSideEffect.NavigateToFolder -> {
+                    onFolderClick(effect.folderId, effect.folderName)
+                }
+                is BookmarksSideEffect.OpenUrl -> {
+                    try {
+                        val intent = Intent(Intent.ACTION_VIEW, effect.url.toUri())
+                        context.startActivity(intent)
+                    } catch (e: Exception) {
+                        snackbarHostState.showSnackbar("Не удалось открыть ссылку")
+                    }
+                }
+            }
+        }
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -111,7 +144,7 @@ fun BookmarksScreen(
                     FolderItem(
                         title = folder.name,
                         linksCount = 0,
-                        onClick = { onFolderClick(folder.id, folder.name) }
+                        onClick = { viewModel.onFolderClick(folder.id, folder.name) }
                     )
                 }
             }

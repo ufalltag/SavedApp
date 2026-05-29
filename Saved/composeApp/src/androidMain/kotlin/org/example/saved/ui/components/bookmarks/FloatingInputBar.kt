@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -108,12 +109,20 @@ fun FloatingInputBar(
                         .background(if (isAnalyzing) Color.Gray else AccentBlue),
                 enabled = !isAnalyzing,
             ) {
-                Icon(
-                    painter = painterResource(Res.drawable.ic_send),
-                    contentDescription = "Send",
-                    tint = Color.White,
-                    modifier = Modifier.size(20.dp),
-                )
+                if (isAnalyzing) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        color = Color.White,
+                        strokeWidth = 2.dp
+                    )
+                } else {
+                    Icon(
+                        painter = painterResource(Res.drawable.ic_send),
+                        contentDescription = "Send",
+                        tint = Color.White,
+                        modifier = Modifier.size(20.dp),
+                    )
+                }
             }
             Spacer(modifier = Modifier.width(4.dp))
         }

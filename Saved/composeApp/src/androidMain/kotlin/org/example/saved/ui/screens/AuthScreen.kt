@@ -1,7 +1,6 @@
 package org.example.saved.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,32 +12,68 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.flow.collectLatest
+import org.example.saved.presentation.auth.AuthSideEffect
 import org.example.saved.presentation.auth.AuthViewModel
+import org.example.saved.ui.theme.LocalSnackbarHostState
 
 @Composable
-fun AuthScreen(viewModel: AuthViewModel) {
+fun AuthScreen(
+    viewModel: AuthViewModel,
+    onNavigateToHome: () -> Unit
+) {
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
+    val snackbarHostState = LocalSnackbarHostState.current
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        containerColor = MaterialTheme.colorScheme.background,
-    ) { paddingValues ->
+    // Локальное состояние для текста
+    var emailValue by remember { mutableStateOf(TextFieldValue(state.email)) }
+    var passwordValue by remember { mutableStateOf(TextFieldValue(state.password)) }
+
+    LaunchedEffect(state.email) {
+        if (state.email != emailValue.text) {
+            emailValue = emailValue.copy(text = state.email)
+        }
+    }
+    LaunchedEffect(state.password) {
+        if (state.password != passwordValue.text) {
+            passwordValue = passwordValue.copy(text = state.password)
+        }
+    }
+
+    // Обработка Side Effects (ошибки, навигация)
+    LaunchedEffect(Unit) {
+        viewModel.container.sideEffectFlow.collectLatest { effect ->
+            when (effect) {
+                is AuthSideEffect.NavigateToHome -> onNavigateToHome()
+                is AuthSideEffect.ShowError -> {
+                    snackbarHostState.showSnackbar(effect.message)
+                }
+                is AuthSideEffect.ShowMessage -> {
+                    snackbarHostState.showSnackbar(effect.message)
+                }
+            }
+        }
+    }
+
         Column(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(paddingValues)
                     .padding(32.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -51,8 +86,11 @@ fun AuthScreen(viewModel: AuthViewModel) {
             Spacer(modifier = Modifier.height(32.dp))
 
             OutlinedTextField(
-                value = state.email,
-                onValueChange = { viewModel.onEmailChanged(it) },
+                value = emailValue,
+                onValueChange = {
+                    emailValue = it
+                    viewModel.onEmailChanged(it.text)
+                },
                 label = { Text("Email") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 singleLine = true,
@@ -63,8 +101,11 @@ fun AuthScreen(viewModel: AuthViewModel) {
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
-                value = state.password,
-                onValueChange = { viewModel.onPasswordChanged(it) },
+                value = passwordValue,
+                onValueChange = {
+                    passwordValue = it
+                    viewModel.onPasswordChanged(it.text)
+                },
                 label = { Text("Пароль") },
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -104,6 +145,5 @@ fun AuthScreen(viewModel: AuthViewModel) {
                     color = MaterialTheme.colorScheme.primary,
                 )
             }
-        }
     }
 }

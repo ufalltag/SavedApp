@@ -6,6 +6,8 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.crashlytics)
 }
 
 kotlin {
@@ -24,6 +26,8 @@ kotlin {
             implementation(libs.compose.material3)
             implementation(libs.compose.ui)
             implementation(libs.koin.androidx.compose)
+            implementation(libs.firebase.analytics)
+            implementation(libs.firebase.crashlytics)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -37,6 +41,9 @@ kotlin {
             implementation(projects.shared)
             implementation(libs.navigation.compose)
             implementation(libs.kotlinx.serialization.json)
+            implementation(project.dependencies.platform("com.google.firebase:firebase-bom:32.7.0"))
+            implementation(libs.google.firebase.analytics)
+            implementation(libs.google.firebase.crashlytics)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

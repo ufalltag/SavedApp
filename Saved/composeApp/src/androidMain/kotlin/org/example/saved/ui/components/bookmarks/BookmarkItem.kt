@@ -15,7 +15,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,7 +22,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import org.example.saved.ui.theme.AccentBlue
@@ -31,7 +29,7 @@ import org.example.saved.ui.theme.FolderIconBackground
 import org.jetbrains.compose.resources.painterResource
 import saved.composeapp.generated.resources.Res
 import saved.composeapp.generated.resources.ic_delete
-import saved.composeapp.generated.resources.ic_send
+import saved.composeapp.generated.resources.ic_link
 
 @Composable
 fun BookmarkItem(
@@ -46,9 +44,9 @@ fun BookmarkItem(
         modifier =
             modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 6.dp)
+                .padding(horizontal = 4.dp)
                 .shadow(elevation = 2.dp, shape = RoundedCornerShape(20.dp)),
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(16.dp),
         color = MaterialTheme.colorScheme.surface,
     ) {
         Row(
@@ -66,11 +64,11 @@ fun BookmarkItem(
                         .background(FolderIconBackground),
                 contentAlignment = Alignment.Center,
             ) {
-                // TODO: Заменить на реальную иконку из ресурсов
-                Text(
-                    text = "🔗",
-                    color = AccentBlue,
-                    style = MaterialTheme.typography.titleMedium,
+                Icon(
+                    painter = painterResource(Res.drawable.ic_link),
+                    contentDescription = "Link icon",
+                    tint = AccentBlue,
+                    modifier = Modifier.size(24.dp)
                 )
             }
 
@@ -87,7 +85,7 @@ fun BookmarkItem(
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
-                    text = "${url.substringBefore("/").removePrefix("https://")} | $date",
+                    text = "${url.removePrefix("https://").removePrefix("http://").substringBefore("/")} | $date",
                     style = MaterialTheme.typography.labelMedium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
