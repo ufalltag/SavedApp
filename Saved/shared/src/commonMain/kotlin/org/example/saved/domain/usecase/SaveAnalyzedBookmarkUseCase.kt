@@ -18,6 +18,11 @@ class SaveAnalyzedBookmarkUseCase(
             return Result.failure(Exception("Нейросеть не смогла проанализировать ссылку: ${error.message}"))
         }
 
+        // Нейросеть не уверена (confidence < 0.7) — suggestedFolder == null
+        if (analysisResult.suggestedFolder == null) {
+            return Result.failure(Exception("Нейросеть не смогла определить папку — выберите вручную"))
+        }
+
         val finalFolderId: String
 
         if (analysisResult.isNewFolder) {

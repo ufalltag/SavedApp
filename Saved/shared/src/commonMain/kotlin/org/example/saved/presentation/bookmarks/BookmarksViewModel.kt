@@ -1,14 +1,26 @@
 package org.example.saved.presentation.bookmarks
 
 import androidx.lifecycle.ViewModel
-import org.example.saved.domain.repository.BookmarkRepository
+import org.example.saved.domain.usecase.CreateFolderUseCase
+import org.example.saved.domain.usecase.DeleteBookmarkUseCase
+import org.example.saved.domain.usecase.DeleteFolderUseCase
+import org.example.saved.domain.usecase.GetBookmarksUseCase
+import org.example.saved.domain.usecase.GetFoldersUseCase
+import org.example.saved.domain.usecase.RenameFolderUseCase
 import org.example.saved.domain.usecase.SaveAnalyzedBookmarkUseCase
+import org.example.saved.domain.usecase.UpdateBookmarkUseCase
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
 
 class BookmarksViewModel(
-    private val repository: BookmarkRepository,
+    private val getFoldersUseCase: GetFoldersUseCase,
+    private val getBookmarksUseCase: GetBookmarksUseCase,
+    private val createFolderUseCase: CreateFolderUseCase,
+    private val renameFolderUseCase: RenameFolderUseCase,
+    private val deleteFolderUseCase: DeleteFolderUseCase,
+    private val updateBookmarkUseCase: UpdateBookmarkUseCase,
+    private val deleteBookmarkUseCase: DeleteBookmarkUseCase,
     private val saveAnalyzedBookmarkUseCase: SaveAnalyzedBookmarkUseCase
 ) : ViewModel(), ContainerHost<BookmarksState, BookmarksSideEffect> {
 
@@ -20,7 +32,7 @@ class BookmarksViewModel(
     private fun loadFolders() = intent {
         reduce { state.copy(isFoldersLoading = true, errorMessage = null) }
 
-        repository.getFolders().onSuccess { folders ->
+        getFoldersUseCase().onSuccess { folders ->
             val firstFolderId = folders.firstOrNull()?.id
             reduce {
                 state.copy(
@@ -48,7 +60,7 @@ class BookmarksViewModel(
     private fun loadBookmarks(folderId: String) = intent {
         reduce { state.copy(isBookmarksLoading = true, errorMessage = null) }
 
-        repository.getBookmarks(folderId).onSuccess { bookmarks ->
+        getBookmarksUseCase(folderId).onSuccess { bookmarks ->
             reduce { state.copy(bookmarks = bookmarks, isBookmarksLoading = false) }
         }.onFailure { error ->
             reduce { state.copy(isBookmarksLoading = false, errorMessage = error.message) }
@@ -58,12 +70,15 @@ class BookmarksViewModel(
 
     fun analyzeAndSaveUrl(url: String) = intent {
         if (state.isAnalyzing) return@intent
+        if (state.folders.isEmpty()) {
+            postSideEffect(BookmarksSideEffect.ShowToast("Сначала создайте хотя бы одну папку"))
+            return@intent
+        }
         reduce { state.copy(isAnalyzing = true) }
 
         saveAnalyzedBookmarkUseCase(url = url).onSuccess {
-            postSideEffect(BookmarksSideEffect.ShowToast("Закладка успешно сохранена!"))
             reduce { state.copy(isAnalyzing = false) }
-
+            postSideEffect(BookmarksSideEffect.ShowToast("Закладка успешно сохранена!"))
             loadFolders()
         }.onFailure { error ->
             reduce { state.copy(isAnalyzing = false) }
@@ -72,9 +87,7 @@ class BookmarksViewModel(
     }
 
     /**
-     * Создает новую папку.
-     *
-     * Вызывать из формы создания папки (например, при подтверждении в алерт-диалоге).
+     * Создаёт новую папку и добавляет её в стейт локально (без перезапроса с сервера).
      */
     fun createFolder(name: String) = intent {
         if (name.isBlank()) {
@@ -82,23 +95,9 @@ class BookmarksViewModel(
             return@intent
         }
 
-        // Опционально: можно добавить стейт isFolderCreating, если хочется блокировать UI
-
-        repository.createFolder(name).onSuccess { newFolder ->
+        createFolderUseCase(name).onSuccess { newFolder ->
+            reduce { state.copy(folders = state.folders + newFolder) }
             postSideEffect(BookmarksSideEffect.ShowToast("Папка '$name' создана"))
-
-            // Вариант 1: Просто перезапрашиваем папки с сервера
-            // loadFolders()
-
-            // Вариант 2: Локально добавляем папку в стейт (быстрее для UI)
-            val updatedFolders = state.folders + newFolder
-            reduce {
-                state.copy(
-                    folders = updatedFolders,
-                    // Опционально: сразу выбираем свежесозданную папку
-                    // selectedFolderId = newFolder.id
-                )
-            }
         }.onFailure { error ->
             postSideEffect(BookmarksSideEffect.ShowToast(error.message ?: "Ошибка создания папки"))
         }
@@ -114,7 +113,7 @@ class BookmarksViewModel(
             return@intent
         }
 
-        repository.renameFolder(folderId, newName).onSuccess {
+        renameFolderUseCase(folderId, newName).onSuccess {
             val updatedFolders = state.folders.map { folder ->
                 if (folder.id == folderId) folder.copy(name = newName) else folder
             }
@@ -126,22 +125,19 @@ class BookmarksViewModel(
     }
 
     fun deleteFolder(folderId: String) = intent {
-        repository.deleteFolder(folderId).onSuccess {
+        deleteFolderUseCase(folderId).onSuccess {
+            val wasSelected = state.selectedFolderId == folderId
             val updatedFolders = state.folders.filter { it.id != folderId }
-            val newSelectedId = if (state.selectedFolderId == folderId) {
-                updatedFolders.firstOrNull()?.id
-            } else {
-                state.selectedFolderId
-            }
+            val newSelectedId = if (wasSelected) updatedFolders.firstOrNull()?.id else state.selectedFolderId
             reduce {
                 state.copy(
                     folders = updatedFolders,
                     selectedFolderId = newSelectedId,
-                    bookmarks = if (state.selectedFolderId == folderId) emptyList() else state.bookmarks
+                    bookmarks = if (wasSelected) emptyList() else state.bookmarks
                 )
             }
             postSideEffect(BookmarksSideEffect.ShowToast("Папка удалена"))
-            if (newSelectedId != null && state.selectedFolderId == folderId) {
+            if (wasSelected && newSelectedId != null) {
                 loadBookmarks(newSelectedId)
             }
         }.onFailure { error ->
@@ -150,7 +146,7 @@ class BookmarksViewModel(
     }
 
     fun deleteBookmark(bookmarkId: String) = intent {
-        repository.deleteBookmark(bookmarkId).onSuccess {
+        deleteBookmarkUseCase(bookmarkId).onSuccess {
             reduce { state.copy(bookmarks = state.bookmarks.filter { it.id != bookmarkId }) }
             postSideEffect(BookmarksSideEffect.ShowToast("Закладка удалена"))
         }.onFailure { error ->
@@ -159,7 +155,7 @@ class BookmarksViewModel(
     }
 
     fun moveBookmark(bookmarkId: String, targetFolderId: String) = intent {
-        repository.updateBookmark(bookmarkId, folderId = targetFolderId).onSuccess {
+        updateBookmarkUseCase(bookmarkId, folderId = targetFolderId).onSuccess {
             reduce { state.copy(bookmarks = state.bookmarks.filter { it.id != bookmarkId }) }
             postSideEffect(BookmarksSideEffect.ShowToast("Закладка перемещена"))
         }.onFailure { error ->
@@ -173,7 +169,7 @@ class BookmarksViewModel(
             return@intent
         }
 
-        repository.updateBookmark(bookmarkId, title = newTitle).onSuccess {
+        updateBookmarkUseCase(bookmarkId, title = newTitle).onSuccess {
             val updatedBookmarks = state.bookmarks.map { bookmark ->
                 if (bookmark.id == bookmarkId) bookmark.copy(title = newTitle) else bookmark
             }

@@ -17,8 +17,8 @@ data class RegisterRequestDto(
     val email: String,
     @SerialName("password")
     val password: String,
-    @SerialName("name")
-    val name: String? = null
+    @SerialName("username")
+    val username: String
 )
 
 @Serializable
@@ -39,4 +39,12 @@ data class RefreshTokenResponseDto(
 data class RefreshRequestDto(
     @SerialName("refresh_token")
     val refreshToken: String
+)
+
+@Serializable
+data class ChangePasswordRequestDto(
+    @SerialName("old_password")
+    val oldPassword: String,
+    @SerialName("new_password")
+    val newPassword: String
 )

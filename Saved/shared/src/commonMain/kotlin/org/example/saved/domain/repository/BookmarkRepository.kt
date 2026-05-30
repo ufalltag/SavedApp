@@ -5,8 +5,9 @@ import org.example.saved.domain.model.Bookmark
 import org.example.saved.domain.model.Folder
 
 interface BookmarkRepository {
-    suspend fun getFolders(): Result<List<Folder>>
-    suspend fun getBookmarks(folderId: String): Result<List<Bookmark>>
+    suspend fun getFolders(page: Int = 1, limit: Int = 20): Result<List<Folder>>
+    suspend fun getRecentBookmarks(): Result<List<Bookmark>>
+    suspend fun getBookmarks(folderId: String, page: Int = 1, limit: Int = 20): Result<List<Bookmark>>
     suspend fun createFolder(name: String): Result<Folder>
     suspend fun renameFolder(folderId: String, name: String): Result<Unit>
     suspend fun deleteFolder(folderId: String): Result<Unit>
