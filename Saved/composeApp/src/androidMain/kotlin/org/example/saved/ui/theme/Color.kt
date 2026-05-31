@@ -15,3 +15,8 @@ val White = Color(0xFFFFFFFF)
 
 val AvatarBackground = Color(0xFFE0E8FF)
 val AvatarText = Color(0xFF3B5BFF)
+
+val BackgroundDark = Color(0xFF1C1C1E)
+val SurfaceDark = Color(0xFF2C2C2E)
+val TextPrimaryDark = Color(0xFFFFFFFF)
+val TextSecondaryDark = Color(0xFF98989D)

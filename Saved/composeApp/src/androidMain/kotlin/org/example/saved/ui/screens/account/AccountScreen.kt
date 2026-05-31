@@ -37,6 +37,8 @@ import saved.composeapp.generated.resources.ic_arrow_back
 @Composable
 fun AccountScreen(
     viewModel: AccountViewModel,
+    isDarkMode: Boolean,
+    onThemeToggle: (Boolean) -> Unit,
     onBackClick: () -> Unit,
     onNavigateToLogin: () -> Unit
 ) {
@@ -84,7 +86,9 @@ fun AccountScreen(
                     ProfileHeader(email = state.email)
                     AccountActionCards(
                         onChangePasswordClick = { showPasswordDialog = true },
-                        onLogoutClick = viewModel::logout
+                        onLogoutClick = viewModel::logout,
+                        isDarkMode = isDarkMode,
+                        onThemeToggle = onThemeToggle
                     )
                 }
             }

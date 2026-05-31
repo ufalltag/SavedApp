@@ -1,5 +1,6 @@
 package org.example.saved.di
 
+import org.example.saved.data.local.SettingsStorageImpl
 import org.example.saved.data.local.TokenStorageImpl
 import org.example.saved.data.network.AuthApiService
 import org.example.saved.data.network.BookmarkApiService
@@ -8,6 +9,7 @@ import org.example.saved.data.repository.AuthRepositoryImpl
 import org.example.saved.data.repository.BookmarkRepositoryImpl
 import org.example.saved.domain.repository.AuthRepository
 import org.example.saved.domain.repository.BookmarkRepository
+import org.example.saved.domain.repository.SettingsStorage
 import org.example.saved.domain.repository.TokenStorage
 import org.example.saved.domain.usecase.ChangePasswordUseCase
 import org.example.saved.domain.usecase.GetProfileUseCase
@@ -53,6 +55,7 @@ val commonModule = module {
     // Repositories
     single<AuthRepository> { AuthRepositoryImpl(get(), get(), get()) }
     single<BookmarkRepository> { BookmarkRepositoryImpl(get()) }
+    single<SettingsStorage> { SettingsStorageImpl(get()) }
 
     // Use cases
     factoryOf(::LoginUseCase)

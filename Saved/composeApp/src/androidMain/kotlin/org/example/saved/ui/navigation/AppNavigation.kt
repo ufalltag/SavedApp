@@ -14,9 +14,12 @@ import androidx.navigation.compose.rememberNavController
 import org.example.saved.presentation.app.AppViewModel
 import org.koin.androidx.compose.koinViewModel
 
+// В файле AppNavigation.kt
 @Composable
-fun AppNavigation(navController: NavHostController = rememberNavController()) {
-    val appViewModel = koinViewModel<AppViewModel>()
+fun AppNavigation(
+    appViewModel: AppViewModel, // ПАТЧ: Принимаем как аргумент
+    navController: NavHostController = rememberNavController()
+) {
     val state by appViewModel.container.stateFlow.collectAsStateWithLifecycle()
 
     if (state.isCheckingSession) {
@@ -26,13 +29,12 @@ fun AppNavigation(navController: NavHostController = rememberNavController()) {
     } else {
         NavHost(
             navController = navController,
-            startDestination = if (state.isLoggedIn) BookmarksRoute else LoginRoute,
+            startDestination = if (state.isLoggedIn) BookmarksRoute else LoginRoute
         ) {
             authGraph(navController)
             bookmarksScreen(navController)
             folderDetailScreen(navController)
-            allFoldersScreen(navController)
-            accountScreen(navController)
+            accountScreen(navController, appViewModel)
         }
     }
 }

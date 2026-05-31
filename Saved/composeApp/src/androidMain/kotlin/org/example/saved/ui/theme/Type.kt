@@ -13,34 +13,29 @@ val AppTypography =
                 fontFamily = FontFamily.Default,
                 fontWeight = FontWeight.Bold,
                 fontSize = 28.sp,
-                color = TextPrimary,
             ),
         titleMedium =
             TextStyle(
                 fontFamily = FontFamily.Default,
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp,
-                color = TextPrimary,
             ),
         bodyLarge =
             TextStyle(
                 fontFamily = FontFamily.Default,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 16.sp,
-                color = TextPrimary,
             ),
         bodyMedium =
             TextStyle(
                 fontFamily = FontFamily.Default,
                 fontWeight = FontWeight.Normal,
                 fontSize = 14.sp,
-                color = TextSecondary,
             ),
         labelMedium =
             TextStyle(
                 fontFamily = FontFamily.Default,
                 fontWeight = FontWeight.Medium,
                 fontSize = 12.sp,
-                color = TextSecondary,
             ),
     )

@@ -1,6 +1,7 @@
 package org.example.saved.ui.screens.account
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,11 +15,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -29,14 +32,44 @@ import saved.composeapp.generated.resources.ic_lock
 
 @Composable
 fun AccountActionCards(
+    isDarkMode: Boolean,
+    onThemeToggle: (Boolean) -> Unit,
     onChangePasswordClick: () -> Unit,
     onLogoutClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = modifier.padding(horizontal = 16.dp)
-    ) {
-        // Секция безопасности
+    Column(modifier = modifier.padding(horizontal = 16.dp)) {
+
+        // 1. Секция: Внешний вид (Тумблер)
+        Surface(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(16.dp),
+            color = MaterialTheme.colorScheme.surfaceVariant
+        ) {
+            SettingsRow(
+                title = "Тёмная тема",
+                // Используем стандартную иконку настроек или любую другую
+                icon = {
+                    Icon(
+                        painter = painterResource(id = android.R.drawable.ic_menu_preferences),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                },
+                // При клике на саму строку тоже меняем тему (улучшает UX)
+                onClick = { onThemeToggle(!isDarkMode) },
+                trailingContent = {
+                    androidx.compose.material3.Switch(
+                        checked = isDarkMode,
+                        onCheckedChange = { onThemeToggle(it) } // Переключаем стейт
+                    )
+                }
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // 2. Секция: Пароль
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
@@ -57,7 +90,7 @@ fun AccountActionCards(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Секция выхода
+        // 3. Секция: Выход
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
@@ -84,30 +117,52 @@ private fun SettingsRow(
     title: String,
     icon: @Composable () -> Unit,
     onClick: () -> Unit,
-    textColor: androidx.compose.ui.graphics.Color = MaterialTheme.colorScheme.onSurfaceVariant
+    textColor: androidx.compose.ui.graphics.Color = MaterialTheme.colorScheme.onSurfaceVariant,
+    trailingContent: (@Composable () -> Unit)? = null
 ) {
     Surface(
         onClick = onClick,
         color = androidx.compose.ui.graphics.Color.Transparent
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp), // Внутренний отступ карточки
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween // Расталкиваем края
         ) {
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(MaterialTheme.colorScheme.surface),
-                contentAlignment = Alignment.Center
-            ) { icon() }
-            Spacer(modifier = Modifier.width(16.dp))
-            Text(
-                text = title,
-                style = MaterialTheme.typography.bodyLarge,
-                color = textColor,
-                fontWeight = FontWeight.Medium
-            )
+            // Левая часть (Иконка + Текст)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.weight(1f) // Занимает всё доступное место
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(MaterialTheme.colorScheme.surface),
+                    contentAlignment = Alignment.Center
+                ) {
+                    icon()
+                }
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = textColor,
+                    fontWeight = androidx.compose.ui.text.font.FontWeight.Medium
+                )
+            }
+
+            // Правая часть (Тумблер)
+            if (trailingContent != null) {
+                // Оборачиваем в Box для надежного позиционирования
+                Box(modifier = Modifier.padding(start = 16.dp)) {
+                    trailingContent()
+                }
+            }
         }
     }
 }
