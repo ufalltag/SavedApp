@@ -19,8 +19,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -38,7 +36,7 @@ import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.collectLatest
 import org.example.saved.R
-import org.example.saved.presentation.main.BookmarksSideEffect
+import org.example.saved.presentation.bookmarks.BookmarksSideEffect
 import org.example.saved.presentation.main.BookmarksViewModel
 import org.example.saved.ui.components.bookmarks.BookmarkItem
 import org.example.saved.ui.components.bookmarks.FloatingInputBar
@@ -66,9 +64,6 @@ fun BookmarksScreen(
             when (effect) {
                 is BookmarksSideEffect.ShowToast -> {
                     snackbarHostState.showSnackbar(effect.message)
-                }
-                is BookmarksSideEffect.NavigateToFolder -> {
-                    onFolderClick(effect.folderId, effect.folderName)
                 }
                 is BookmarksSideEffect.OpenUrl -> {
                     try {
@@ -144,7 +139,8 @@ fun BookmarksScreen(
                     FolderItem(
                         title = folder.name,
                         linksCount = 0,
-                        onClick = { viewModel.onFolderClick(folder.id, folder.name) }
+                        isSelected = state.selectedFolderId == folder.id,
+                        onClick = { viewModel.selectFolder(folder.id) }
                     )
                 }
             }
@@ -170,7 +166,7 @@ fun BookmarksScreen(
                         title = bookmark.title,
                         url = bookmark.url,
                         date = stringResource(R.string.bookmark_date_placeholder),
-                        onClick = { viewModel.onBookmarkClick(bookmark.url) },
+                        onClick = { viewModel.openBookmark(bookmark.url) },
                         onDelete = { viewModel.deleteBookmark(bookmark.id) },
                     )
                 }

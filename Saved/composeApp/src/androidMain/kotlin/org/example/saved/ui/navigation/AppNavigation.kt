@@ -26,9 +26,9 @@ fun AppNavigation(navController: NavHostController = rememberNavController()) {
     } else {
         NavHost(
             navController = navController,
-            startDestination = if (state.isLoggedIn) BookmarksRoute else AuthRoute,
+            startDestination = if (state.isLoggedIn) BookmarksRoute else LoginRoute,
         ) {
-            authScreen(navController)
+            authGraph(navController)
             bookmarksScreen(navController)
             folderDetailScreen(navController)
         }

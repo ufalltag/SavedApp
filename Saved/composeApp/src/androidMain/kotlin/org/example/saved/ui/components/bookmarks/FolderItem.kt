@@ -2,6 +2,7 @@ package org.example.saved.ui.components.bookmarks
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,6 +32,7 @@ fun FolderItem(
     linksCount: Int?,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    isSelected: Boolean = false,
 ) {
     val isAddButton = linksCount == null
 
@@ -49,6 +51,11 @@ fun FolderItem(
                     .clip(RoundedCornerShape(24.dp))
                     .background(
                         if (isAddButton) Color.White else Color.Transparent
+                    )
+                    .then(
+                        if (isSelected) {
+                            Modifier.border(2.dp, AccentBlue, RoundedCornerShape(24.dp))
+                        } else Modifier
                     ),
             contentAlignment = Alignment.Center,
         ) {
@@ -71,7 +78,9 @@ fun FolderItem(
 
         Text(
             text = title,
-            style = MaterialTheme.typography.bodyLarge,
+            style = MaterialTheme.typography.bodyLarge.copy(
+                color = if (isSelected) AccentBlue else MaterialTheme.colorScheme.onSurface
+            ),
             textAlign = TextAlign.Center,
             maxLines = 1,
         )

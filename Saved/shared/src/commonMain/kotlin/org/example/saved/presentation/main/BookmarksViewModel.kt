@@ -1,4 +1,4 @@
-package org.example.saved.presentation.bookmarks
+package org.example.saved.presentation.main
 
 import androidx.lifecycle.ViewModel
 import org.example.saved.domain.usecase.CreateFolderUseCase
@@ -9,6 +9,8 @@ import org.example.saved.domain.usecase.GetFoldersUseCase
 import org.example.saved.domain.usecase.RenameFolderUseCase
 import org.example.saved.domain.usecase.SaveAnalyzedBookmarkUseCase
 import org.example.saved.domain.usecase.UpdateBookmarkUseCase
+import org.example.saved.presentation.bookmarks.BookmarksSideEffect
+import org.example.saved.presentation.bookmarks.BookmarksState
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
@@ -176,23 +178,6 @@ class BookmarksViewModel(
             reduce { state.copy(bookmarks = updatedBookmarks) }
         }.onFailure { error ->
             postSideEffect(BookmarksSideEffect.ShowToast(error.message ?: "Ошибка переименования закладки"))
-        }
-    }
-
-    /**
-     * Удаляет закладку по ID.
-     *
-     * Вызывать при удалении закладки (например, swipe-to-delete в List).
-     */
-    fun deleteBookmark(bookmarkId: String) = intent {
-        repository.deleteBookmark(bookmarkId).onSuccess {
-            postSideEffect(BookmarksSideEffect.ShowToast("Закладка удалена"))
-
-            val updatedBookmarks = state.bookmarks.filter { it.id != bookmarkId }
-            reduce { state.copy(bookmarks = updatedBookmarks) }
-
-        }.onFailure { error ->
-            postSideEffect(BookmarksSideEffect.ShowToast(error.message ?: "Ошибка при удалении закладки"))
         }
     }
 

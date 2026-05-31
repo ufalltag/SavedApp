@@ -5,7 +5,7 @@ import org.example.saved.presentation.app.AppViewModel
 import org.example.saved.presentation.auth.LoginViewModel
 import org.example.saved.presentation.auth.RegisterCredentialsViewModel
 import org.example.saved.presentation.auth.RegisterUsernameViewModel
-import org.example.saved.presentation.bookmarks.BookmarksViewModel
+import org.example.saved.presentation.main.BookmarksViewModel
 import org.example.saved.presentation.folderlinks.FolderLinksViewModel
 import org.example.saved.presentation.folders.AllFoldersViewModel
 import org.example.saved.presentation.home.HomeViewModel
