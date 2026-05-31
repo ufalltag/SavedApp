@@ -21,6 +21,9 @@ fun NavGraphBuilder.bookmarksScreen(navController: NavHostController) {
             },
             onSeeAllFoldersClick = {
                 navController.navigate(AllFoldersRoute)
+            },
+            onProfileClick = {
+                navController.navigate(AccountRoute)
             }
         )
     }

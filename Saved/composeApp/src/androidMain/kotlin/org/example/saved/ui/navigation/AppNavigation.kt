@@ -32,6 +32,7 @@ fun AppNavigation(navController: NavHostController = rememberNavController()) {
             bookmarksScreen(navController)
             folderDetailScreen(navController)
             allFoldersScreen(navController)
+            accountScreen(navController)
         }
     }
 }

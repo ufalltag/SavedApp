@@ -1,6 +1,7 @@
 package org.example.saved.ui.components.bookmarks
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,6 +24,7 @@ import org.example.saved.ui.theme.AvatarText
 fun ScreenHeader(
     name: String,
     date: String,
+    onAvatarClick: () -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -33,7 +35,8 @@ fun ScreenHeader(
                 Modifier
                     .size(50.dp)
                     .clip(CircleShape)
-                    .background(AvatarBackground),
+                    .background(AvatarBackground)
+                    .clickable(onClick = onAvatarClick),
             contentAlignment = Alignment.Center,
         ) {
             Text(

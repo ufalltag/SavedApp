@@ -50,7 +50,8 @@ import org.koin.androidx.compose.koinViewModel
 fun BookmarksScreen(
     viewModel: HomeViewModel = koinViewModel(),
     onFolderClick: (String, String) -> Unit,
-    onSeeAllFoldersClick: () -> Unit
+    onSeeAllFoldersClick: () -> Unit,
+    onProfileClick: () -> Unit
 ) {
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
     val snackbarHostState = LocalSnackbarHostState.current
@@ -112,7 +113,8 @@ fun BookmarksScreen(
             item(span = { GridItemSpan(maxLineSpan) }) {
                 ScreenHeader(
                     name = state.username ?: stringResource(R.string.bookmarks_header_name),
-                    date = stringResource(R.string.bookmarks_header_date)
+                    date = stringResource(R.string.bookmarks_header_date),
+                    onAvatarClick = onProfileClick
                 )
             }
 
