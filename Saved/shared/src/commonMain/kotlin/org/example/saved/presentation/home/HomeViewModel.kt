@@ -8,6 +8,7 @@ import org.example.saved.domain.usecase.CreateFolderUseCase
 import org.example.saved.domain.usecase.DeleteBookmarkUseCase
 import org.example.saved.domain.usecase.DeleteFolderUseCase
 import org.example.saved.domain.usecase.GetFoldersUseCase
+import org.example.saved.domain.usecase.GetProfileUseCase
 import org.example.saved.domain.usecase.GetRecentBookmarksUseCase
 import org.example.saved.domain.usecase.RenameFolderUseCase
 import org.example.saved.domain.usecase.SaveAnalyzedBookmarkUseCase
@@ -28,6 +29,7 @@ class HomeViewModel(
     private val updateBookmarkUseCase: UpdateBookmarkUseCase,
     private val deleteFolderUseCase: DeleteFolderUseCase,
     private val renameFolderUseCase: RenameFolderUseCase,
+    private val getProfileUseCase: GetProfileUseCase,
 ) : ViewModel(), ContainerHost<HomeState, HomeSideEffect> {
 
     override val container: Container<HomeState, HomeSideEffect> =
@@ -43,6 +45,13 @@ class HomeViewModel(
     private fun loadHomeData() = intent {
         loadFolders()
         loadRecentBookmarks()
+        loadProfile()
+    }
+
+    private fun loadProfile() = intent {
+        getProfileUseCase().onSuccess { profile ->
+            reduce { state.copy(username = profile.username) }
+        }
     }
 
     private fun loadFolders() = intent {

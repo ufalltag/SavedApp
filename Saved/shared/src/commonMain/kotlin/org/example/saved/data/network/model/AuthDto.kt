@@ -48,3 +48,11 @@ data class ChangePasswordRequestDto(
     @SerialName("new_password")
     val newPassword: String
 )
+
+@Serializable
+data class ProfileResponseDto(
+    @SerialName("email")
+    val email: String,
+    @SerialName("username")
+    val username: String
+)

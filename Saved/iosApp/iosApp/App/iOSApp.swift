@@ -3,6 +3,9 @@ import Shared
 
 @main
 struct iOSApp: App {
+
+    @AppStorage("isDarkMode") private var isDarkMode = false
+
     init() {
         // Запускаем Koin DI до того как любой View попытается получить зависимость.
         // Без этого вызова KoinHelper().getLoginViewModel() бросает исключение.
@@ -12,7 +15,8 @@ struct iOSApp: App {
 
     var body: some Scene {
         WindowGroup {
-            HomeView()
+            RootView()
+                .onAppear { applyTheme(isDarkMode, animated: false) }
         }
     }
 }

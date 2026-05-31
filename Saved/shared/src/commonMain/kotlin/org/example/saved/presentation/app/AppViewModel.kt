@@ -31,4 +31,14 @@ class AppViewModel(
             )
         }
     }
+
+    /** Вызывается после успешного входа — переключает корень на главный экран. */
+    fun onAuthenticated() = intent {
+        reduce { state.copy(isLoggedIn = true) }
+    }
+
+    /** Вызывается после выхода (токены уже очищены в AccountViewModel) — возвращает на экран входа. */
+    fun onLoggedOut() = intent {
+        reduce { state.copy(isLoggedIn = false) }
+    }
 }

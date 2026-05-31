@@ -10,6 +10,7 @@ data class HomeState(
     val isBookmarksLoading: Boolean = true,
     val isAnalyzing: Boolean = false,
     val errorMessage: String? = null,
+    val username: String? = null,
 
     // Bookmark actions
     val bookmarkPendingDelete: Bookmark? = null,

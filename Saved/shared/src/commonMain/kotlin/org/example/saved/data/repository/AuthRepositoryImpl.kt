@@ -2,6 +2,7 @@ package org.example.saved.data.repository
 
 import org.example.saved.data.network.AuthApiService
 import org.example.saved.data.network.HttpClientProvider
+import org.example.saved.domain.model.UserProfile
 import org.example.saved.domain.repository.AuthRepository
 import org.example.saved.domain.repository.TokenStorage
 
@@ -24,6 +25,9 @@ class AuthRepositoryImpl(
 
     override suspend fun register(email: String, password: String, username: String): Result<Unit> =
         api.register(email, password, username)
+
+    override suspend fun getProfile(): Result<UserProfile> =
+        api.getProfile().map { UserProfile(email = it.email, username = it.username) }
 
     override suspend fun changePassword(oldPassword: String, newPassword: String): Result<Unit> =
         api.changePassword(oldPassword, newPassword)

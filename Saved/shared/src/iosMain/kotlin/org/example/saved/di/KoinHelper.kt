@@ -1,5 +1,7 @@
 package org.example.saved.di
 
+import org.example.saved.presentation.account.AccountViewModel
+import org.example.saved.presentation.app.AppViewModel
 import org.example.saved.presentation.auth.LoginViewModel
 import org.example.saved.presentation.auth.RegisterCredentialsViewModel
 import org.example.saved.presentation.auth.RegisterUsernameViewModel
@@ -24,4 +26,7 @@ class KoinHelper : KoinComponent {
     fun getAllFoldersViewModel(): AllFoldersViewModel = get()
     fun getFolderLinksViewModel(folderId: String, folderName: String): FolderLinksViewModel =
         get { parametersOf(folderId, folderName) }
+
+    fun getAccountViewModel(): AccountViewModel = get()
+    fun getAppViewModel(): AppViewModel = get()
 }

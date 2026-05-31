@@ -10,6 +10,7 @@ import org.example.saved.domain.repository.AuthRepository
 import org.example.saved.domain.repository.BookmarkRepository
 import org.example.saved.domain.repository.TokenStorage
 import org.example.saved.domain.usecase.ChangePasswordUseCase
+import org.example.saved.domain.usecase.GetProfileUseCase
 import org.example.saved.domain.usecase.CreateFolderUseCase
 import org.example.saved.domain.usecase.DeleteBookmarkUseCase
 import org.example.saved.domain.usecase.DeleteFolderUseCase
@@ -23,6 +24,7 @@ import org.example.saved.domain.usecase.GetRecentBookmarksUseCase
 import org.example.saved.domain.usecase.AnalyzeUrlUseCase
 import org.example.saved.domain.usecase.SaveAnalyzedBookmarkUseCase
 import org.example.saved.domain.usecase.UpdateBookmarkUseCase
+import org.example.saved.presentation.account.AccountViewModel
 import org.example.saved.presentation.app.AppViewModel
 import org.example.saved.presentation.auth.LoginViewModel
 import org.example.saved.presentation.auth.RegisterCredentialsViewModel
@@ -55,6 +57,7 @@ val commonModule = module {
     factoryOf(::LoginUseCase)
     factoryOf(::RegisterUseCase)
     factoryOf(::ChangePasswordUseCase)
+    factoryOf(::GetProfileUseCase)
     factoryOf(::IsLoggedInUseCase)
     factoryOf(::GetFoldersUseCase)
     factoryOf(::GetBookmarksUseCase)
@@ -80,6 +83,7 @@ val commonModule = module {
     factory { (folderId: String, folderName: String) ->
         FolderLinksViewModel(folderId, folderName, get(), get(), get(), get())
     }
+    factoryOf(::AccountViewModel)
     factoryOf(::AppViewModel)
 }
 

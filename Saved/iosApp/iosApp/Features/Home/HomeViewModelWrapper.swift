@@ -10,6 +10,7 @@ final class HomeViewModelWrapper {
     private(set) var isFoldersLoading: Bool = true
     private(set) var isBookmarksLoading: Bool = true
     private(set) var isAnalyzing: Bool = false
+    private(set) var username: String? = nil
 
     private(set) var bookmarkPendingDelete: Bookmark?
     private(set) var bookmarkPendingMove: Bookmark?
@@ -50,6 +51,7 @@ final class HomeViewModelWrapper {
         if isFoldersLoading != s.isFoldersLoading { isFoldersLoading = s.isFoldersLoading }
         if isBookmarksLoading != s.isBookmarksLoading { isBookmarksLoading = s.isBookmarksLoading }
         if isAnalyzing != s.isAnalyzing { isAnalyzing = s.isAnalyzing }
+        if username != s.username { username = s.username }
         if bookmarkPendingDelete != s.bookmarkPendingDelete { bookmarkPendingDelete = s.bookmarkPendingDelete }
         if bookmarkPendingMove != s.bookmarkPendingMove { bookmarkPendingMove = s.bookmarkPendingMove }
         if folderPendingDelete != s.folderPendingDelete { folderPendingDelete = s.folderPendingDelete }

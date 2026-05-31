@@ -1,11 +1,13 @@
 package org.example.saved.data.network
 
+import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import org.example.saved.data.network.model.ChangePasswordRequestDto
 import org.example.saved.data.network.model.LoginRequestDto
 import org.example.saved.data.network.model.LoginTokenResponseDto
+import org.example.saved.data.network.model.ProfileResponseDto
 import org.example.saved.data.network.model.RegisterRequestDto
 
 /**
@@ -28,6 +30,9 @@ class AuthApiService(
                 setBody(RegisterRequestDto(email = email, password = password, username = username))
             }
         }
+
+    suspend fun getProfile(): Result<ProfileResponseDto> =
+        safeApiCall { client.get("profile") }
 
     suspend fun changePassword(oldPassword: String, newPassword: String): Result<Unit> =
         safeApiCallNoContent {

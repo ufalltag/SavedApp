@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 import Shared
 
 struct HomeView: View {
@@ -17,6 +18,8 @@ struct HomeView: View {
     @State private var folderSelectionContext: FolderSelectionContext?
     @State private var errorMessage: String?
     @State private var renameFolderText: String = ""
+    @State private var showAccount = false
+    @StateObject private var speechRecognizer = SpeechRecognizer()
 
     var body: some View {
         content
@@ -39,6 +42,10 @@ struct HomeView: View {
                 Button(String.alertCancel, role: .cancel) { errorMessage = nil }
             } message: {
                 Text(errorMessage ?? "")
+            }
+            .sheet(isPresented: $showAccount) {
+                AccountView()
+                    .presentationDragIndicator(.hidden)
             }
             .sheet(item: $folderSelectionContext) { context in
                 FolderSelectionSheet(
@@ -134,7 +141,7 @@ private extension HomeView {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    Text(String.navigationTitle)
+                    Text(vm.username ?? "")
                         .font(.headline)
                         .opacity(showInlineTitle ? 1 : 0)
                         .animation(.easeInOut(duration: .titleAnimationDuration), value: showInlineTitle)
@@ -220,6 +227,7 @@ private extension HomeView {
             }
             .padding(.bottom, .scrollBottomPadding)
         }
+        .scrollIndicators(.hidden)
         .coordinateSpace(name: String.scrollCoordinateSpace)
         .onPreferenceChange(ScrollOffsetKey.self) { offset in
             let shouldShow = offset > headerHeight * .titleShowThreshold
@@ -258,14 +266,18 @@ private extension HomeView {
     }
 
     var avatarView: some View {
-        Circle()
-            .fill(Color.accentColor.opacity(.avatarBackgroundOpacity))
-            .frame(width: .avatarSize, height: .avatarSize)
-            .overlay {
-                Text(String.avatarLetter)
-                    .font(.body.weight(.semibold))
-                    .foregroundStyle(Color.accentColor)
-            }
+        let letter = vm.username.flatMap { $0.first.map(String.init) } ?? "?"
+        return Button(action: { showAccount = true }) {
+            Circle()
+                .fill(Color.accentColor.opacity(.avatarBackgroundOpacity))
+                .frame(width: .avatarSize, height: .avatarSize)
+                .overlay {
+                    Text(letter)
+                        .font(.body.weight(.semibold))
+                        .foregroundStyle(Color.accentColor)
+                }
+        }
+        .buttonStyle(.plain)
     }
 
     @ViewBuilder
@@ -300,7 +312,13 @@ private extension HomeView {
 
     @ViewBuilder
     func bottomBarLeadingButtons(fillColor: Color) -> some View {
-        Button(action: {}) {
+        Button(action: {
+            guard let pasted = UIPasteboard.general.string?
+                .trimmingCharacters(in: .whitespaces),
+                !pasted.isEmpty else { return }
+            input += pasted
+            isFocused = true
+        }) {
             Image(systemName: String.librarySymbol)
                 .fontWeight(.medium)
                 .foregroundStyle(Color.primary)
@@ -314,17 +332,32 @@ private extension HomeView {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(fillColor, in: .circle)
         }
-        Button(action: {}) {
-            Image(systemName: String.microphoneSymbol)
-                .foregroundStyle(Color.primary)
+        microphoneButton(fillColor: fillColor)
+    }
+
+    func microphoneButton(fillColor: Color) -> some View {
+        Button(action: { speechRecognizer.toggle() }) {
+            Image(systemName: speechRecognizer.isRecording ? String.microphoneActiveSymbol : String.microphoneSymbol)
+                .foregroundStyle(speechRecognizer.isRecording ? Color.white : Color.primary)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(fillColor, in: .circle)
+                .background(speechRecognizer.isRecording ? Color.red : fillColor, in: .circle)
+        }
+        .onChange(of: speechRecognizer.transcript) { _, newValue in
+            input = newValue
+            isFocused = true
         }
     }
 
     func trailingActionButton(fillColor: Color) -> some View {
         Button(action: {
-            guard isFocused else { return }
+            guard isFocused else {
+                guard let pasted = UIPasteboard.general.string?
+                    .trimmingCharacters(in: .whitespaces),
+                    !pasted.isEmpty else { return }
+                input += pasted
+                isFocused = true
+                return
+            }
             let url = input.trimmingCharacters(in: .whitespaces)
             guard !url.isEmpty else { return }
             vm.analyzeUrl(url)
@@ -346,7 +379,7 @@ private extension HomeView {
                 .background(.blue.gradient, in: .circle)
                 .blur(radius: isFocused ? 0 : .buttonBlurRadius)
                 .opacity(isFocused ? 1 : 0)
-                Image(systemName: String.microphoneSymbol)
+                Image(systemName: String.librarySymbol)
                     .foregroundStyle(Color.primary)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(fillColor, in: .circle)
@@ -380,12 +413,13 @@ private extension HomeView {
     }
 
     var greetingText: String {
+        let name = vm.username ?? String.userNameFallback
         let hour = Calendar.current.component(.hour, from: Date())
         switch hour {
-        case 5..<12:  return "\(String.greetingMorning), \(String.userName)"
-        case 12..<17: return "\(String.greetingAfternoon), \(String.userName)"
-        case 17..<21: return "\(String.greetingEvening), \(String.userName)"
-        default:      return "\(String.greetingNight), \(String.userName)"
+        case 5..<12:  return "\(String.greetingMorning), \(name)"
+        case 12..<17: return "\(String.greetingAfternoon), \(name)"
+        case 17..<21: return "\(String.greetingEvening), \(name)"
+        default:      return "\(String.greetingNight), \(name)"
         }
     }
 
@@ -436,9 +470,7 @@ private extension Double {
 private extension String {
 
     static let scrollCoordinateSpace = "scrollView"
-    static let navigationTitle = "Tagir"
-    static let avatarLetter = "T"
-    static let userName = "Tagir"
+    static let userNameFallback = "there"
     static let greetingMorning = "Good morning"
     static let greetingAfternoon = "Good afternoon"
     static let greetingEvening = "Good evening"
@@ -462,6 +494,7 @@ private extension String {
     static let librarySymbol = "document.on.document"
     static let searchSymbol = "magnifyingglass"
     static let microphoneSymbol = "microphone.fill"
+    static let microphoneActiveSymbol = "waveform"
     static let sendSymbol = "paperplane.fill"
 }
 

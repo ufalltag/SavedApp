@@ -4,5 +4,9 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Микрофон используется для голосового ввода ссылок и поиска.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Распознавание речи используется для голосового ввода ссылок и поиска.</string>
 </dict>
 </plist>
