@@ -50,6 +50,7 @@ import org.koin.androidx.compose.koinViewModel
 fun BookmarksScreen(
     viewModel: HomeViewModel = koinViewModel(),
     onFolderClick: (String, String) -> Unit,
+    onSeeAllFoldersClick: () -> Unit
 ) {
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
     val snackbarHostState = LocalSnackbarHostState.current
@@ -118,7 +119,8 @@ fun BookmarksScreen(
             item(span = { GridItemSpan(maxLineSpan) }) {
                 SectionTitle(
                     title = stringResource(R.string.bookmarks_section_folders_title),
-                    actionText = stringResource(R.string.bookmarks_section_folders_action)
+                    actionText = stringResource(R.string.bookmarks_section_folders_action),
+                    onActionClick = onSeeAllFoldersClick
                 )
             }
 

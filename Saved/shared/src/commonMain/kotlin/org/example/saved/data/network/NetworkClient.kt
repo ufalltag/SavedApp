@@ -46,7 +46,7 @@ fun createHttpClient(tokenStorage: TokenStorage): HttpClient {
         }
 
         defaultRequest {
-            url("http://localhost:8080/")
+            url("http://192.168.31.134:8080/")
             contentType(ContentType.Application.Json)
         }
 
@@ -62,7 +62,7 @@ fun createHttpClient(tokenStorage: TokenStorage): HttpClient {
                     val oldRefreshToken = tokenStorage.getRefreshToken() ?: return@refreshTokens null
 
                     try {
-                        val response = client.post("http://localhost:8080/refresh") {
+                        val response = client.post("http://192.168.31.134:8080/refresh") {
                             setBody(RefreshRequestDto(refreshToken = oldRefreshToken))
                         }
 

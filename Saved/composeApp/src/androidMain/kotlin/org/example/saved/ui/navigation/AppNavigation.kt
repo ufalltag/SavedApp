@@ -31,6 +31,7 @@ fun AppNavigation(navController: NavHostController = rememberNavController()) {
             authGraph(navController)
             bookmarksScreen(navController)
             folderDetailScreen(navController)
+            allFoldersScreen(navController)
         }
     }
 }
