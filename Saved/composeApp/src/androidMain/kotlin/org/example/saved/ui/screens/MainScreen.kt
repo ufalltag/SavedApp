@@ -36,8 +36,8 @@ import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.collectLatest
 import org.example.saved.R
-import org.example.saved.presentation.bookmarks.BookmarksSideEffect
-import org.example.saved.presentation.main.BookmarksViewModel
+import org.example.saved.presentation.home.HomeSideEffect
+import org.example.saved.presentation.home.HomeViewModel
 import org.example.saved.ui.components.bookmarks.BookmarkItem
 import org.example.saved.ui.components.bookmarks.FloatingInputBar
 import org.example.saved.ui.components.bookmarks.FolderItem
@@ -48,7 +48,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun BookmarksScreen(
-    viewModel: BookmarksViewModel = koinViewModel(),
+    viewModel: HomeViewModel = koinViewModel(),
     onFolderClick: (String, String) -> Unit,
 ) {
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
@@ -58,20 +58,28 @@ fun BookmarksScreen(
     var showCreateFolderDialog by remember { mutableStateOf(false) }
     var newFolderName by remember { mutableStateOf("") }
 
+    // Состояние для диалога предложения папки от ИИ
+    var aiFolderSuggestion by remember { mutableStateOf<HomeSideEffect.RequireFolderSelection?>(null) }
+
     // Слушаем ошибки и другие эффекты прямо здесь
     LaunchedEffect(Unit) {
         viewModel.container.sideEffectFlow.collectLatest { effect ->
             when (effect) {
-                is BookmarksSideEffect.ShowToast -> {
+                is HomeSideEffect.ShowError -> {
                     snackbarHostState.showSnackbar(effect.message)
                 }
-                is BookmarksSideEffect.OpenUrl -> {
+
+                is HomeSideEffect.OpenUrl -> {
                     try {
                         val intent = Intent(Intent.ACTION_VIEW, effect.url.toUri())
                         context.startActivity(intent)
                     } catch (e: Exception) {
                         snackbarHostState.showSnackbar("Не удалось открыть ссылку")
                     }
+                }
+
+                is HomeSideEffect.RequireFolderSelection -> {
+                    aiFolderSuggestion = effect
                 }
             }
         }
@@ -84,7 +92,7 @@ fun BookmarksScreen(
             FloatingInputBar(
                 isAnalyzing = state.isAnalyzing,
                 onSendClick = { url ->
-                    viewModel.analyzeAndSaveUrl(url)
+                    viewModel.analyzeUrl(url)
                 },
             )
         },
@@ -102,7 +110,7 @@ fun BookmarksScreen(
         ) {
             item(span = { GridItemSpan(maxLineSpan) }) {
                 ScreenHeader(
-                    name = stringResource(R.string.bookmarks_header_name),
+                    name = state.username ?: stringResource(R.string.bookmarks_header_name),
                     date = stringResource(R.string.bookmarks_header_date)
                 )
             }
@@ -138,9 +146,10 @@ fun BookmarksScreen(
                 ) { folder ->
                     FolderItem(
                         title = folder.name,
-                        linksCount = 0,
-                        isSelected = state.selectedFolderId == folder.id,
-                        onClick = { viewModel.selectFolder(folder.id) }
+                        linksCount = folder.bookmarksCount,
+                        onClick = { onFolderClick(folder.id, folder.name) },
+                        onRenameClick = { viewModel.requestRenameFolder(folder) },
+                        onDeleteClick = { viewModel.requestDeleteFolder(folder) }
                     )
                 }
             }
@@ -150,7 +159,7 @@ fun BookmarksScreen(
                 SectionTitle(title = stringResource(R.string.bookmarks_section_links_title), actionText = null)
             }
 
-            if (state.isBookmarksLoading) {
+            if (state.isBookmarksLoading && state.recentBookmarks.isEmpty()) {
                 item(span = { GridItemSpan(maxLineSpan) }) {
                     Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                         CircularProgressIndicator()
@@ -158,16 +167,16 @@ fun BookmarksScreen(
                 }
             } else {
                 items(
-                    items = state.bookmarks,
+                    items = state.recentBookmarks,
                     span = { GridItemSpan(maxLineSpan) },
                     key = { bookmark -> "bookmark_${bookmark.id}" }
                 ) { bookmark ->
                     BookmarkItem(
                         title = bookmark.title,
                         url = bookmark.url,
-                        date = stringResource(R.string.bookmark_date_placeholder),
+                        date = "Недавно",
                         onClick = { viewModel.openBookmark(bookmark.url) },
-                        onDelete = { viewModel.deleteBookmark(bookmark.id) },
+                        onDelete = { viewModel.requestDeleteBookmark(bookmark) },
                     )
                 }
             }
@@ -204,6 +213,94 @@ fun BookmarksScreen(
                         Text(stringResource(R.string.dialog_create_folder_dismiss))
                     }
                 },
+            )
+        }
+
+        // Диалог подтверждения удаления закладки
+        state.bookmarkPendingDelete?.let { bookmark ->
+            AlertDialog(
+                onDismissRequest = { viewModel.dismissDeleteBookmark() },
+                title = { Text("Удалить закладку?") },
+                text = { Text("Вы уверены, что хотите удалить \"${bookmark.title}\"?") },
+                confirmButton = {
+                    TextButton(onClick = { viewModel.confirmDeleteBookmark() }) {
+                        Text("Удалить", color = MaterialTheme.colorScheme.error)
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { viewModel.dismissDeleteBookmark() }) {
+                        Text("Отмена")
+                    }
+                }
+            )
+        }
+
+        // Диалог предложения новой папки от ИИ
+        aiFolderSuggestion?.let { suggestion ->
+            AlertDialog(
+                onDismissRequest = { aiFolderSuggestion = null },
+                title = { Text("Создать новую папку?") },
+                text = { Text("Нейросеть предлагает создать папку \"${suggestion.suggestedFolderName}\" для этой ссылки. Согласны?") },
+                confirmButton = {
+                    Button(onClick = {
+                        viewModel.saveToNewFolder(suggestion.url, suggestion.suggestedFolderName ?: "Разное")
+                        aiFolderSuggestion = null
+                    }) { Text("Создать и сохранить") }
+                },
+                dismissButton = {
+                    TextButton(onClick = { aiFolderSuggestion = null }) { Text("Отмена") }
+                }
+            )
+        }
+
+        // Диалог удаления папки
+        state.folderPendingDelete?.let { folder ->
+            AlertDialog(
+                onDismissRequest = { viewModel.dismissDeleteFolder() },
+                title = { Text("Удалить папку?") },
+                text = { Text("Папка \"${folder.name}\" и все её ссылки будут безвозвратно удалены. Это действие нельзя отменить.") },
+                confirmButton = {
+                    TextButton(onClick = { viewModel.confirmDeleteFolder() }) {
+                        Text("Удалить", color = MaterialTheme.colorScheme.error)
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { viewModel.dismissDeleteFolder() }) {
+                        Text("Отмена")
+                    }
+                }
+            )
+        }
+
+        // Диалог переименования папки
+        state.folderPendingRename?.let { folder ->
+            var renameText by remember { mutableStateOf(folder.name) }
+
+            AlertDialog(
+                onDismissRequest = { viewModel.dismissRenameFolder() },
+                title = { Text("Переименовать папку") },
+                text = {
+                    OutlinedTextField(
+                        value = renameText,
+                        onValueChange = { renameText = it },
+                        label = { Text("Новое название") },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                },
+                confirmButton = {
+                    Button(
+                        onClick = { viewModel.confirmRenameFolder(renameText) },
+                        enabled = renameText.isNotBlank() && renameText != folder.name
+                    ) {
+                        Text("Сохранить")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { viewModel.dismissRenameFolder() }) {
+                        Text("Отмена")
+                    }
+                }
             )
         }
     }

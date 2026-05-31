@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.example.saved.presentation.bookmarks.BookmarksSideEffect
 import org.example.saved.presentation.bookmarks.BookmarksState
-import org.example.saved.presentation.main.BookmarksViewModel
+import org.example.saved.presentation.bookmarks.BookmarksViewModel
 
 class BookmarksViewModelCollector(private val viewModel: BookmarksViewModel) {
 

@@ -29,7 +29,8 @@ import org.example.saved.presentation.app.AppViewModel
 import org.example.saved.presentation.auth.LoginViewModel
 import org.example.saved.presentation.auth.RegisterCredentialsViewModel
 import org.example.saved.presentation.auth.RegisterUsernameViewModel
-import org.example.saved.presentation.main.BookmarksViewModel
+import org.example.saved.presentation.bookmarks.BookmarksViewModel
+import org.example.saved.presentation.folder.FolderDetailViewModel
 import org.example.saved.presentation.folderlinks.FolderLinksViewModel
 import org.example.saved.presentation.folders.AllFoldersViewModel
 import org.example.saved.presentation.home.HomeViewModel
@@ -73,13 +74,17 @@ val commonModule = module {
     // ViewModels
     factoryOf(::LoginViewModel)
     factoryOf(::RegisterCredentialsViewModel)
-    // email/password приходят с 1-го шага регистрации как параметры фабрики
     factory { (email: String, password: String) ->
         RegisterUsernameViewModel(get(), email, password)
     }
     factoryOf(::BookmarksViewModel)
     factoryOf(::HomeViewModel)
     factoryOf(::AllFoldersViewModel)
+
+    factory { (folderId: String, folderName: String) ->
+        FolderDetailViewModel(get())
+    }
+
     factory { (folderId: String, folderName: String) ->
         FolderLinksViewModel(folderId, folderName, get(), get(), get(), get())
     }

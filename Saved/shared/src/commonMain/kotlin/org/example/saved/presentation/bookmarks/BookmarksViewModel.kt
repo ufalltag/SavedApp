@@ -1,4 +1,4 @@
-package org.example.saved.presentation.main
+package org.example.saved.presentation.bookmarks
 
 import androidx.lifecycle.ViewModel
 import org.example.saved.domain.usecase.CreateFolderUseCase
@@ -9,8 +9,6 @@ import org.example.saved.domain.usecase.GetFoldersUseCase
 import org.example.saved.domain.usecase.RenameFolderUseCase
 import org.example.saved.domain.usecase.SaveAnalyzedBookmarkUseCase
 import org.example.saved.domain.usecase.UpdateBookmarkUseCase
-import org.example.saved.presentation.bookmarks.BookmarksSideEffect
-import org.example.saved.presentation.bookmarks.BookmarksState
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container

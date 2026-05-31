@@ -7,7 +7,7 @@ package org.example.saved.presentation.auth
 data class LoginState(
     val email: String = "",
     val password: String = "",
-    val isLoading: Boolean = false      // Показываем крутилку (ProgressView)
+    val isLoading: Boolean = false
 )
 
 /**

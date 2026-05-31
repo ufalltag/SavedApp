@@ -1,5 +1,6 @@
 package org.example.saved.data.repository
 
+import org.example.saved.data.network.ApiException
 import org.example.saved.data.network.BookmarkApiService
 import org.example.saved.data.network.model.toDomain
 import org.example.saved.domain.model.AnalyzeResult
@@ -7,11 +8,6 @@ import org.example.saved.domain.model.Bookmark
 import org.example.saved.domain.model.Folder
 import org.example.saved.domain.repository.BookmarkRepository
 
-/**
- * Маппинг DTO -> domain. HTTP-вызовы делегированы [BookmarkApiService],
- * поэтому здесь нет ни try/catch, ни проверок статусов — только перевод
- * сетевых моделей в доменные.
- */
 class BookmarkRepositoryImpl(
     private val api: BookmarkApiService
 ) : BookmarkRepository {
