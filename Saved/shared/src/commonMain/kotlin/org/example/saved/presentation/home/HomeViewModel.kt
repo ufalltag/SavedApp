@@ -103,7 +103,8 @@ class HomeViewModel(
                     reduce { state.copy(isAnalyzing = false) }
                     postSideEffect(HomeSideEffect.RequireFolderSelection(
                         url = result.url,
-                        suggestedFolderName = result.suggestedFolder
+                        suggestedFolderName = result.suggestedFolder,
+                        bookmarkTitle = result.title
                     ))
                 }
                 else -> {
@@ -122,10 +123,10 @@ class HomeViewModel(
         }
     }
 
-    fun saveToNewFolder(url: String, folderName: String) = intent {
+    fun saveToNewFolder(url: String, folderName: String, bookmarkTitle: String) = intent {
         reduce { state.copy(isAnalyzing = true) }
         createFolderUseCase(folderName).onSuccess { folder ->
-            saveAnalyzedBookmarkUseCase(url, targetFolderId = folder.id).onSuccess {
+            saveAnalyzedBookmarkUseCase(url, targetFolderId = folder.id, bookmarkTitle = bookmarkTitle).onSuccess {
                 reduce { state.copy(isAnalyzing = false) }
                 loadHomeData()
             }.onFailure { error ->

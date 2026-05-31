@@ -176,7 +176,7 @@ fun BookmarksScreen(
                     BookmarkItem(
                         title = bookmark.title,
                         url = bookmark.url,
-                        date = "Недавно",
+                        date = "Recently",
                         onClick = { viewModel.openBookmark(bookmark.url) },
                         onDelete = { viewModel.requestDeleteBookmark(bookmark) },
                     )
@@ -245,7 +245,7 @@ fun BookmarksScreen(
                 text = { Text("Нейросеть предлагает создать папку \"${suggestion.suggestedFolderName}\" для этой ссылки. Согласны?") },
                 confirmButton = {
                     Button(onClick = {
-                        viewModel.saveToNewFolder(suggestion.url, suggestion.suggestedFolderName ?: "Разное")
+                        viewModel.saveToNewFolder(suggestion.url, suggestion.suggestedFolderName ?: "Разное", suggestion.bookmarkTitle)
                         aiFolderSuggestion = null
                     }) { Text("Создать и сохранить") }
                 },

@@ -10,10 +10,20 @@ class SaveAnalyzedBookmarkUseCase(
      * @param url: Ссылка, которую ввел пользователь
      * @param targetFolderId: Опционально. Если пользователь выбрал папку вручную (минуя нейросеть)
      */
-    suspend operator fun invoke(url: String, targetFolderId: String? = null): Result<Bookmark> {
+    suspend operator fun invoke(
+        url: String,
+        targetFolderId: String? = null,
+        bookmarkTitle: String? = null
+    ): Result<Bookmark> {
+
         if (targetFolderId != null) {
-            return bookmarkRepository.saveBookmark(url = url, folderId = targetFolderId, title = "New Bookmark")
+            return bookmarkRepository.saveBookmark(
+                url = url,
+                folderId = targetFolderId,
+                title = bookmarkTitle ?: "New Bookmark"
+            )
         }
+
         val analysisResult = bookmarkRepository.analyzeUrl(url).getOrElse { error ->
             return Result.failure(Exception("Нейросеть не смогла проанализировать ссылку: ${error.message}"))
         }

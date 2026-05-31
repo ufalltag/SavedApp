@@ -26,6 +26,7 @@ sealed interface HomeSideEffect {
     data class ShowError(val message: String) : HomeSideEffect
     data class RequireFolderSelection(
         val url: String,
-        val suggestedFolderName: String?
+        val suggestedFolderName: String?,
+        val bookmarkTitle: String
     ) : HomeSideEffect
 }
