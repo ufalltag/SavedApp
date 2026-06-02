@@ -33,6 +33,7 @@ fun AppNavigation(
         ) {
             authGraph(navController)
             bookmarksScreen(navController)
+            allFoldersScreen(navController)
             folderDetailScreen(navController)
             accountScreen(navController, appViewModel)
         }

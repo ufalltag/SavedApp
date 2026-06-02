@@ -105,7 +105,7 @@ fun FolderItem(
                 Image(
                     painter = painterResource(Res.drawable.folder),
                     contentDescription = null,
-                    modifier = Modifier.size(70.dp),
+                    modifier = Modifier.size(80.dp),
                 )
             }
         }
