@@ -35,8 +35,11 @@ jobs:
       - name: Run KtLint (Линтер)
         run: ./gradlew ktlintCheck --no-daemon
 
-      - name: Build Android App (Сборка Android)
+      - name: Build Android App
         run: ./gradlew assembleDebug --no-daemon
 
-      - name: Build iOS Framework (Сборка iOS)
+      - name: List Gradle Tasks
+        run: ./gradlew tasks --all | grep -i "ios"
+        
+      - name: Build iOS Framework
         run: ./gradlew assembleIosSimulatorArm64 --no-daemon
