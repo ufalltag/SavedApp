@@ -83,7 +83,7 @@ final class HomeViewModelWrapper {
     func createFolder(_ name: String)                        { viewModel?.createFolder(name: name) }
     func openBookmark(_ url: String)                         { viewModel?.openBookmark(url: url) }
     func analyzeUrl(_ url: String)                           { viewModel?.analyzeUrl(url: url) }
-    func saveToNewFolder(url: String, folderName: String)    { viewModel?.saveToNewFolder(url: url, folderName: folderName) }
+    func saveToNewFolder(url: String, folderName: String, bookmarkTitle: String)    { viewModel?.saveToNewFolder(url: url, folderName: folderName, bookmarkTitle: bookmarkTitle) }
     func saveToExistingFolder(url: String, folderId: String) { viewModel?.saveToExistingFolder(url: url, folderId: folderId) }
 
     // Bookmark: delete

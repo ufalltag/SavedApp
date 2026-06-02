@@ -25,6 +25,7 @@ import org.example.saved.domain.usecase.LoginUseCase
 import org.example.saved.domain.usecase.RegisterUseCase
 import org.example.saved.domain.usecase.RenameFolderUseCase
 import org.example.saved.domain.usecase.SaveAnalyzedBookmarkUseCase
+import org.example.saved.domain.usecase.SearchBookmarksUseCase
 import org.example.saved.domain.usecase.UpdateBookmarkUseCase
 import org.example.saved.presentation.account.AccountViewModel
 import org.example.saved.presentation.app.AppViewModel
@@ -74,6 +75,7 @@ val commonModule =
         factoryOf(::GetRecentBookmarksUseCase)
         factoryOf(::AnalyzeUrlUseCase)
         factoryOf(::SaveAnalyzedBookmarkUseCase)
+        factoryOf(::SearchBookmarksUseCase)
 
         // ViewModels
         factoryOf(::LoginViewModel)

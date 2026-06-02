@@ -9,10 +9,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -60,6 +62,9 @@ fun BookmarksScreen(
     var showCreateFolderDialog by remember { mutableStateOf(false) }
     var newFolderName by remember { mutableStateOf("") }
 
+    // ПАТЧ: Локальный стейт для инпута
+    var inputText by remember { mutableStateOf("") }
+
     // Состояние для диалога предложения папки от ИИ
     var aiFolderSuggestion by remember { mutableStateOf<HomeSideEffect.RequireFolderSelection?>(null) }
 
@@ -92,232 +97,314 @@ fun BookmarksScreen(
         containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
             FloatingInputBar(
-                isAnalyzing = state.isAnalyzing,
-                onSendClick = { url ->
-                    viewModel.analyzeUrl(url)
+                text = inputText,
+                onTextChange = { newText ->
+                    inputText = newText
+                    if (state.isSearchMode) {
+                        viewModel.onSearchQueryChanged(newText)
+                    }
                 },
+                isAnalyzing = state.isAnalyzing,
+                isSearchMode = state.isSearchMode,
+                onSendClick = {
+                    viewModel.analyzeUrl(it)
+                    inputText = ""
+                },
+                onSearchToggle = {
+                    val newSearchMode = !state.isSearchMode
+                    viewModel.toggleSearchMode(newSearchMode)
+                    if (!newSearchMode) inputText = ""
+                }
             )
-        },
+        }
     ) { paddingValues ->
 
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(3),
-            modifier =
-                Modifier
+        if (state.isSearchMode) {
+            // ==========================================
+            // РЕЖИМ ПОИСКА
+            // ==========================================
+            when {
+                state.isSearching -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
+
+                inputText.isBlank() -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "Введите название закладки",
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                        )
+                    }
+                }
+
+                state.searchResults.isEmpty() -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "Ничего не найдено",
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                        )
+                    }
+                }
+
+                else -> {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues),
+                        contentPadding = PaddingValues(vertical = 16.dp)
+                    ) {
+                        items(
+                            items = state.searchResults,
+                            key = { "search_${it.id}" }
+                        ) { bookmark ->
+                            BookmarkItem(
+                                title = bookmark.title,
+                                url = bookmark.url,
+                                date = "Результат поиска",
+                                onClick = { viewModel.openBookmark(bookmark.url) },
+                                onDelete = { viewModel.requestDeleteBookmark(bookmark) },
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+                            )
+                        }
+                    }
+                }
+            }
+        } else {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(3),
+                modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues),
-            contentPadding = PaddingValues(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            item(span = { GridItemSpan(maxLineSpan) }) {
-                ScreenHeader(
-                    name = state.username ?: stringResource(R.string.bookmarks_header_name),
-                    date = stringResource(R.string.bookmarks_header_date),
-                    onAvatarClick = onProfileClick,
-                )
+                contentPadding = PaddingValues(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    ScreenHeader(
+                        name = state.username ?: stringResource(R.string.bookmarks_header_name),
+                        date = stringResource(R.string.bookmarks_header_date),
+                        onAvatarClick = onProfileClick,
+                    )
+                }
+
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    SectionTitle(
+                        title = stringResource(R.string.bookmarks_section_folders_title),
+                        actionText = stringResource(R.string.bookmarks_section_folders_action),
+                        onActionClick = onSeeAllFoldersClick,
+                    )
+                }
+
+                item {
+                    FolderItem(
+                        title = stringResource(R.string.bookmarks_add_folder_title),
+                        linksCount = null,
+                        onClick = {
+                            newFolderName = ""
+                            showCreateFolderDialog = true
+                        },
+                    )
+                }
+
+                if (state.isFoldersLoading) {
+                    item(span = { GridItemSpan(maxLineSpan) }) {
+                        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                            CircularProgressIndicator()
+                        }
+                    }
+                } else {
+                    items(
+                        items = state.folders,
+                        key = { folder -> "folder_${folder.id}" },
+                    ) { folder ->
+                        FolderItem(
+                            title = folder.name,
+                            linksCount = folder.bookmarksCount,
+                            onClick = { onFolderClick(folder.id, folder.name) },
+                            onRenameClick = { viewModel.requestRenameFolder(folder) },
+                            onDeleteClick = { viewModel.requestDeleteFolder(folder) },
+                        )
+                    }
+                }
+
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    SectionTitle(title = stringResource(R.string.bookmarks_section_links_title), actionText = null)
+                }
+
+                if (state.isBookmarksLoading && state.recentBookmarks.isEmpty()) {
+                    item(span = { GridItemSpan(maxLineSpan) }) {
+                        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                            CircularProgressIndicator()
+                        }
+                    }
+                } else {
+                    items(
+                        items = state.recentBookmarks,
+                        span = { GridItemSpan(maxLineSpan) },
+                        key = { bookmark -> "bookmark_${bookmark.id}" },
+                    ) { bookmark ->
+                        BookmarkItem(
+                            title = bookmark.title,
+                            url = bookmark.url,
+                            date = "Recently",
+                            onClick = { viewModel.openBookmark(bookmark.url) },
+                            onDelete = { viewModel.requestDeleteBookmark(bookmark) },
+                        )
+                    }
+                }
             }
 
-            item(span = { GridItemSpan(maxLineSpan) }) {
-                SectionTitle(
-                    title = stringResource(R.string.bookmarks_section_folders_title),
-                    actionText = stringResource(R.string.bookmarks_section_folders_action),
-                    onActionClick = onSeeAllFoldersClick,
-                )
-            }
-
-            item {
-                FolderItem(
-                    title = stringResource(R.string.bookmarks_add_folder_title),
-                    linksCount = null,
-                    onClick = {
-                        newFolderName = ""
-                        showCreateFolderDialog = true
+            if (showCreateFolderDialog) {
+                AlertDialog(
+                    onDismissRequest = { showCreateFolderDialog = false },
+                    title = { Text(text = stringResource(R.string.dialog_create_folder_title)) },
+                    text = {
+                        OutlinedTextField(
+                            value = newFolderName,
+                            onValueChange = { newFolderName = it },
+                            label = { Text(stringResource(R.string.dialog_create_folder_label)) },
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    },
+                    confirmButton = {
+                        Button(
+                            onClick = {
+                                if (newFolderName.isNotBlank()) {
+                                    viewModel.createFolder(newFolderName)
+                                    showCreateFolderDialog = false
+                                }
+                            },
+                            enabled = newFolderName.isNotBlank(),
+                        ) {
+                            Text(stringResource(R.string.dialog_create_folder_confirm))
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { showCreateFolderDialog = false }) {
+                            Text(stringResource(R.string.dialog_create_folder_dismiss))
+                        }
                     },
                 )
             }
 
-            if (state.isFoldersLoading) {
-                item(span = { GridItemSpan(maxLineSpan) }) {
-                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator()
-                    }
-                }
-            } else {
-                items(
-                    items = state.folders,
-                    key = { folder -> "folder_${folder.id}" },
-                ) { folder ->
-                    FolderItem(
-                        title = folder.name,
-                        linksCount = folder.bookmarksCount,
-                        onClick = { onFolderClick(folder.id, folder.name) },
-                        onRenameClick = { viewModel.requestRenameFolder(folder) },
-                        onDeleteClick = { viewModel.requestDeleteFolder(folder) },
-                    )
-                }
+            // Диалог подтверждения удаления закладки
+            state.bookmarkPendingDelete?.let { bookmark ->
+                AlertDialog(
+                    onDismissRequest = { viewModel.dismissDeleteBookmark() },
+                    title = { Text("Удалить закладку?") },
+                    text = { Text("Вы уверены, что хотите удалить \"${bookmark.title}\"?") },
+                    confirmButton = {
+                        TextButton(onClick = { viewModel.confirmDeleteBookmark() }) {
+                            Text("Удалить", color = MaterialTheme.colorScheme.error)
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { viewModel.dismissDeleteBookmark() }) {
+                            Text("Отмена")
+                        }
+                    },
+                )
             }
 
-            item(span = { GridItemSpan(maxLineSpan) }) {
-                Spacer(modifier = Modifier.height(16.dp))
-                SectionTitle(title = stringResource(R.string.bookmarks_section_links_title), actionText = null)
-            }
-
-            if (state.isBookmarksLoading && state.recentBookmarks.isEmpty()) {
-                item(span = { GridItemSpan(maxLineSpan) }) {
-                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator()
-                    }
-                }
-            } else {
-                items(
-                    items = state.recentBookmarks,
-                    span = { GridItemSpan(maxLineSpan) },
-                    key = { bookmark -> "bookmark_${bookmark.id}" },
-                ) { bookmark ->
-                    BookmarkItem(
-                        title = bookmark.title,
-                        url = bookmark.url,
-                        date = "Recently",
-                        onClick = { viewModel.openBookmark(bookmark.url) },
-                        onDelete = { viewModel.requestDeleteBookmark(bookmark) },
-                    )
-                }
-            }
-        }
-
-        if (showCreateFolderDialog) {
-            AlertDialog(
-                onDismissRequest = { showCreateFolderDialog = false },
-                title = { Text(text = stringResource(R.string.dialog_create_folder_title)) },
-                text = {
-                    OutlinedTextField(
-                        value = newFolderName,
-                        onValueChange = { newFolderName = it },
-                        label = { Text(stringResource(R.string.dialog_create_folder_label)) },
-                        singleLine = true,
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            if (newFolderName.isNotBlank()) {
-                                viewModel.createFolder(newFolderName)
-                                showCreateFolderDialog = false
-                            }
-                        },
-                        enabled = newFolderName.isNotBlank(),
-                    ) {
-                        Text(stringResource(R.string.dialog_create_folder_confirm))
-                    }
-                },
-                dismissButton = {
-                    TextButton(onClick = { showCreateFolderDialog = false }) {
-                        Text(stringResource(R.string.dialog_create_folder_dismiss))
-                    }
-                },
-            )
-        }
-
-        // Диалог подтверждения удаления закладки
-        state.bookmarkPendingDelete?.let { bookmark ->
-            AlertDialog(
-                onDismissRequest = { viewModel.dismissDeleteBookmark() },
-                title = { Text("Удалить закладку?") },
-                text = { Text("Вы уверены, что хотите удалить \"${bookmark.title}\"?") },
-                confirmButton = {
-                    TextButton(onClick = { viewModel.confirmDeleteBookmark() }) {
-                        Text("Удалить", color = MaterialTheme.colorScheme.error)
-                    }
-                },
-                dismissButton = {
-                    TextButton(onClick = { viewModel.dismissDeleteBookmark() }) {
-                        Text("Отмена")
-                    }
-                },
-            )
-        }
-
-        // Диалог предложения новой папки от ИИ
-        aiFolderSuggestion?.let { suggestion ->
-            AlertDialog(
-                onDismissRequest = { aiFolderSuggestion = null },
-                title = { Text("Создать новую папку?") },
-                text = {
-                    Text(
-                        "Нейросеть предлагает создать папку \"${suggestion.suggestedFolderName}\" для этой ссылки. Согласны?",
-                    )
-                },
-                confirmButton = {
-                    Button(onClick = {
-                        viewModel.saveToNewFolder(
-                            suggestion.url,
-                            suggestion.suggestedFolderName ?: "Разное",
-                            suggestion.bookmarkTitle,
+            // Диалог предложения новой папки от ИИ
+            aiFolderSuggestion?.let { suggestion ->
+                AlertDialog(
+                    onDismissRequest = { aiFolderSuggestion = null },
+                    title = { Text("Создать новую папку?") },
+                    text = {
+                        Text(
+                            "Нейросеть предлагает создать папку \"${suggestion.suggestedFolderName}\" для этой ссылки. Согласны?",
                         )
-                        aiFolderSuggestion = null
-                    }) { Text("Создать и сохранить") }
-                },
-                dismissButton = {
-                    TextButton(onClick = { aiFolderSuggestion = null }) { Text("Отмена") }
-                },
-            )
-        }
+                    },
+                    confirmButton = {
+                        Button(onClick = {
+                            viewModel.saveToNewFolder(
+                                suggestion.url,
+                                suggestion.suggestedFolderName ?: "Разное",
+                                suggestion.bookmarkTitle,
+                            )
+                            aiFolderSuggestion = null
+                        }) { Text("Создать и сохранить") }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { aiFolderSuggestion = null }) { Text("Отмена") }
+                    },
+                )
+            }
 
-        // Диалог удаления папки
-        state.folderPendingDelete?.let { folder ->
-            AlertDialog(
-                onDismissRequest = { viewModel.dismissDeleteFolder() },
-                title = { Text("Удалить папку?") },
-                text = {
-                    Text(
-                        "Папка \"${folder.name}\" и все её ссылки будут безвозвратно удалены. Это действие нельзя отменить.",
-                    )
-                },
-                confirmButton = {
-                    TextButton(onClick = { viewModel.confirmDeleteFolder() }) {
-                        Text("Удалить", color = MaterialTheme.colorScheme.error)
-                    }
-                },
-                dismissButton = {
-                    TextButton(onClick = { viewModel.dismissDeleteFolder() }) {
-                        Text("Отмена")
-                    }
-                },
-            )
-        }
+            // Диалог удаления папки
+            state.folderPendingDelete?.let { folder ->
+                AlertDialog(
+                    onDismissRequest = { viewModel.dismissDeleteFolder() },
+                    title = { Text("Удалить папку?") },
+                    text = {
+                        Text(
+                            "Папка \"${folder.name}\" и все её ссылки будут безвозвратно удалены. Это действие нельзя отменить.",
+                        )
+                    },
+                    confirmButton = {
+                        TextButton(onClick = { viewModel.confirmDeleteFolder() }) {
+                            Text("Удалить", color = MaterialTheme.colorScheme.error)
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { viewModel.dismissDeleteFolder() }) {
+                            Text("Отмена")
+                        }
+                    },
+                )
+            }
 
-        // Диалог переименования папки
-        state.folderPendingRename?.let { folder ->
-            var renameText by remember { mutableStateOf(folder.name) }
+            // Диалог переименования папки
+            state.folderPendingRename?.let { folder ->
+                var renameText by remember { mutableStateOf(folder.name) }
 
-            AlertDialog(
-                onDismissRequest = { viewModel.dismissRenameFolder() },
-                title = { Text("Переименовать папку") },
-                text = {
-                    OutlinedTextField(
-                        value = renameText,
-                        onValueChange = { renameText = it },
-                        label = { Text("Новое название") },
-                        singleLine = true,
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                },
-                confirmButton = {
-                    Button(
-                        onClick = { viewModel.confirmRenameFolder(renameText) },
-                        enabled = renameText.isNotBlank() && renameText != folder.name,
-                    ) {
-                        Text("Сохранить")
-                    }
-                },
-                dismissButton = {
-                    TextButton(onClick = { viewModel.dismissRenameFolder() }) {
-                        Text("Отмена")
-                    }
-                },
-            )
+                AlertDialog(
+                    onDismissRequest = { viewModel.dismissRenameFolder() },
+                    title = { Text("Переименовать папку") },
+                    text = {
+                        OutlinedTextField(
+                            value = renameText,
+                            onValueChange = { renameText = it },
+                            label = { Text("Новое название") },
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    },
+                    confirmButton = {
+                        Button(
+                            onClick = { viewModel.confirmRenameFolder(renameText) },
+                            enabled = renameText.isNotBlank() && renameText != folder.name,
+                        ) {
+                            Text("Сохранить")
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { viewModel.dismissRenameFolder() }) {
+                            Text("Отмена")
+                        }
+                    },
+                )
+            }
         }
     }
 }

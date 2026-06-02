@@ -11,6 +11,10 @@ data class BookmarksState(
     val isBookmarksLoading: Boolean = false,
     val isAnalyzing: Boolean = false,
     val errorMessage: String? = null,
+    val inputText: String = "",
+    val isSearchMode: Boolean = false,
+    val searchResults: List<Bookmark> = emptyList(),
+    val isSearching: Boolean = false
 )
 
 sealed interface BookmarksSideEffect {

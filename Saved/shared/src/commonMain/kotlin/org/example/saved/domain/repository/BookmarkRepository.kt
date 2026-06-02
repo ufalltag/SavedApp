@@ -42,4 +42,10 @@ interface BookmarkRepository {
     ): Result<Unit>
 
     suspend fun deleteBookmark(bookmarkId: String): Result<Unit>
+
+    suspend fun searchBookmarks(
+        query: String,
+        page: Int = 1,
+        limit: Int = 20
+    ): Result<List<Bookmark>>
 }

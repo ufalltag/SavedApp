@@ -40,10 +40,12 @@ class HomeViewModelCollector(
 
     fun createFolder(name: String) = viewModel.createFolder(name)
 
+    // Добавил переменную bookmarkTitle (Заголовок для ссылки, так как изначально ссылка создавалась с заголовком New bookmark)
     fun saveToNewFolder(
         url: String,
         folderName: String,
-    ) = viewModel.saveToNewFolder(url, folderName)
+        bookmarkTitle: String,
+    ) = viewModel.saveToNewFolder(url, folderName, bookmarkTitle)
 
     fun saveToExistingFolder(
         url: String,
@@ -79,4 +81,12 @@ class HomeViewModelCollector(
     fun confirmRenameFolder(newName: String) = viewModel.confirmRenameFolder(newName)
 
     fun dispose() = scope.cancel()
+
+    fun toggleSearchMode(isActive: Boolean) {
+        viewModel.toggleSearchMode(isActive)
+    }
+
+    fun onSearchQueryChanged(query: String) {
+        viewModel.onSearchQueryChanged(query)
+    }
 }

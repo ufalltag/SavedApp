@@ -1,6 +1,10 @@
 package org.example.saved.presentation.home
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.example.saved.domain.model.Bookmark
 import org.example.saved.domain.model.Folder
 import org.example.saved.domain.usecase.AnalyzeUrlUseCase
@@ -12,6 +16,7 @@ import org.example.saved.domain.usecase.GetProfileUseCase
 import org.example.saved.domain.usecase.GetRecentBookmarksUseCase
 import org.example.saved.domain.usecase.RenameFolderUseCase
 import org.example.saved.domain.usecase.SaveAnalyzedBookmarkUseCase
+import org.example.saved.domain.usecase.SearchBookmarksUseCase
 import org.example.saved.domain.usecase.UpdateBookmarkUseCase
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
@@ -30,18 +35,58 @@ class HomeViewModel(
     private val deleteFolderUseCase: DeleteFolderUseCase,
     private val renameFolderUseCase: RenameFolderUseCase,
     private val getProfileUseCase: GetProfileUseCase,
+    private val searchBookmarksUseCase: SearchBookmarksUseCase,
 ) : ViewModel(),
     ContainerHost<HomeState, HomeSideEffect> {
     override val container: Container<HomeState, HomeSideEffect> =
         container(HomeState()) {
             loadHomeData()
         }
-
+    private var searchJob: Job? = null
     fun refresh() =
         intent {
             reduce { state.copy(isFoldersLoading = true, isBookmarksLoading = true, errorMessage = null) }
             loadHomeData()
         }
+
+    fun toggleSearchMode(isActive: Boolean) = intent {
+        reduce {
+            state.copy(
+                isSearchMode = isActive,
+                searchResults = emptyList(),
+                isSearching = false
+            )
+        }
+        if (!isActive) {
+            searchJob?.cancel()
+        }
+    }
+
+    fun onSearchQueryChanged(query: String) = intent {
+        searchJob?.cancel() // Отменяем предыдущий незаконченный запрос
+
+        if (query.isBlank()) {
+            reduce { state.copy(searchResults = emptyList(), isSearching = false) }
+            return@intent
+        }
+
+        reduce { state.copy(isSearching = true) }
+
+        searchJob = viewModelScope.launch {
+            delay(500)
+            searchBookmarksUseCase(query).fold(
+                onSuccess = { bookmarks ->
+                    intent { reduce { state.copy(searchResults = bookmarks, isSearching = false) } }
+                },
+                onFailure = { error ->
+                    intent {
+                        reduce { state.copy(isSearching = false) }
+                        postSideEffect(HomeSideEffect.ShowError(error.message ?: "Search failed"))
+                    }
+                }
+            )
+        }
+    }
 
     private fun loadHomeData() =
         intent {

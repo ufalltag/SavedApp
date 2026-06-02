@@ -60,4 +60,14 @@ class BookmarkRepositoryImpl(
                 confidence = dto.confidence,
             )
         }
+
+    override suspend fun searchBookmarks(
+        query: String,
+        page: Int,
+        limit: Int
+    ): Result<List<Bookmark>> {
+        return api.searchBookmarks(query, page, limit).map { dto ->
+            dto.bookmarks.orEmpty().map { it.toDomain() }
+        }
+    }
 }
