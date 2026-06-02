@@ -20,6 +20,8 @@ struct HomeView: View {
     @State private var renameFolderText: String = ""
     @State private var showAccount = false
     @StateObject private var speechRecognizer = SpeechRecognizer()
+    @State private var showSearch = false
+    @State private var safariURL: SafariURL?
 
     var body: some View {
         content
@@ -27,8 +29,8 @@ struct HomeView: View {
                 vm.collectSideEffects(
                     onOpenUrl: { _ in },
                     onShowError: { errorMessage = $0 },
-                    onRequireFolderSelection: { url, suggested in
-                        folderSelectionContext = FolderSelectionContext(url: url, suggestedFolderName: suggested)
+                    onRequireFolderSelection: { url, suggested, title in
+                        folderSelectionContext = FolderSelectionContext(url: url, suggestedFolderName: suggested, bookmarkTitle: title)
                     }
                 )
             }
@@ -47,17 +49,30 @@ struct HomeView: View {
                 AccountView()
                     .presentationDragIndicator(.hidden)
             }
+            .sheet(item: $safariURL) { item in
+                SafariView(url: item.url)
+                    .ignoresSafeArea()
+            }
+            .fullScreenCover(isPresented: $showSearch) {
+                SearchView(
+                    searchResults: vm.searchResults,
+                    isSearching: vm.isSearching,
+                    onSearch: { vm.searchBookmarks($0) },
+                    onClear: { vm.clearSearch() },
+                    onDismiss: { showSearch = false }
+                )
+            }
             .sheet(item: $folderSelectionContext) { context in
                 FolderSelectionSheet(
                     context: context,
                     folders: vm.folders,
                     onCreateNew: { name in
                         folderSelectionContext = nil
-                        vm.saveToNewFolder(url: context.url, folderName: name)
+                        vm.saveToNewFolder(url: context.url, folderName: name, bookmarkTitle: context.bookmarkTitle)
                     },
                     onSelectExisting: { folderId in
                         folderSelectionContext = nil
-                        vm.saveToExistingFolder(url: context.url, folderId: folderId)
+                        vm.saveToExistingFolder(url: context.url, folderId: folderId, bookmarkTitle: context.bookmarkTitle)
                     },
                     onDismiss: { folderSelectionContext = nil }
                 )
@@ -215,6 +230,11 @@ private extension HomeView {
                 )
                 RecentLinksListView(
                     links: linkItems,
+                    onTap: { link in
+                        if let url = URL(string: link.url) {
+                            safariURL = SafariURL(url: url)
+                        }
+                    },
                     onMove: { link in
                         guard let bookmark = vm.recentBookmarks.first(where: { $0.id == link.bookmarkId }) else { return }
                         vm.requestMoveBookmark(bookmark)
@@ -391,7 +411,7 @@ private extension HomeView {
     }
 
     var mainActionButton: some View {
-        Button(action: {}) {
+        Button(action: { showSearch = true }) {
             Image(systemName: String.searchSymbol)
                 .font(.body)
                 .foregroundStyle(Color.primary)

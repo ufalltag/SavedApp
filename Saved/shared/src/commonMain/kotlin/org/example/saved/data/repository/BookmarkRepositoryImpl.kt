@@ -50,6 +50,9 @@ class BookmarkRepositoryImpl(
 
     override suspend fun deleteBookmark(bookmarkId: String): Result<Unit> = api.deleteBookmark(bookmarkId)
 
+    override suspend fun searchBookmarks(query: String, page: Int, limit: Int): Result<List<Bookmark>> =
+        api.searchBookmarks(query, page, limit).map { dto -> dto.bookmarks.orEmpty().map { it.toDomain() } }
+
     override suspend fun analyzeUrl(url: String): Result<AnalyzeResult> =
         api.analyze(url).map { dto ->
             AnalyzeResult(

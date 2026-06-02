@@ -17,13 +17,14 @@ final class HomeViewModelWrapper {
     private(set) var folderPendingDelete: Folder?
     private(set) var folderPendingRename: Folder?
 
+    private(set) var searchResults: [Bookmark] = []
+    private(set) var isSearching: Bool = false
+
     @ObservationIgnored private var viewModel: HomeViewModel?
     @ObservationIgnored private var collector: HomeViewModelCollector?
     @ObservationIgnored private var started = false
     @ObservationIgnored private var sideEffectsStarted = false
 
-    // init без побочных эффектов: @State переоценивает выражение при каждом
-    // пересоздании родителя. Создание ViewModel вынесено в start().
     init() {}
 
     func start() {
@@ -56,12 +57,14 @@ final class HomeViewModelWrapper {
         if bookmarkPendingMove != s.bookmarkPendingMove { bookmarkPendingMove = s.bookmarkPendingMove }
         if folderPendingDelete != s.folderPendingDelete { folderPendingDelete = s.folderPendingDelete }
         if folderPendingRename != s.folderPendingRename { folderPendingRename = s.folderPendingRename }
+        if searchResults != s.searchResults { searchResults = s.searchResults }
+        if isSearching != s.isSearching { isSearching = s.isSearching }
     }
 
     func collectSideEffects(
         onOpenUrl: @escaping (String) -> Void,
         onShowError: @escaping (String) -> Void,
-        onRequireFolderSelection: @escaping (_ url: String, _ suggestedFolderName: String?) -> Void
+        onRequireFolderSelection: @escaping (_ url: String, _ suggestedFolderName: String?, _ bookmarkTitle: String) -> Void
     ) {
         start()
         guard !sideEffectsStarted, let collector else { return }
@@ -74,17 +77,21 @@ final class HomeViewModelWrapper {
             case .showError(let e):
                 onShowError(e.message)
             case .requireFolderSelection(let e):
-                onRequireFolderSelection(e.url, e.suggestedFolderName)
+                onRequireFolderSelection(e.url, e.suggestedFolderName, e.bookmarkTitle)
             }
         }
     }
 
-    func refresh()                                           { viewModel?.refresh() }
-    func createFolder(_ name: String)                        { viewModel?.createFolder(name: name) }
-    func openBookmark(_ url: String)                         { viewModel?.openBookmark(url: url) }
-    func analyzeUrl(_ url: String)                           { viewModel?.analyzeUrl(url: url) }
-    func saveToNewFolder(url: String, folderName: String, bookmarkTitle: String)    { viewModel?.saveToNewFolder(url: url, folderName: folderName, bookmarkTitle: bookmarkTitle) }
-    func saveToExistingFolder(url: String, folderId: String) { viewModel?.saveToExistingFolder(url: url, folderId: folderId) }
+    func refresh()                                    { viewModel?.refresh() }
+    func createFolder(_ name: String)                 { viewModel?.createFolder(name: name) }
+    func openBookmark(_ url: String)                  { viewModel?.openBookmark(url: url) }
+    func analyzeUrl(_ url: String)                    { viewModel?.analyzeUrl(url: url) }
+    func saveToNewFolder(url: String, folderName: String, bookmarkTitle: String) {
+        viewModel?.saveToNewFolder(url: url, folderName: folderName, bookmarkTitle: bookmarkTitle)
+    }
+    func saveToExistingFolder(url: String, folderId: String, bookmarkTitle: String) {
+        viewModel?.saveToExistingFolder(url: url, folderId: folderId, bookmarkTitle: bookmarkTitle)
+    }
 
     // Bookmark: delete
     func requestDeleteBookmark(_ bookmark: Bookmark)   { viewModel?.requestDeleteBookmark(bookmark: bookmark) }
@@ -105,4 +112,8 @@ final class HomeViewModelWrapper {
     func requestRenameFolder(_ folder: Folder)         { viewModel?.requestRenameFolder(folder: folder) }
     func confirmRenameFolder(_ newName: String)        { viewModel?.confirmRenameFolder(newName: newName) }
     func dismissRenameFolder()                         { viewModel?.dismissRenameFolder() }
+
+    // Search
+    func searchBookmarks(_ query: String)              { viewModel?.searchBookmarks(query: query) }
+    func clearSearch()                                 { viewModel?.clearSearch() }
 }

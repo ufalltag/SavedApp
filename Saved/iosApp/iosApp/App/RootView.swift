@@ -9,7 +9,10 @@ struct RootView: View {
 
     var body: some View {
         Group {
-            if appWrapper.isLoggedIn {
+            if appWrapper.isCheckingSession {
+                Color(.systemBackground)
+                    .ignoresSafeArea()
+            } else if appWrapper.isLoggedIn {
                 HomeView()
             } else {
                 LoginView(onAuthenticated: { appWrapper.onAuthenticated() })

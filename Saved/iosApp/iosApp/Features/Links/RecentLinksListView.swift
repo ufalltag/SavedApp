@@ -3,6 +3,7 @@ import SwiftUI
 struct RecentLinksListView: View {
 
     let links: [LinkItem]
+    var onTap: (LinkItem) -> Void = { _ in }
     var onMove: (LinkItem) -> Void = { _ in }
     var onDelete: (LinkItem) -> Void = { _ in }
 
@@ -32,6 +33,7 @@ private extension RecentLinksListView {
                 ForEach(links.prefix(.maxItems)) { link in
                     RecentLinkCellView(
                         link: link,
+                        onTap: { onTap(link) },
                         onMove: { onMove(link) },
                         onDelete: { onDelete(link) }
                     )

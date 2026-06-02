@@ -3,6 +3,7 @@ import SwiftUI
 struct RecentLinkCellView: View {
 
     let link: LinkItem
+    var onTap: () -> Void = {}
     var onMove: () -> Void = {}
     var onDelete: () -> Void = {}
 
@@ -16,14 +17,17 @@ struct RecentLinkCellView: View {
 private extension RecentLinkCellView {
 
     var content: some View {
-        HStack(spacing: .contentSpacing) {
-            linkIcon
-            infoView
-            Spacer()
-            menuButton
+        Button(action: onTap) {
+            HStack(spacing: .contentSpacing) {
+                linkIcon
+                infoView
+                Spacer()
+                menuButton
+            }
+            .padding(.cellPadding)
+            .background(.background, in: RoundedRectangle(cornerRadius: .cornerRadius))
         }
-        .padding(.cellPadding)
-        .background(.background, in: RoundedRectangle(cornerRadius: .cornerRadius))
+        .buttonStyle(.plain)
     }
 
     var linkIcon: some View {

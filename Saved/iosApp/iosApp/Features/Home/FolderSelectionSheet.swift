@@ -5,6 +5,7 @@ struct FolderSelectionContext: Identifiable {
     let id = UUID()
     let url: String
     let suggestedFolderName: String?
+    let bookmarkTitle: String
 }
 
 struct FolderSelectionSheet: View {
