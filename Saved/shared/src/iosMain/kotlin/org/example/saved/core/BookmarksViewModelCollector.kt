@@ -10,8 +10,9 @@ import org.example.saved.presentation.bookmarks.BookmarksSideEffect
 import org.example.saved.presentation.bookmarks.BookmarksState
 import org.example.saved.presentation.bookmarks.BookmarksViewModel
 
-class BookmarksViewModelCollector(private val viewModel: BookmarksViewModel) {
-
+class BookmarksViewModelCollector(
+    private val viewModel: BookmarksViewModel,
+) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     val currentState: BookmarksState

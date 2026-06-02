@@ -12,9 +12,8 @@ import org.example.saved.presentation.auth.RegisterCredentialsViewModel
 
 // Мост для iOS (см. комментарий в LoginViewModelCollector).
 class RegisterCredentialsViewModelCollector(
-    private val viewModel: RegisterCredentialsViewModel
+    private val viewModel: RegisterCredentialsViewModel,
 ) {
-
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     val currentState: RegisterCredentialsState

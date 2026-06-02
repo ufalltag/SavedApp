@@ -41,7 +41,7 @@ fun createHttpClient(tokenStorage: TokenStorage): HttpClient {
                     prettyPrint = true
                     isLenient = true
                     ignoreUnknownKeys = true
-                }
+                },
             )
         }
 
@@ -62,9 +62,10 @@ fun createHttpClient(tokenStorage: TokenStorage): HttpClient {
                     val oldRefreshToken = tokenStorage.getRefreshToken() ?: return@refreshTokens null
 
                     try {
-                        val response = client.post("http://192.168.31.134:8080/refresh") {
-                            setBody(RefreshRequestDto(refreshToken = oldRefreshToken))
-                        }
+                        val response =
+                            client.post("http://192.168.31.134:8080/refresh") {
+                                setBody(RefreshRequestDto(refreshToken = oldRefreshToken))
+                            }
 
                         if (!response.status.isSuccess()) {
                             tokenStorage.clearTokens()
@@ -74,12 +75,12 @@ fun createHttpClient(tokenStorage: TokenStorage): HttpClient {
                         val refreshed = response.body<RefreshTokenResponseDto>()
                         tokenStorage.saveTokens(
                             accessToken = refreshed.accessToken,
-                            refreshToken = oldRefreshToken
+                            refreshToken = oldRefreshToken,
                         )
 
                         BearerTokens(
                             accessToken = refreshed.accessToken,
-                            refreshToken = oldRefreshToken
+                            refreshToken = oldRefreshToken,
                         )
                     } catch (e: Exception) {
                         tokenStorage.clearTokens()

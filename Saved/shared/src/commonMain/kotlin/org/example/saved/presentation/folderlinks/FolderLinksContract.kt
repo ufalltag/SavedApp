@@ -16,5 +16,7 @@ data class FolderLinksState(
 )
 
 sealed interface FolderLinksSideEffect {
-    data class ShowError(val message: String) : FolderLinksSideEffect
+    data class ShowError(
+        val message: String,
+    ) : FolderLinksSideEffect
 }

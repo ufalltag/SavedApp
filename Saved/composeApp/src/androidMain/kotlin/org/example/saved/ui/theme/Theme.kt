@@ -17,29 +17,31 @@ private val LightColorScheme =
         onSurface = TextPrimary,
     )
 
-private val DarkColorScheme = darkColorScheme(
-    primary = AccentBlue,
-    background = BackgroundDark,
-    surface = SurfaceDark,
-    surfaceVariant = SurfaceDark,
-    onPrimary = Color.White,
-    onBackground = TextPrimaryDark,
-    onSurface = TextPrimaryDark,
-    onSurfaceVariant = TextPrimaryDark,
-    errorContainer = Color(0xFF3B1C1C),
-    onErrorContainer = Color(0xFFFF453A)
-)
+private val DarkColorScheme =
+    darkColorScheme(
+        primary = AccentBlue,
+        background = BackgroundDark,
+        surface = SurfaceDark,
+        surfaceVariant = SurfaceDark,
+        onPrimary = Color.White,
+        onBackground = TextPrimaryDark,
+        onSurface = TextPrimaryDark,
+        onSurfaceVariant = TextPrimaryDark,
+        errorContainer = Color(0xFF3B1C1C),
+        onErrorContainer = Color(0xFFFF453A),
+    )
 
 @Composable
 fun SavedAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
-    val colorScheme = if (darkTheme) {
-        DarkColorScheme
-    } else {
-        LightColorScheme
-    }
+    val colorScheme =
+        if (darkTheme) {
+            DarkColorScheme
+        } else {
+            LightColorScheme
+        }
 
     MaterialTheme(
         colorScheme = colorScheme,

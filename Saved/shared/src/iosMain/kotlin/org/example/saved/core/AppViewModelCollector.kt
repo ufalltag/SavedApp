@@ -10,8 +10,9 @@ import org.example.saved.presentation.app.AppSideEffect
 import org.example.saved.presentation.app.AppState
 import org.example.saved.presentation.app.AppViewModel
 
-class AppViewModelCollector(private val viewModel: AppViewModel) {
-
+class AppViewModelCollector(
+    private val viewModel: AppViewModel,
+) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     val currentState: AppState

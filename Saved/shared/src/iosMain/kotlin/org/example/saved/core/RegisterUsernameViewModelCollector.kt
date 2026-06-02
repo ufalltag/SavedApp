@@ -12,9 +12,8 @@ import org.example.saved.presentation.auth.RegisterUsernameViewModel
 
 // Мост для iOS (см. комментарий в LoginViewModelCollector).
 class RegisterUsernameViewModelCollector(
-    private val viewModel: RegisterUsernameViewModel
+    private val viewModel: RegisterUsernameViewModel,
 ) {
-
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     val currentState: RegisterUsernameState

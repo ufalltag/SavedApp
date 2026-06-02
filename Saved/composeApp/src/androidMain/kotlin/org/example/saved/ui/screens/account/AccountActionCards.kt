@@ -36,15 +36,14 @@ fun AccountActionCards(
     onThemeToggle: (Boolean) -> Unit,
     onChangePasswordClick: () -> Unit,
     onLogoutClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.padding(horizontal = 16.dp)) {
-
         // 1. Секция: Внешний вид (Тумблер)
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
-            color = MaterialTheme.colorScheme.surfaceVariant
+            color = MaterialTheme.colorScheme.surfaceVariant,
         ) {
             SettingsRow(
                 title = "Тёмная тема",
@@ -53,7 +52,7 @@ fun AccountActionCards(
                     Icon(
                         painter = painterResource(id = android.R.drawable.ic_menu_preferences),
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary
+                        tint = MaterialTheme.colorScheme.primary,
                     )
                 },
                 // При клике на саму строку тоже меняем тему (улучшает UX)
@@ -61,9 +60,9 @@ fun AccountActionCards(
                 trailingContent = {
                     androidx.compose.material3.Switch(
                         checked = isDarkMode,
-                        onCheckedChange = { onThemeToggle(it) } // Переключаем стейт
+                        onCheckedChange = { onThemeToggle(it) }, // Переключаем стейт
                     )
-                }
+                },
             )
         }
 
@@ -73,7 +72,7 @@ fun AccountActionCards(
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
-            color = MaterialTheme.colorScheme.surfaceVariant
+            color = MaterialTheme.colorScheme.surfaceVariant,
         ) {
             SettingsRow(
                 title = "Сменить пароль",
@@ -81,10 +80,10 @@ fun AccountActionCards(
                     Icon(
                         painter = painterResource(Res.drawable.ic_lock),
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary
+                        tint = MaterialTheme.colorScheme.primary,
                     )
                 },
-                onClick = onChangePasswordClick
+                onClick = onChangePasswordClick,
             )
         }
 
@@ -94,7 +93,7 @@ fun AccountActionCards(
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
-            color = MaterialTheme.colorScheme.errorContainer
+            color = MaterialTheme.colorScheme.errorContainer,
         ) {
             SettingsRow(
                 title = "Выйти из аккаунта",
@@ -103,10 +102,10 @@ fun AccountActionCards(
                     Icon(
                         painter = painterResource(Res.drawable.ic_exit),
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onErrorContainer
+                        tint = MaterialTheme.colorScheme.onErrorContainer,
                     )
                 },
-                onClick = onLogoutClick
+                onClick = onLogoutClick,
             )
         }
     }
@@ -118,30 +117,33 @@ private fun SettingsRow(
     icon: @Composable () -> Unit,
     onClick: () -> Unit,
     textColor: androidx.compose.ui.graphics.Color = MaterialTheme.colorScheme.onSurfaceVariant,
-    trailingContent: (@Composable () -> Unit)? = null
+    trailingContent: (@Composable () -> Unit)? = null,
 ) {
     Surface(
         onClick = onClick,
-        color = androidx.compose.ui.graphics.Color.Transparent
+        color = androidx.compose.ui.graphics.Color.Transparent,
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp), // Внутренний отступ карточки
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+            // Внутренний отступ карточки
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween // Расталкиваем края
+            horizontalArrangement = Arrangement.SpaceBetween, // Расталкиваем края
         ) {
             // Левая часть (Иконка + Текст)
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.weight(1f) // Занимает всё доступное место
+                modifier = Modifier.weight(1f), // Занимает всё доступное место
             ) {
                 Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(MaterialTheme.colorScheme.surface),
-                    contentAlignment = Alignment.Center
+                    modifier =
+                        Modifier
+                            .size(40.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(MaterialTheme.colorScheme.surface),
+                    contentAlignment = Alignment.Center,
                 ) {
                     icon()
                 }
@@ -152,7 +154,7 @@ private fun SettingsRow(
                     text = title,
                     style = MaterialTheme.typography.bodyLarge,
                     color = textColor,
-                    fontWeight = androidx.compose.ui.text.font.FontWeight.Medium
+                    fontWeight = androidx.compose.ui.text.font.FontWeight.Medium,
                 )
             }
 

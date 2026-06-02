@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class AnalyzeRequestDto(
-    @SerialName("url") val url: String
+    @SerialName("url") val url: String,
 )
 
 @Serializable
@@ -15,5 +15,5 @@ data class AnalyzeResponseDto(
     @SerialName("suggested_folder") val suggestedFolder: String?,
     @SerialName("is_new_folder") val isNewFolder: Boolean,
     @SerialName("confidence") val confidence: Float,
-    @SerialName("message") val message: String? = null
+    @SerialName("message") val message: String? = null,
 )

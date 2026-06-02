@@ -19,7 +19,7 @@ import org.koin.androidx.compose.koinViewModel
 fun AllFoldersScreen(
     viewModel: AllFoldersViewModel = koinViewModel(),
     onBackClick: () -> Unit,
-    onFolderClick: (String, String) -> Unit
+    onFolderClick: (String, String) -> Unit,
 ) {
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
     val snackbarHostState = LocalSnackbarHostState.current
@@ -39,15 +39,16 @@ fun AllFoldersScreen(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             AllFoldersTopBar(onBackClick = onBackClick)
-        }
+        },
     ) { paddingValues ->
         AllFoldersGrid(
             state = state,
             onFolderClick = onFolderClick,
             onLoadMore = viewModel::loadMore,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
         )
     }
 }

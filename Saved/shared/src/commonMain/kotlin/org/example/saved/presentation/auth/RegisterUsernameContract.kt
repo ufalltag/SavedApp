@@ -7,13 +7,17 @@ package org.example.saved.presentation.auth
  */
 data class RegisterUsernameState(
     val username: String = "",
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
 )
 
 sealed interface RegisterUsernameSideEffect {
     // Показать ошибку (валидация или ответ сервера)
-    data class ShowError(val message: String) : RegisterUsernameSideEffect
+    data class ShowError(
+        val message: String,
+    ) : RegisterUsernameSideEffect
 
     // Регистрация успешна — вернуться на экран входа.
-    data class NavigateToLogin(val message: String) : RegisterUsernameSideEffect
+    data class NavigateToLogin(
+        val message: String,
+    ) : RegisterUsernameSideEffect
 }

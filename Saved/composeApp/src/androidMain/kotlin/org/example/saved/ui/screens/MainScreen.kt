@@ -51,7 +51,7 @@ fun BookmarksScreen(
     viewModel: HomeViewModel = koinViewModel(),
     onFolderClick: (String, String) -> Unit,
     onSeeAllFoldersClick: () -> Unit,
-    onProfileClick: () -> Unit
+    onProfileClick: () -> Unit,
 ) {
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
     val snackbarHostState = LocalSnackbarHostState.current
@@ -114,7 +114,7 @@ fun BookmarksScreen(
                 ScreenHeader(
                     name = state.username ?: stringResource(R.string.bookmarks_header_name),
                     date = stringResource(R.string.bookmarks_header_date),
-                    onAvatarClick = onProfileClick
+                    onAvatarClick = onProfileClick,
                 )
             }
 
@@ -122,7 +122,7 @@ fun BookmarksScreen(
                 SectionTitle(
                     title = stringResource(R.string.bookmarks_section_folders_title),
                     actionText = stringResource(R.string.bookmarks_section_folders_action),
-                    onActionClick = onSeeAllFoldersClick
+                    onActionClick = onSeeAllFoldersClick,
                 )
             }
 
@@ -146,14 +146,14 @@ fun BookmarksScreen(
             } else {
                 items(
                     items = state.folders,
-                    key = { folder -> "folder_${folder.id}" }
+                    key = { folder -> "folder_${folder.id}" },
                 ) { folder ->
                     FolderItem(
                         title = folder.name,
                         linksCount = folder.bookmarksCount,
                         onClick = { onFolderClick(folder.id, folder.name) },
                         onRenameClick = { viewModel.requestRenameFolder(folder) },
-                        onDeleteClick = { viewModel.requestDeleteFolder(folder) }
+                        onDeleteClick = { viewModel.requestDeleteFolder(folder) },
                     )
                 }
             }
@@ -173,7 +173,7 @@ fun BookmarksScreen(
                 items(
                     items = state.recentBookmarks,
                     span = { GridItemSpan(maxLineSpan) },
-                    key = { bookmark -> "bookmark_${bookmark.id}" }
+                    key = { bookmark -> "bookmark_${bookmark.id}" },
                 ) { bookmark ->
                     BookmarkItem(
                         title = bookmark.title,
@@ -235,7 +235,7 @@ fun BookmarksScreen(
                     TextButton(onClick = { viewModel.dismissDeleteBookmark() }) {
                         Text("Отмена")
                     }
-                }
+                },
             )
         }
 
@@ -244,16 +244,24 @@ fun BookmarksScreen(
             AlertDialog(
                 onDismissRequest = { aiFolderSuggestion = null },
                 title = { Text("Создать новую папку?") },
-                text = { Text("Нейросеть предлагает создать папку \"${suggestion.suggestedFolderName}\" для этой ссылки. Согласны?") },
+                text = {
+                    Text(
+                        "Нейросеть предлагает создать папку \"${suggestion.suggestedFolderName}\" для этой ссылки. Согласны?",
+                    )
+                },
                 confirmButton = {
                     Button(onClick = {
-                        viewModel.saveToNewFolder(suggestion.url, suggestion.suggestedFolderName ?: "Разное", suggestion.bookmarkTitle)
+                        viewModel.saveToNewFolder(
+                            suggestion.url,
+                            suggestion.suggestedFolderName ?: "Разное",
+                            suggestion.bookmarkTitle,
+                        )
                         aiFolderSuggestion = null
                     }) { Text("Создать и сохранить") }
                 },
                 dismissButton = {
                     TextButton(onClick = { aiFolderSuggestion = null }) { Text("Отмена") }
-                }
+                },
             )
         }
 
@@ -262,7 +270,11 @@ fun BookmarksScreen(
             AlertDialog(
                 onDismissRequest = { viewModel.dismissDeleteFolder() },
                 title = { Text("Удалить папку?") },
-                text = { Text("Папка \"${folder.name}\" и все её ссылки будут безвозвратно удалены. Это действие нельзя отменить.") },
+                text = {
+                    Text(
+                        "Папка \"${folder.name}\" и все её ссылки будут безвозвратно удалены. Это действие нельзя отменить.",
+                    )
+                },
                 confirmButton = {
                     TextButton(onClick = { viewModel.confirmDeleteFolder() }) {
                         Text("Удалить", color = MaterialTheme.colorScheme.error)
@@ -272,7 +284,7 @@ fun BookmarksScreen(
                     TextButton(onClick = { viewModel.dismissDeleteFolder() }) {
                         Text("Отмена")
                     }
-                }
+                },
             )
         }
 
@@ -295,7 +307,7 @@ fun BookmarksScreen(
                 confirmButton = {
                     Button(
                         onClick = { viewModel.confirmRenameFolder(renameText) },
-                        enabled = renameText.isNotBlank() && renameText != folder.name
+                        enabled = renameText.isNotBlank() && renameText != folder.name,
                     ) {
                         Text("Сохранить")
                     }
@@ -304,7 +316,7 @@ fun BookmarksScreen(
                     TextButton(onClick = { viewModel.dismissRenameFolder() }) {
                         Text("Отмена")
                     }
-                }
+                },
             )
         }
     }

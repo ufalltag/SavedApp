@@ -10,8 +10,9 @@ import org.example.saved.presentation.folders.AllFoldersSideEffect
 import org.example.saved.presentation.folders.AllFoldersState
 import org.example.saved.presentation.folders.AllFoldersViewModel
 
-class AllFoldersViewModelCollector(private val viewModel: AllFoldersViewModel) {
-
+class AllFoldersViewModelCollector(
+    private val viewModel: AllFoldersViewModel,
+) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     val currentState: AllFoldersState

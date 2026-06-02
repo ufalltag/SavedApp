@@ -68,7 +68,7 @@ fun BookmarkItem(
                     painter = painterResource(Res.drawable.ic_link),
                     contentDescription = "Link icon",
                     tint = AccentBlue,
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(24.dp),
                 )
             }
 

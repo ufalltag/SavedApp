@@ -38,7 +38,7 @@ import saved.composeapp.generated.resources.ic_arrow_back
 fun RegisterUsernameScreen(
     viewModel: RegisterUsernameViewModel,
     onNavigateToLogin: (String) -> Unit,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
 ) {
     val state by viewModel.viewStates.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -60,19 +60,20 @@ fun RegisterUsernameScreen(
                     IconButton(onClick = onBackClick) {
                         Icon(painter = painterResource(Res.drawable.ic_arrow_back), contentDescription = "Назад")
                     }
-                }
+                },
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        containerColor = MaterialTheme.colorScheme.background
+        containerColor = MaterialTheme.colorScheme.background,
     ) { paddingValues ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(32.dp),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(32.dp),
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(text = "Шаг 2: Как вас называть?", style = MaterialTheme.typography.titleMedium)
 
@@ -84,17 +85,18 @@ fun RegisterUsernameScreen(
                 label = { Text("Username") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
-                enabled = !state.isLoading
+                enabled = !state.isLoading,
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
                 onClick = { viewModel.submit() },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp),
-                enabled = !state.isLoading
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(50.dp),
+                enabled = !state.isLoading,
             ) {
                 if (state.isLoading) {
                     CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary)

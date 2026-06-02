@@ -9,5 +9,5 @@ data class Bookmark(
     val folderId: String,
     val url: String,
     val title: String,
-    @property:ObjCName("bookmarkDescription") val description: String? = null
+    @property:ObjCName("bookmarkDescription") val description: String? = null,
 )

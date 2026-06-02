@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 fun ChangePasswordDialog(
     isChanging: Boolean,
     onDismiss: () -> Unit,
-    onConfirm: (String, String) -> Unit
+    onConfirm: (String, String) -> Unit,
 ) {
     var oldPassword by remember { mutableStateOf("") }
     var newPassword by remember { mutableStateOf("") }
@@ -44,7 +44,7 @@ fun ChangePasswordDialog(
                     singleLine = true,
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
@@ -54,20 +54,20 @@ fun ChangePasswordDialog(
                     singleLine = true,
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
         },
         confirmButton = {
             Button(
                 onClick = { onConfirm(oldPassword, newPassword) },
-                enabled = oldPassword.isNotBlank() && newPassword.isNotBlank() && !isChanging
+                enabled = oldPassword.isNotBlank() && newPassword.isNotBlank() && !isChanging,
             ) {
                 if (isChanging) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(24.dp),
                         color = MaterialTheme.colorScheme.onPrimary,
-                        strokeWidth = 2.dp
+                        strokeWidth = 2.dp,
                     )
                 } else {
                     Text("Сохранить")
@@ -77,10 +77,10 @@ fun ChangePasswordDialog(
         dismissButton = {
             TextButton(
                 onClick = onDismiss,
-                enabled = !isChanging
+                enabled = !isChanging,
             ) {
                 Text("Отмена")
             }
-        }
+        },
     )
 }

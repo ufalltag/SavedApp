@@ -12,7 +12,6 @@ import org.koin.androidx.compose.koinViewModel
 @Serializable
 object AllFoldersRoute
 
-
 fun NavGraphBuilder.allFoldersScreen(navController: NavHostController) {
     composable<AllFoldersRoute> {
         val viewModel = koinViewModel<AllFoldersViewModel>()
@@ -22,7 +21,7 @@ fun NavGraphBuilder.allFoldersScreen(navController: NavHostController) {
             onBackClick = { navController.popBackStack() },
             onFolderClick = { id, name ->
                 navController.navigate(FolderRoute(id = id, name = name))
-            }
+            },
         )
     }
 }

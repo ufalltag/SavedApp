@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 fun SectionTitle(
     title: String,
     actionText: String?,
-    onActionClick: (() -> Unit)? = null
+    onActionClick: (() -> Unit)? = null,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -28,25 +28,26 @@ fun SectionTitle(
     ) {
         Text(
             text = title,
-            style = MaterialTheme.typography.titleLarge
+            style = MaterialTheme.typography.titleLarge,
         )
         if (actionText != null) {
             Text(
                 text = actionText,
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.SemiBold,
-                ),
-                modifier = Modifier
-                    .clip(RoundedCornerShape(4.dp))
-                    .then(
-                        if (onActionClick != null) {
-                            Modifier.clickable(onClick = onActionClick)
-                        } else {
-                            Modifier
-                        }
-                    )
-                    .padding(horizontal = 8.dp, vertical = 4.dp)
+                style =
+                    MaterialTheme.typography.bodyMedium.copy(
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.SemiBold,
+                    ),
+                modifier =
+                    Modifier
+                        .clip(RoundedCornerShape(4.dp))
+                        .then(
+                            if (onActionClick != null) {
+                                Modifier.clickable(onClick = onActionClick)
+                            } else {
+                                Modifier
+                            },
+                        ).padding(horizontal = 8.dp, vertical = 4.dp),
             )
         }
     }

@@ -12,18 +12,16 @@ import saved.composeapp.generated.resources.ic_arrow_back
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AllFoldersTopBar(
-    onBackClick: () -> Unit
-) {
+fun AllFoldersTopBar(onBackClick: () -> Unit) {
     TopAppBar(
         title = { Text("Все папки") },
         navigationIcon = {
             IconButton(onClick = onBackClick) {
                 Icon(
                     painter = painterResource(Res.drawable.ic_arrow_back),
-                    contentDescription = "Назад"
+                    contentDescription = "Назад",
                 )
             }
-        }
+        },
     )
 }

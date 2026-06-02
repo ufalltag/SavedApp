@@ -3,5 +3,5 @@ package org.example.saved.domain.model
 data class Folder(
     val id: String,
     val name: String,
-    val bookmarksCount: Int = 0
+    val bookmarksCount: Int = 0,
 )

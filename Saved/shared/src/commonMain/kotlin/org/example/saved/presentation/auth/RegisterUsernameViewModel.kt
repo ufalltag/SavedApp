@@ -16,47 +16,48 @@ import org.orbitmvi.orbit.viewmodel.container
 class RegisterUsernameViewModel(
     private val registerUseCase: RegisterUseCase,
     private val email: String,
-    private val password: String
-) : ViewModel(), ContainerHost<RegisterUsernameState, RegisterUsernameSideEffect> {
-
+    private val password: String,
+) : ViewModel(),
+    ContainerHost<RegisterUsernameState, RegisterUsernameSideEffect> {
     override val container =
         container<RegisterUsernameState, RegisterUsernameSideEffect>(RegisterUsernameState())
 
     val viewStates: StateFlow<RegisterUsernameState> get() = container.stateFlow
     val viewSideEffects: Flow<RegisterUsernameSideEffect> get() = container.sideEffectFlow
 
-    fun onUsernameChanged(username: String) = intent {
-        reduce { state.copy(username = username) }
-    }
+    fun onUsernameChanged(username: String) =
+        intent {
+            reduce { state.copy(username = username) }
+        }
 
     /**
      * Кнопка "Готово". Регистрируем пользователя и возвращаем на экран входа.
      */
-    fun submit() = intent {
-        if (state.isLoading) return@intent // Защита от двойного клика
+    fun submit() =
+        intent {
+            if (state.isLoading) return@intent // Защита от двойного клика
 
-        val username = state.username.trim()
-        if (username.isEmpty()) {
-            postSideEffect(RegisterUsernameSideEffect.ShowError("Введите имя пользователя"))
-            return@intent
-        }
+            val username = state.username.trim()
+            if (username.isEmpty()) {
+                postSideEffect(RegisterUsernameSideEffect.ShowError("Введите имя пользователя"))
+                return@intent
+            }
 
-        reduce { state.copy(isLoading = true) }
-        val result = registerUseCase(email, password, username)
-        reduce { state.copy(isLoading = false) }
+            reduce { state.copy(isLoading = true) }
+            val result = registerUseCase(email, password, username)
+            reduce { state.copy(isLoading = false) }
 
-        result
-            .onSuccess {
-                postSideEffect(
-                    RegisterUsernameSideEffect.NavigateToLogin(
-                        "Регистрация прошла успешно! Войдите в аккаунт."
+            result
+                .onSuccess {
+                    postSideEffect(
+                        RegisterUsernameSideEffect.NavigateToLogin(
+                            "Регистрация прошла успешно! Войдите в аккаунт.",
+                        ),
                     )
-                )
-            }
-            .onFailure { error ->
-                postSideEffect(
-                    RegisterUsernameSideEffect.ShowError(error.message ?: "Неизвестная ошибка")
-                )
-            }
-    }
+                }.onFailure { error ->
+                    postSideEffect(
+                        RegisterUsernameSideEffect.ShowError(error.message ?: "Неизвестная ошибка"),
+                    )
+                }
+        }
 }

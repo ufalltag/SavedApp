@@ -23,7 +23,7 @@ fun AllFoldersGrid(
     state: AllFoldersState,
     onFolderClick: (String, String) -> Unit,
     onLoadMore: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     if (state.isLoading && state.folders.isEmpty()) {
         Box(modifier = modifier, contentAlignment = Alignment.Center) {
@@ -38,11 +38,11 @@ fun AllFoldersGrid(
         modifier = modifier,
         contentPadding = PaddingValues(16.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         itemsIndexed(
             items = state.folders,
-            key = { _, folder -> "all_folder_${folder.id}" }
+            key = { _, folder -> "all_folder_${folder.id}" },
         ) { index, folder ->
 
             if (index == state.folders.lastIndex && !state.isLoadingMore && state.hasMore) {
@@ -54,17 +54,18 @@ fun AllFoldersGrid(
             FolderItem(
                 title = folder.name,
                 linksCount = folder.bookmarksCount,
-                onClick = { onFolderClick(folder.id, folder.name) }
+                onClick = { onFolderClick(folder.id, folder.name) },
             )
         }
 
         if (state.isLoadingMore) {
             item(span = { GridItemSpan(maxLineSpan) }) {
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    contentAlignment = Alignment.Center
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                    contentAlignment = Alignment.Center,
                 ) {
                     CircularProgressIndicator()
                 }

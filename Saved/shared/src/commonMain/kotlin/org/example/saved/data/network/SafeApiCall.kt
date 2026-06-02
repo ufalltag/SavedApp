@@ -17,38 +17,44 @@ import org.example.saved.data.network.model.ErrorDto
  */
 class ApiException(
     val code: Int,
-    serverMessage: String? = null
+    serverMessage: String? = null,
 ) : Exception(serverMessage ?: defaultMessageForCode(code))
 
-private val errorJson = Json {
-    ignoreUnknownKeys = true
-    isLenient = true
-}
+private val errorJson =
+    Json {
+        ignoreUnknownKeys = true
+        isLenient = true
+    }
 
 /**
  * Достаёт текст ошибки из тела ответа ({"error": "..."}).
  * Если тело пустое или не JSON — возвращает [ApiException] с дефолтным текстом по коду.
  */
 suspend fun HttpResponse.toApiException(): ApiException {
-    val serverMessage = try {
-        val text = bodyAsText()
-        if (text.isBlank()) null
-        else errorJson.decodeFromString<ErrorDto>(text).error?.takeIf { it.isNotBlank() }
-    } catch (e: Exception) {
-        null
-    }
+    val serverMessage =
+        try {
+            val text = bodyAsText()
+            if (text.isBlank()) {
+                null
+            } else {
+                errorJson.decodeFromString<ErrorDto>(text).error?.takeIf { it.isNotBlank() }
+            }
+        } catch (e: Exception) {
+            null
+        }
     return ApiException(status.value, serverMessage)
 }
 
-private fun defaultMessageForCode(code: Int): String = when (code) {
-    400 -> "Неверные данные"
-    401 -> "Требуется авторизация"
-    403 -> "Доступ запрещён"
-    404 -> "Не найдено"
-    409 -> "Запись с такими данными уже существует"
-    500 -> "Ошибка сервера"
-    else -> "Ошибка сети (HTTP $code)"
-}
+private fun defaultMessageForCode(code: Int): String =
+    when (code) {
+        400 -> "Неверные данные"
+        401 -> "Требуется авторизация"
+        403 -> "Доступ запрещён"
+        404 -> "Не найдено"
+        409 -> "Запись с такими данными уже существует"
+        500 -> "Ошибка сервера"
+        else -> "Ошибка сети (HTTP $code)"
+    }
 
 /**
  * Оборачивает сетевой вызов, у которого есть тело ответа.
@@ -59,32 +65,30 @@ private fun defaultMessageForCode(code: Int): String = when (code) {
  *
  * inline + reified нужны, чтобы [HttpResponse.body] знал тип [T] на месте вызова.
  */
-suspend inline fun <reified T> safeApiCall(
-    request: () -> HttpResponse
-): Result<T> = try {
-    val response = request()
-    if (response.status.isSuccess()) {
-        Result.success(response.body())
-    } else {
-        Result.failure(response.toApiException())
+suspend inline fun <reified T> safeApiCall(request: () -> HttpResponse): Result<T> =
+    try {
+        val response = request()
+        if (response.status.isSuccess()) {
+            Result.success(response.body())
+        } else {
+            Result.failure(response.toApiException())
+        }
+    } catch (e: Exception) {
+        Result.failure(e)
     }
-} catch (e: Exception) {
-    Result.failure(e)
-}
 
 /**
  * Вариант для вызовов без тела ответа (DELETE, PUT-обновления и т.п.).
  * Проверяет только статус и возвращает [Unit].
  */
-suspend inline fun safeApiCallNoContent(
-    request: () -> HttpResponse
-): Result<Unit> = try {
-    val response = request()
-    if (response.status.isSuccess()) {
-        Result.success(Unit)
-    } else {
-        Result.failure(response.toApiException())
+suspend inline fun safeApiCallNoContent(request: () -> HttpResponse): Result<Unit> =
+    try {
+        val response = request()
+        if (response.status.isSuccess()) {
+            Result.success(Unit)
+        } else {
+            Result.failure(response.toApiException())
+        }
+    } catch (e: Exception) {
+        Result.failure(e)
     }
-} catch (e: Exception) {
-    Result.failure(e)
-}

@@ -17,24 +17,33 @@ import org.example.saved.data.network.model.RegisterRequestDto
  * Сохранение токенов и пересоздание клиента — забота [AuthRepository].
  */
 class AuthApiService(
-    private val clientProvider: HttpClientProvider
+    private val clientProvider: HttpClientProvider,
 ) {
     private val client get() = clientProvider.client
 
-    suspend fun login(email: String, password: String): Result<LoginTokenResponseDto> =
+    suspend fun login(
+        email: String,
+        password: String,
+    ): Result<LoginTokenResponseDto> =
         safeApiCall { client.post("login") { setBody(LoginRequestDto(email, password)) } }
 
-    suspend fun register(email: String, password: String, username: String): Result<Unit> =
+    suspend fun register(
+        email: String,
+        password: String,
+        username: String,
+    ): Result<Unit> =
         safeApiCallNoContent {
             client.post("register") {
                 setBody(RegisterRequestDto(email = email, password = password, username = username))
             }
         }
 
-    suspend fun getProfile(): Result<ProfileResponseDto> =
-        safeApiCall { client.get("profile") }
+    suspend fun getProfile(): Result<ProfileResponseDto> = safeApiCall { client.get("profile") }
 
-    suspend fun changePassword(oldPassword: String, newPassword: String): Result<Unit> =
+    suspend fun changePassword(
+        oldPassword: String,
+        newPassword: String,
+    ): Result<Unit> =
         safeApiCallNoContent {
             client.put("change-password") {
                 setBody(ChangePasswordRequestDto(oldPassword = oldPassword, newPassword = newPassword))

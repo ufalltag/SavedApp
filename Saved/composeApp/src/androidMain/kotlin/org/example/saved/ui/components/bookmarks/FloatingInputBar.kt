@@ -113,7 +113,7 @@ fun FloatingInputBar(
                     CircularProgressIndicator(
                         modifier = Modifier.size(20.dp),
                         color = Color.White,
-                        strokeWidth = 2.dp
+                        strokeWidth = 2.dp,
                     )
                 } else {
                     Icon(

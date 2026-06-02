@@ -24,7 +24,7 @@ import org.example.saved.ui.theme.AvatarText
 fun ScreenHeader(
     name: String,
     date: String,
-    onAvatarClick: () -> Unit
+    onAvatarClick: () -> Unit,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,

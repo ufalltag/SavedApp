@@ -24,7 +24,7 @@ fun NavGraphBuilder.bookmarksScreen(navController: NavHostController) {
             },
             onProfileClick = {
                 navController.navigate(AccountRoute)
-            }
+            },
         )
     }
 }

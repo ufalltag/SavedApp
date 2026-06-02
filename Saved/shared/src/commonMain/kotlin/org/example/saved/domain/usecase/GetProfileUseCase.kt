@@ -4,8 +4,7 @@ import org.example.saved.domain.model.UserProfile
 import org.example.saved.domain.repository.AuthRepository
 
 class GetProfileUseCase(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
 ) {
-    suspend operator fun invoke(): Result<UserProfile> =
-        authRepository.getProfile()
+    suspend operator fun invoke(): Result<UserProfile> = authRepository.getProfile()
 }

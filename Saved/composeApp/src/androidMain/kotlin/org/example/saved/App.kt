@@ -30,7 +30,7 @@ fun App() {
         CompositionLocalProvider(LocalSnackbarHostState provides snackbarHostState) {
             Scaffold(
                 modifier = Modifier.fillMaxSize(),
-                snackbarHost = { SnackbarHost(snackbarHostState) }
+                snackbarHost = { SnackbarHost(snackbarHostState) },
             ) {
                 // ПАТЧ: Прокидываем инстанс вниз!
                 AppNavigation(appViewModel = appViewModel)

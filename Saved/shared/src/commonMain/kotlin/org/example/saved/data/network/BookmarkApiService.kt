@@ -27,11 +27,14 @@ import org.example.saved.data.network.model.UpdateFolderRequestDto
  * автоматически использовать свежий клиент с актуальным токеном.
  */
 class BookmarkApiService(
-    private val clientProvider: HttpClientProvider
+    private val clientProvider: HttpClientProvider,
 ) {
     private val client get() = clientProvider.client
 
-    suspend fun getFolders(page: Int = 1, limit: Int = 20): Result<FoldersListResponseDto> =
+    suspend fun getFolders(
+        page: Int = 1,
+        limit: Int = 20,
+    ): Result<FoldersListResponseDto> =
         safeApiCall {
             client.get("folders") {
                 parameter("page", page)
@@ -39,19 +42,24 @@ class BookmarkApiService(
             }
         }
 
-    suspend fun getRecentBookmarks(): Result<BookmarksListResponseDto> =
-        safeApiCall { client.get("bookmarks/recent") }
+    suspend fun getRecentBookmarks(): Result<BookmarksListResponseDto> = safeApiCall { client.get("bookmarks/recent") }
 
     suspend fun createFolder(name: String): Result<SingleFolderResponseDto> =
         safeApiCall { client.post("folders") { setBody(CreateFolderRequestDto(name)) } }
 
-    suspend fun renameFolder(folderId: String, name: String): Result<Unit> =
-        safeApiCallNoContent { client.put("folders/$folderId") { setBody(UpdateFolderRequestDto(name)) } }
+    suspend fun renameFolder(
+        folderId: String,
+        name: String,
+    ): Result<Unit> = safeApiCallNoContent { client.put("folders/$folderId") { setBody(UpdateFolderRequestDto(name)) } }
 
     suspend fun deleteFolder(folderId: String): Result<Unit> =
         safeApiCallNoContent { client.delete("folders/$folderId") }
 
-    suspend fun getBookmarks(folderId: String, page: Int = 1, limit: Int = 20): Result<BookmarksListResponseDto> =
+    suspend fun getBookmarks(
+        folderId: String,
+        page: Int = 1,
+        limit: Int = 20,
+    ): Result<BookmarksListResponseDto> =
         safeApiCall {
             client.get("folders/$folderId/bookmarks") {
                 parameter("page", page)
@@ -59,12 +67,22 @@ class BookmarkApiService(
             }
         }
 
-    suspend fun createBookmark(url: String, folderId: Int, title: String): Result<SingleBookmarkResponseDto> =
+    suspend fun createBookmark(
+        url: String,
+        folderId: Int,
+        title: String,
+    ): Result<SingleBookmarkResponseDto> =
         safeApiCall { client.post("bookmarks") { setBody(CreateBookmarkRequestDto(url, folderId, title)) } }
 
-    suspend fun updateBookmark(bookmarkId: String, title: String?, folderId: Int?): Result<Unit> =
+    suspend fun updateBookmark(
+        bookmarkId: String,
+        title: String?,
+        folderId: Int?,
+    ): Result<Unit> =
         safeApiCallNoContent {
-            client.put("bookmarks/$bookmarkId") { setBody(UpdateBookmarkRequestDto(title = title, folderId = folderId)) }
+            client.put(
+                "bookmarks/$bookmarkId",
+            ) { setBody(UpdateBookmarkRequestDto(title = title, folderId = folderId)) }
         }
 
     suspend fun deleteBookmark(bookmarkId: String): Result<Unit> =

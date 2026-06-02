@@ -18,7 +18,7 @@ object AccountRoute
 
 fun NavGraphBuilder.accountScreen(
     navController: NavHostController,
-    appViewModel: AppViewModel
+    appViewModel: AppViewModel,
 ) {
     composable<AccountRoute> {
         val accountViewModel = koinViewModel<AccountViewModel>()
@@ -33,7 +33,7 @@ fun NavGraphBuilder.accountScreen(
                 navController.navigate(LoginRoute) {
                     popUpTo(0)
                 }
-            }
+            },
         )
     }
 }

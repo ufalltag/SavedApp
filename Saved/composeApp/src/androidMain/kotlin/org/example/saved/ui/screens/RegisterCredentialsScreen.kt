@@ -40,7 +40,7 @@ import saved.composeapp.generated.resources.ic_arrow_back
 fun RegisterCredentialsScreen(
     viewModel: RegisterCredentialsViewModel,
     onNavigateToUsername: (String, String) -> Unit,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
 ) {
     val state by viewModel.viewStates.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -48,8 +48,16 @@ fun RegisterCredentialsScreen(
     LaunchedEffect(Unit) {
         viewModel.viewSideEffects.collect { effect ->
             when (effect) {
-                is RegisterCredentialsSideEffect.ShowError -> snackbarHostState.showSnackbar(effect.message)
-                is RegisterCredentialsSideEffect.NavigateToUsername -> onNavigateToUsername(effect.email, effect.password)
+                is RegisterCredentialsSideEffect.ShowError -> {
+                    snackbarHostState.showSnackbar(effect.message)
+                }
+
+                is RegisterCredentialsSideEffect.NavigateToUsername -> {
+                    onNavigateToUsername(
+                        effect.email,
+                        effect.password,
+                    )
+                }
             }
         }
     }
@@ -62,19 +70,20 @@ fun RegisterCredentialsScreen(
                     IconButton(onClick = onBackClick) {
                         Icon(painter = painterResource(Res.drawable.ic_arrow_back), contentDescription = "Назад")
                     }
-                }
+                },
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        containerColor = MaterialTheme.colorScheme.background
+        containerColor = MaterialTheme.colorScheme.background,
     ) { paddingValues ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(32.dp),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(32.dp),
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(text = "Шаг 1: Email и Пароль", style = MaterialTheme.typography.titleMedium)
 
@@ -86,7 +95,7 @@ fun RegisterCredentialsScreen(
                 label = { Text("Email") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -98,14 +107,14 @@ fun RegisterCredentialsScreen(
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
                 onClick = { viewModel.next() },
-                modifier = Modifier.fillMaxWidth().height(50.dp)
+                modifier = Modifier.fillMaxWidth().height(50.dp),
             ) {
                 Text("Далее")
             }

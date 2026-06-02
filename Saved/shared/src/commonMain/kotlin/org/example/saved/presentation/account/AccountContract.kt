@@ -7,7 +7,11 @@ data class AccountState(
 )
 
 sealed interface AccountSideEffect {
-    data class ShowError(val message: String) : AccountSideEffect
+    data class ShowError(
+        val message: String,
+    ) : AccountSideEffect
+
     data object PasswordChanged : AccountSideEffect
+
     data object LoggedOut : AccountSideEffect
 }

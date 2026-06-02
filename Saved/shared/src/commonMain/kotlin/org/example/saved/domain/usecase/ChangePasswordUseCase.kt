@@ -8,8 +8,10 @@ import org.example.saved.domain.repository.AuthRepository
  * и проходить проверку сложности на бэкенде (он и вернёт текст ошибки).
  */
 class ChangePasswordUseCase(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
 ) {
-    suspend operator fun invoke(oldPassword: String, newPassword: String): Result<Unit> =
-        authRepository.changePassword(oldPassword, newPassword)
+    suspend operator fun invoke(
+        oldPassword: String,
+        newPassword: String,
+    ): Result<Unit> = authRepository.changePassword(oldPassword, newPassword)
 }

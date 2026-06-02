@@ -15,18 +15,27 @@ import org.koin.core.parameter.parametersOf
 
 class KoinHelper : KoinComponent {
     fun getLoginViewModel(): LoginViewModel = get()
+
     fun getRegisterCredentialsViewModel(): RegisterCredentialsViewModel = get()
 
     // email/password передаются с 1-го шага регистрации в фабрику Koin
-    fun getRegisterUsernameViewModel(email: String, password: String): RegisterUsernameViewModel =
-        get { parametersOf(email, password) }
+    fun getRegisterUsernameViewModel(
+        email: String,
+        password: String,
+    ): RegisterUsernameViewModel = get { parametersOf(email, password) }
 
     fun getBookmarksViewModel(): BookmarksViewModel = get()
+
     fun getHomeViewModel(): HomeViewModel = get()
+
     fun getAllFoldersViewModel(): AllFoldersViewModel = get()
-    fun getFolderLinksViewModel(folderId: String, folderName: String): FolderLinksViewModel =
-        get { parametersOf(folderId, folderName) }
+
+    fun getFolderLinksViewModel(
+        folderId: String,
+        folderName: String,
+    ): FolderLinksViewModel = get { parametersOf(folderId, folderName) }
 
     fun getAccountViewModel(): AccountViewModel = get()
+
     fun getAppViewModel(): AppViewModel = get()
 }

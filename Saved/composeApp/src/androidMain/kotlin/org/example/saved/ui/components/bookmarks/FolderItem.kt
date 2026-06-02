@@ -47,35 +47,34 @@ fun FolderItem(
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
-            .combinedClickable(
-                onClick = onClick,
-                onLongClick = {
-                    if (!isAddButton) showMenu = true
-                }
-            )
-            .padding(8.dp)
+        modifier =
+            modifier
+                .clip(RoundedCornerShape(16.dp))
+                .combinedClickable(
+                    onClick = onClick,
+                    onLongClick = {
+                        if (!isAddButton) showMenu = true
+                    },
+                ).padding(8.dp),
     ) {
-
         if (!isAddButton) {
             DropdownMenu(
                 expanded = showMenu,
-                onDismissRequest = { showMenu = false }
+                onDismissRequest = { showMenu = false },
             ) {
                 DropdownMenuItem(
                     text = { Text("Переименовать") },
                     onClick = {
                         showMenu = false
                         onRenameClick?.invoke()
-                    }
+                    },
                 )
                 DropdownMenuItem(
                     text = { Text("Удалить", color = MaterialTheme.colorScheme.error) },
                     onClick = {
                         showMenu = false
                         onDeleteClick?.invoke()
-                    }
+                    },
                 )
             }
         }
@@ -86,12 +85,13 @@ fun FolderItem(
                     .size(80.dp)
                     .clip(RoundedCornerShape(24.dp))
                     .background(
-                        if (isAddButton) Color.White else Color.Transparent
-                    )
-                    .then(
+                        if (isAddButton) Color.White else Color.Transparent,
+                    ).then(
                         if (isSelected) {
                             Modifier.border(2.dp, AccentBlue, RoundedCornerShape(24.dp))
-                        } else Modifier
+                        } else {
+                            Modifier
+                        },
                     ),
             contentAlignment = Alignment.Center,
         ) {
@@ -105,7 +105,7 @@ fun FolderItem(
                 Image(
                     painter = painterResource(Res.drawable.folder),
                     contentDescription = null,
-                    modifier = Modifier.size(70.dp)
+                    modifier = Modifier.size(70.dp),
                 )
             }
         }
@@ -114,9 +114,10 @@ fun FolderItem(
 
         Text(
             text = title,
-            style = MaterialTheme.typography.bodyLarge.copy(
-                color = if (isSelected) AccentBlue else MaterialTheme.colorScheme.onSurface
-            ),
+            style =
+                MaterialTheme.typography.bodyLarge.copy(
+                    color = if (isSelected) AccentBlue else MaterialTheme.colorScheme.onSurface,
+                ),
             textAlign = TextAlign.Center,
             maxLines = 1,
         )

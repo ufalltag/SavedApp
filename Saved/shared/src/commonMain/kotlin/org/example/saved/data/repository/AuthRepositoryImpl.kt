@@ -14,29 +14,35 @@ import org.example.saved.domain.repository.TokenStorage
 class AuthRepositoryImpl(
     private val api: AuthApiService,
     private val tokenStorage: TokenStorage,
-    private val clientProvider: HttpClientProvider
+    private val clientProvider: HttpClientProvider,
 ) : AuthRepository {
-
-    override suspend fun login(email: String, password: String): Result<Unit> =
+    override suspend fun login(
+        email: String,
+        password: String,
+    ): Result<Unit> =
         api.login(email, password).map { tokens ->
             tokenStorage.saveTokens(tokens.accessToken, tokens.refreshToken)
             clientProvider.recreate()
         }
 
-    override suspend fun register(email: String, password: String, username: String): Result<Unit> =
-        api.register(email, password, username)
+    override suspend fun register(
+        email: String,
+        password: String,
+        username: String,
+    ): Result<Unit> = api.register(email, password, username)
 
     override suspend fun getProfile(): Result<UserProfile> =
         api.getProfile().map { UserProfile(email = it.email, username = it.username) }
 
-    override suspend fun changePassword(oldPassword: String, newPassword: String): Result<Unit> =
-        api.changePassword(oldPassword, newPassword)
+    override suspend fun changePassword(
+        oldPassword: String,
+        newPassword: String,
+    ): Result<Unit> = api.changePassword(oldPassword, newPassword)
 
     override suspend fun logout() {
         tokenStorage.clearTokens()
         clientProvider.recreate()
     }
 
-    override suspend fun isLoggedIn(): Boolean =
-        tokenStorage.getRefreshToken() != null
+    override suspend fun isLoggedIn(): Boolean = tokenStorage.getRefreshToken() != null
 }

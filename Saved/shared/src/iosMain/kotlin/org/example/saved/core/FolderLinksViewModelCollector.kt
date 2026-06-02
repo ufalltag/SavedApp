@@ -11,8 +11,9 @@ import org.example.saved.presentation.folderlinks.FolderLinksSideEffect
 import org.example.saved.presentation.folderlinks.FolderLinksState
 import org.example.saved.presentation.folderlinks.FolderLinksViewModel
 
-class FolderLinksViewModelCollector(private val viewModel: FolderLinksViewModel) {
-
+class FolderLinksViewModelCollector(
+    private val viewModel: FolderLinksViewModel,
+) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     val currentState: FolderLinksState
@@ -31,11 +32,17 @@ class FolderLinksViewModelCollector(private val viewModel: FolderLinksViewModel)
     }
 
     fun loadMore() = viewModel.loadMore()
+
     fun requestDeleteBookmark(bookmark: Bookmark) = viewModel.requestDeleteBookmark(bookmark)
+
     fun dismissDeleteBookmark() = viewModel.dismissDeleteBookmark()
+
     fun confirmDeleteBookmark() = viewModel.confirmDeleteBookmark()
+
     fun requestMoveBookmark(bookmark: Bookmark) = viewModel.requestMoveBookmark(bookmark)
+
     fun dismissMoveBookmark() = viewModel.dismissMoveBookmark()
+
     fun confirmMoveBookmark(targetFolderId: String) = viewModel.confirmMoveBookmark(targetFolderId)
 
     fun dispose() = scope.cancel()

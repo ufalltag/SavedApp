@@ -12,8 +12,9 @@ import org.example.saved.presentation.auth.LoginViewModel
 
 // Мост для iOS: обходит ограничение SKIE с типизацией StateFlow через Orbit Container.
 // Подписываемся на flow в Kotlin и отдаём значения в обычные Swift-замыкания.
-class LoginViewModelCollector(private val viewModel: LoginViewModel) {
-
+class LoginViewModelCollector(
+    private val viewModel: LoginViewModel,
+) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     val currentState: LoginState

@@ -6,16 +6,18 @@ package org.example.saved.presentation.auth
  */
 data class RegisterCredentialsState(
     val email: String = "",
-    val password: String = ""
+    val password: String = "",
 )
 
 sealed interface RegisterCredentialsSideEffect {
     // Ошибка валидации (пустые поля и т.п.)
-    data class ShowError(val message: String) : RegisterCredentialsSideEffect
+    data class ShowError(
+        val message: String,
+    ) : RegisterCredentialsSideEffect
 
     // Перейти на 2-й шаг (ввод username), передавая уже собранные данные.
     data class NavigateToUsername(
         val email: String,
-        val password: String
+        val password: String,
     ) : RegisterCredentialsSideEffect
 }

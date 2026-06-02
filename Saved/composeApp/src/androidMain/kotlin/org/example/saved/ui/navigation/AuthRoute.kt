@@ -21,7 +21,10 @@ object LoginRoute
 object RegisterCredentialsRoute
 
 @Serializable
-data class RegisterUsernameRoute(val email: String, val password: String)
+data class RegisterUsernameRoute(
+    val email: String,
+    val password: String,
+)
 
 fun NavGraphBuilder.authGraph(navController: NavHostController) {
     composable<LoginRoute> {
@@ -35,7 +38,7 @@ fun NavGraphBuilder.authGraph(navController: NavHostController) {
             },
             onNavigateToRegister = {
                 navController.navigate(RegisterCredentialsRoute)
-            }
+            },
         )
     }
 
@@ -46,15 +49,16 @@ fun NavGraphBuilder.authGraph(navController: NavHostController) {
             onNavigateToUsername = { email, password ->
                 navController.navigate(RegisterUsernameRoute(email, password))
             },
-            onBackClick = { navController.popBackStack() }
+            onBackClick = { navController.popBackStack() },
         )
     }
 
     composable<RegisterUsernameRoute> { backStackEntry ->
         val route = backStackEntry.toRoute<RegisterUsernameRoute>()
-        val viewModel = koinViewModel<RegisterUsernameViewModel> {
-            parametersOf(route.email, route.password)
-        }
+        val viewModel =
+            koinViewModel<RegisterUsernameViewModel> {
+                parametersOf(route.email, route.password)
+            }
 
         RegisterUsernameScreen(
             viewModel = viewModel,
@@ -63,7 +67,7 @@ fun NavGraphBuilder.authGraph(navController: NavHostController) {
                     popUpTo(LoginRoute) { inclusive = true }
                 }
             },
-            onBackClick = { navController.popBackStack() }
+            onBackClick = { navController.popBackStack() },
         )
     }
 }

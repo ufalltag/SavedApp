@@ -7,16 +7,18 @@ data class BookmarksState(
     val folders: List<Folder> = emptyList(),
     val selectedFolderId: String? = null,
     val bookmarks: List<Bookmark> = emptyList(),
-
     val isFoldersLoading: Boolean = true,
     val isBookmarksLoading: Boolean = false,
-
     val isAnalyzing: Boolean = false,
-
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
 )
 
 sealed interface BookmarksSideEffect {
-    data class ShowToast(val message: String) : BookmarksSideEffect
-    data class OpenUrl(val url: String) : BookmarksSideEffect
+    data class ShowToast(
+        val message: String,
+    ) : BookmarksSideEffect
+
+    data class OpenUrl(
+        val url: String,
+    ) : BookmarksSideEffect
 }

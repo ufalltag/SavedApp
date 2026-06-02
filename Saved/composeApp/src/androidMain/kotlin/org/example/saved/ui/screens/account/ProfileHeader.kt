@@ -22,25 +22,26 @@ import org.example.saved.ui.theme.AvatarText
 @Composable
 fun ProfileHeader(
     email: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier.padding(top = 32.dp, bottom = 48.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Box(
-            modifier = Modifier
-                .size(100.dp)
-                .clip(CircleShape)
-                .background(AvatarBackground),
-            contentAlignment = Alignment.Center
+            modifier =
+                Modifier
+                    .size(100.dp)
+                    .clip(CircleShape)
+                    .background(AvatarBackground),
+            contentAlignment = Alignment.Center,
         ) {
             val initial = email.take(1).uppercase()
             Text(
                 text = initial.ifBlank { "?" },
                 color = AvatarText,
                 style = MaterialTheme.typography.displayMedium,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
             )
         }
 
@@ -49,7 +50,7 @@ fun ProfileHeader(
         Text(
             text = email,
             style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.SemiBold
+            fontWeight = FontWeight.SemiBold,
         )
     }
 }

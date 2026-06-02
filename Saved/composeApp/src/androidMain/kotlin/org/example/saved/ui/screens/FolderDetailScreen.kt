@@ -79,18 +79,19 @@ fun FolderDetailScreen(
                     IconButton(onClick = onBackClick) {
                         Icon(
                             painter = painterResource(Res.drawable.ic_arrow_back),
-                            contentDescription = "Back"
+                            contentDescription = "Back",
                         )
                     }
-                }
+                },
             )
         },
-        containerColor = MaterialTheme.colorScheme.background
+        containerColor = MaterialTheme.colorScheme.background,
     ) { paddingValues ->
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
         ) {
             if (state.isLoading) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
@@ -99,16 +100,16 @@ fun FolderDetailScreen(
                     text = "Папка пуста",
                     modifier = Modifier.align(Alignment.Center),
                     style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                 )
             } else {
                 LazyColumn(
                     contentPadding = PaddingValues(vertical = 16.dp),
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
                 ) {
                     items(
                         items = state.bookmarks,
-                        key = { "bookmark_${it.id}" }
+                        key = { "bookmark_${it.id}" },
                     ) { bookmark ->
                         BookmarkItem(
                             title = bookmark.title,
@@ -116,7 +117,7 @@ fun FolderDetailScreen(
                             date = "Только что",
                             onClick = { viewModel.onBookmarkClick(bookmark.url) },
                             onDelete = { viewModel.onDeleteBookmark(bookmark.id) },
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
                         )
                     }
                 }

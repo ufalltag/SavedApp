@@ -40,7 +40,7 @@ fun AccountScreen(
     isDarkMode: Boolean,
     onThemeToggle: (Boolean) -> Unit,
     onBackClick: () -> Unit,
-    onNavigateToLogin: () -> Unit
+    onNavigateToLogin: () -> Unit,
 ) {
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
     val snackbarHostState = LocalSnackbarHostState.current
@@ -51,8 +51,14 @@ fun AccountScreen(
     LaunchedEffect(Unit) {
         viewModel.container.sideEffectFlow.collectLatest { effect ->
             when (effect) {
-                is AccountSideEffect.ShowError -> snackbarHostState.showSnackbar(effect.message)
-                is AccountSideEffect.LoggedOut -> onNavigateToLogin()
+                is AccountSideEffect.ShowError -> {
+                    snackbarHostState.showSnackbar(effect.message)
+                }
+
+                is AccountSideEffect.LoggedOut -> {
+                    onNavigateToLogin()
+                }
+
                 is AccountSideEffect.PasswordChanged -> {
                     showPasswordDialog = false
                     snackbarHostState.showSnackbar("Пароль успешно изменен")
@@ -69,26 +75,26 @@ fun AccountScreen(
                     IconButton(onClick = onBackClick) {
                         Icon(painterResource(Res.drawable.ic_arrow_back), "Назад")
                     }
-                }
+                },
             )
-        }
+        },
     ) { paddingValues ->
         Box(
-            modifier = Modifier.fillMaxSize().padding(paddingValues)
+            modifier = Modifier.fillMaxSize().padding(paddingValues),
         ) {
             if (state.isLoading) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             } else {
                 Column(
                     modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     ProfileHeader(email = state.email)
                     AccountActionCards(
                         onChangePasswordClick = { showPasswordDialog = true },
                         onLogoutClick = viewModel::logout,
                         isDarkMode = isDarkMode,
-                        onThemeToggle = onThemeToggle
+                        onThemeToggle = onThemeToggle,
                     )
                 }
             }
@@ -98,7 +104,7 @@ fun AccountScreen(
             ChangePasswordDialog(
                 isChanging = state.isChangingPassword,
                 onDismiss = { showPasswordDialog = false },
-                onConfirm = { old, new -> viewModel.changePassword(old, new) }
+                onConfirm = { old, new -> viewModel.changePassword(old, new) },
             )
         }
     }

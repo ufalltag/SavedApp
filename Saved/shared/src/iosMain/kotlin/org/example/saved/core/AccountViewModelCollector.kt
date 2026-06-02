@@ -10,8 +10,9 @@ import org.example.saved.presentation.account.AccountSideEffect
 import org.example.saved.presentation.account.AccountState
 import org.example.saved.presentation.account.AccountViewModel
 
-class AccountViewModelCollector(private val viewModel: AccountViewModel) {
-
+class AccountViewModelCollector(
+    private val viewModel: AccountViewModel,
+) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     val currentState: AccountState
@@ -29,8 +30,10 @@ class AccountViewModelCollector(private val viewModel: AccountViewModel) {
             .launchIn(scope)
     }
 
-    fun changePassword(oldPassword: String, newPassword: String) =
-        viewModel.changePassword(oldPassword, newPassword)
+    fun changePassword(
+        oldPassword: String,
+        newPassword: String,
+    ) = viewModel.changePassword(oldPassword, newPassword)
 
     fun logout() = viewModel.logout()
 

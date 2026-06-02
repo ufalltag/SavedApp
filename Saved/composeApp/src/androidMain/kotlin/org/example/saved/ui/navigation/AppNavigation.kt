@@ -18,7 +18,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun AppNavigation(
     appViewModel: AppViewModel, // ПАТЧ: Принимаем как аргумент
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController = rememberNavController(),
 ) {
     val state by appViewModel.container.stateFlow.collectAsStateWithLifecycle()
 
@@ -29,7 +29,7 @@ fun AppNavigation(
     } else {
         NavHost(
             navController = navController,
-            startDestination = if (state.isLoggedIn) BookmarksRoute else LoginRoute
+            startDestination = if (state.isLoggedIn) BookmarksRoute else LoginRoute,
         ) {
             authGraph(navController)
             bookmarksScreen(navController)

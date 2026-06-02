@@ -7,7 +7,7 @@ package org.example.saved.presentation.auth
 data class LoginState(
     val email: String = "",
     val password: String = "",
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
 )
 
 /**
@@ -16,10 +16,14 @@ data class LoginState(
  */
 sealed interface LoginSideEffect {
     // Показать ошибку (красный алерт)
-    data class ShowError(val message: String) : LoginSideEffect
+    data class ShowError(
+        val message: String,
+    ) : LoginSideEffect
 
     // Информационное сообщение (например, после успешной регистрации)
-    data class ShowMessage(val message: String) : LoginSideEffect
+    data class ShowMessage(
+        val message: String,
+    ) : LoginSideEffect
 
     // Уйти на главный экран после успешного входа
     data object NavigateToHome : LoginSideEffect

@@ -12,8 +12,9 @@ import org.example.saved.presentation.home.HomeSideEffect
 import org.example.saved.presentation.home.HomeState
 import org.example.saved.presentation.home.HomeViewModel
 
-class HomeViewModelCollector(private val viewModel: HomeViewModel) {
-
+class HomeViewModelCollector(
+    private val viewModel: HomeViewModel,
+) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     val currentState: HomeState
@@ -32,30 +33,49 @@ class HomeViewModelCollector(private val viewModel: HomeViewModel) {
     }
 
     fun refresh() = viewModel.refresh()
+
     fun openBookmark(url: String) = viewModel.openBookmark(url)
+
     fun analyzeUrl(url: String) = viewModel.analyzeUrl(url)
+
     fun createFolder(name: String) = viewModel.createFolder(name)
-    fun saveToNewFolder(url: String, folderName: String) = viewModel.saveToNewFolder(url, folderName)
-    fun saveToExistingFolder(url: String, folderId: String) = viewModel.saveToExistingFolder(url, folderId)
+
+    fun saveToNewFolder(
+        url: String,
+        folderName: String,
+    ) = viewModel.saveToNewFolder(url, folderName)
+
+    fun saveToExistingFolder(
+        url: String,
+        folderId: String,
+    ) = viewModel.saveToExistingFolder(url, folderId)
 
     // Bookmark: delete
     fun requestDeleteBookmark(bookmark: Bookmark) = viewModel.requestDeleteBookmark(bookmark)
+
     fun dismissDeleteBookmark() = viewModel.dismissDeleteBookmark()
+
     fun confirmDeleteBookmark() = viewModel.confirmDeleteBookmark()
 
     // Bookmark: move
     fun requestMoveBookmark(bookmark: Bookmark) = viewModel.requestMoveBookmark(bookmark)
+
     fun dismissMoveBookmark() = viewModel.dismissMoveBookmark()
+
     fun confirmMoveBookmark(targetFolderId: String) = viewModel.confirmMoveBookmark(targetFolderId)
 
     // Folder: delete
     fun requestDeleteFolder(folder: Folder) = viewModel.requestDeleteFolder(folder)
+
     fun dismissDeleteFolder() = viewModel.dismissDeleteFolder()
+
     fun confirmDeleteFolder() = viewModel.confirmDeleteFolder()
 
     // Folder: rename
     fun requestRenameFolder(folder: Folder) = viewModel.requestRenameFolder(folder)
+
     fun dismissRenameFolder() = viewModel.dismissRenameFolder()
+
     fun confirmRenameFolder(newName: String) = viewModel.confirmRenameFolder(newName)
 
     fun dispose() = scope.cancel()
