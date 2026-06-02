@@ -9,10 +9,6 @@ on:
 jobs:
   build-and-lint:
     runs-on: macos-latest
-    
-    defaults:
-      run:
-        working-directory: ./Saved
 
     steps:
       - name: Checkout Repository
@@ -32,14 +28,11 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      - name: Run KtLint (Линтер)
+      - name: Run KtLint
         run: ./gradlew ktlintCheck --no-daemon
 
       - name: Build Android App
         run: ./gradlew assembleDebug --no-daemon
 
-      - name: List Gradle Tasks
-        run: ./gradlew tasks --all | grep -i "ios"
-        
       - name: Build iOS Framework
-        run: ./gradlew assembleIosSimulatorArm64 --no-daemon
+        run: ./gradlew shared:linkDebugFrameworkIosSimulatorArm64 --no-daemon
