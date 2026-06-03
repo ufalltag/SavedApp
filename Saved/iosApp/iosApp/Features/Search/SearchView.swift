@@ -5,13 +5,11 @@ struct SearchView: View {
 
     let searchResults: [Bookmark]
     let isSearching: Bool
-    var onSearch: (String) -> Void
-    var onClear: () -> Void
+    var onQueryChanged: (String) -> Void
     var onDismiss: () -> Void
 
     @State private var query: String = ""
     @FocusState private var isFocused: Bool
-    @State private var searchTask: Task<Void, Never>?
     @State private var safariURL: SafariURL?
 
     var body: some View {
@@ -21,7 +19,6 @@ struct SearchView: View {
         }
         .background(Color(.systemGroupedBackground).ignoresSafeArea())
         .onAppear { isFocused = true }
-        .onDisappear { searchTask?.cancel() }
         .sheet(item: $safariURL) { item in
             SafariView(url: item.url)
                 .ignoresSafeArea()
@@ -41,24 +38,8 @@ private extension SearchView {
                 TextField(String.searchPlaceholder, text: $query)
                     .focused($isFocused)
                     .submitLabel(.search)
-                    .onSubmit {
-                        let trimmed = query.trimmingCharacters(in: .whitespaces)
-                        guard !trimmed.isEmpty else { return }
-                        searchTask?.cancel()
-                        onSearch(trimmed)
-                    }
                     .onChange(of: query) { _, newValue in
-                        let trimmed = newValue.trimmingCharacters(in: .whitespaces)
-                        searchTask?.cancel()
-                        if trimmed.isEmpty {
-                            onClear()
-                            return
-                        }
-                        searchTask = Task {
-                            try? await Task.sleep(for: .milliseconds(400))
-                            guard !Task.isCancelled else { return }
-                            onSearch(trimmed)
-                        }
+                        onQueryChanged(newValue)
                     }
                 if !query.isEmpty {
                     Button { clearQuery() } label: {
@@ -72,7 +53,6 @@ private extension SearchView {
             .background(.bar, in: RoundedRectangle(cornerRadius: .fieldCornerRadius))
 
             Button(String.cancelButton) {
-                onClear()
                 onDismiss()
             }
             .foregroundStyle(.primary)
@@ -172,7 +152,7 @@ private extension SearchView {
 
     func clearQuery() {
         query = ""
-        onClear()
+        onQueryChanged("")
         isFocused = true
     }
 }
@@ -227,9 +207,8 @@ private extension String {
 #Preview {
     SearchView(
         searchResults: [],
-        isSearchLoading: false,
-        onSearch: { _ in },
-        onClear: {},
+        isSearching: false,
+        onQueryChanged: { _ in },
         onDismiss: {}
     )
 }

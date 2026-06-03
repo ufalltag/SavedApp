@@ -114,6 +114,7 @@ final class HomeViewModelWrapper {
     func dismissRenameFolder()                         { viewModel?.dismissRenameFolder() }
 
     // Search
-    func searchBookmarks(_ query: String)              { viewModel?.searchBookmarks(query: query) }
+    func onSearchQueryChanged(_ query: String)         { viewModel?.onSearchQueryChanged(query: query) }
+    func toggleSearchMode(_ isActive: Bool)            { viewModel?.toggleSearchMode(isActive: isActive) }
     func clearSearch()                                 { viewModel?.clearSearch() }
 }

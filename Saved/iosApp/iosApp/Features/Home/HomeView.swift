@@ -57,10 +57,15 @@ struct HomeView: View {
                 SearchView(
                     searchResults: vm.searchResults,
                     isSearching: vm.isSearching,
-                    onSearch: { vm.searchBookmarks($0) },
-                    onClear: { vm.clearSearch() },
-                    onDismiss: { showSearch = false }
+                    onQueryChanged: { vm.onSearchQueryChanged($0) },
+                    onDismiss: {
+                        vm.toggleSearchMode(false)
+                        showSearch = false
+                    }
                 )
+            }
+            .onChange(of: showSearch) { _, isShowing in
+                vm.toggleSearchMode(isShowing)
             }
             .sheet(item: $folderSelectionContext) { context in
                 FolderSelectionSheet(
