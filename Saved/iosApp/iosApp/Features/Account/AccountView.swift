@@ -15,6 +15,7 @@ struct AccountView: View {
     var body: some View {
         NavigationStack {
             content
+                .trackScreen("account")
                 .background(Color(.systemGroupedBackground))
                 .navigationTitle(String.navigationTitle)
                 .navigationBarTitleDisplayMode(.inline)

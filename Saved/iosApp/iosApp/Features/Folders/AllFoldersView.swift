@@ -11,6 +11,7 @@ struct AllFoldersView: View {
 
     var body: some View {
         content
+            .trackScreen("all_folders")
             .task { vm.collectSideEffects(onShowError: { errorMessage = $0 }) }
             .alert(String.errorAlertTitle, isPresented: Binding(
                 get: { errorMessage != nil },

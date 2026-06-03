@@ -22,6 +22,7 @@ struct RegisterUsernameView: View {
 
     var body: some View {
         content
+            .trackScreen("register_username")
             .background(Color(.systemGroupedBackground))
             .navigationTitle(String.navTitle)
             .navigationBarTitleDisplayMode(.inline)

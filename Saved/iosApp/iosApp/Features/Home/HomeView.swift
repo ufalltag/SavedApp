@@ -25,6 +25,7 @@ struct HomeView: View {
 
     var body: some View {
         content
+            .trackScreen("home")
             .task {
                 vm.collectSideEffects(
                     onOpenUrl: { _ in },

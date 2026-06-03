@@ -12,6 +12,7 @@ struct RegisterCredentialsView: View {
 
     var body: some View {
         content
+            .trackScreen("register_credentials")
             .background(Color(.systemGroupedBackground))
             .navigationTitle(String.navTitle)
             .navigationBarTitleDisplayMode(.inline)

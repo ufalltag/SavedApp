@@ -20,6 +20,7 @@ struct LoginView: View {
 
     var body: some View {
         navigation
+            .trackScreen("login")
             .onAppear {
                 wrapper.collectSideEffects(
                     onNavigateToHome: { onAuthenticated() },

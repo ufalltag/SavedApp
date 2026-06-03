@@ -65,6 +65,7 @@ struct BookmarksView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 20))
             }
         }
+        .trackScreen("bookmarks")
         .onAppear {
             wrapper.collectSideEffects(
                 onShowToast: { toastMessage = $0 },

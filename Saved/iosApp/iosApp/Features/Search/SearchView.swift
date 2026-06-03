@@ -17,6 +17,7 @@ struct SearchView: View {
             searchHeader
             resultsContent
         }
+        .trackScreen("search")
         .background(Color(.systemGroupedBackground).ignoresSafeArea())
         .onAppear { isFocused = true }
         .sheet(item: $safariURL) { item in

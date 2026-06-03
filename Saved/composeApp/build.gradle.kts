@@ -26,6 +26,7 @@ kotlin {
             implementation(libs.compose.material3)
             implementation(libs.compose.ui)
             implementation(libs.koin.androidx.compose)
+            implementation(project.dependencies.platform("com.google.firebase:firebase-bom:32.7.0"))
             implementation(libs.firebase.analytics)
             implementation(libs.firebase.crashlytics)
         }
@@ -41,9 +42,6 @@ kotlin {
             implementation(projects.shared)
             implementation(libs.navigation.compose)
             implementation(libs.kotlinx.serialization.json)
-            implementation(project.dependencies.platform("com.google.firebase:firebase-bom:32.7.0"))
-            implementation(libs.google.firebase.analytics)
-            implementation(libs.google.firebase.crashlytics)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
