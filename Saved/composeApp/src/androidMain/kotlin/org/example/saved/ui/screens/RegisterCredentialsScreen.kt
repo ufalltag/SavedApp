@@ -25,13 +25,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import org.example.saved.R
+import org.example.saved.domain.analytics.AnalyticsTracker
 import org.example.saved.presentation.auth.RegisterCredentialsSideEffect
 import org.example.saved.presentation.auth.RegisterCredentialsViewModel
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.koinInject
 import saved.composeapp.generated.resources.Res
 import saved.composeapp.generated.resources.ic_arrow_back
 
@@ -39,11 +43,16 @@ import saved.composeapp.generated.resources.ic_arrow_back
 @Composable
 fun RegisterCredentialsScreen(
     viewModel: RegisterCredentialsViewModel,
+    analyticsTracker: AnalyticsTracker = koinInject(),
     onNavigateToUsername: (String, String) -> Unit,
     onBackClick: () -> Unit,
 ) {
     val state by viewModel.viewStates.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(Unit) {
+        analyticsTracker.logScreen("launch_register")
+    }
 
     LaunchedEffect(Unit) {
         viewModel.viewSideEffects.collect { effect ->
@@ -65,10 +74,13 @@ fun RegisterCredentialsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Регистрация") },
+                title = { Text(stringResource(R.string.auth_register_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
-                        Icon(painter = painterResource(Res.drawable.ic_arrow_back), contentDescription = "Назад")
+                        Icon(
+                            painter = painterResource(Res.drawable.ic_arrow_back),
+                            contentDescription = stringResource(R.string.auth_back_description)
+                        )
                     }
                 },
             )
@@ -77,22 +89,24 @@ fun RegisterCredentialsScreen(
         containerColor = MaterialTheme.colorScheme.background,
     ) { paddingValues ->
         Column(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-                    .padding(32.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(32.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(text = "Шаг 1: Email и Пароль", style = MaterialTheme.typography.titleMedium)
+            Text(
+                text = stringResource(R.string.auth_register_step_1_title),
+                style = MaterialTheme.typography.titleMedium
+            )
 
             Spacer(modifier = Modifier.height(32.dp))
 
             OutlinedTextField(
                 value = state.email,
                 onValueChange = { viewModel.onEmailChanged(it) },
-                label = { Text("Email") },
+                label = { Text(stringResource(R.string.auth_email_label)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
@@ -103,7 +117,7 @@ fun RegisterCredentialsScreen(
             OutlinedTextField(
                 value = state.password,
                 onValueChange = { viewModel.onPasswordChanged(it) },
-                label = { Text("Пароль") },
+                label = { Text(stringResource(R.string.auth_password_label)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 visualTransformation = PasswordVisualTransformation(),
@@ -116,7 +130,7 @@ fun RegisterCredentialsScreen(
                 onClick = { viewModel.next() },
                 modifier = Modifier.fillMaxWidth().height(50.dp),
             ) {
-                Text("Далее")
+                Text(stringResource(R.string.auth_next_button))
             }
         }
     }

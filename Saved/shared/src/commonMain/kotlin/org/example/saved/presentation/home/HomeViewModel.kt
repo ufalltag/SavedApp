@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.example.saved.domain.analytics.AnalyticsTracker
 import org.example.saved.domain.model.Bookmark
 import org.example.saved.domain.model.Folder
 import org.example.saved.domain.usecase.AnalyzeUrlUseCase
@@ -36,6 +37,7 @@ class HomeViewModel(
     private val renameFolderUseCase: RenameFolderUseCase,
     private val getProfileUseCase: GetProfileUseCase,
     private val searchBookmarksUseCase: SearchBookmarksUseCase,
+    private val analytics: AnalyticsTracker
 ) : ViewModel(),
     ContainerHost<HomeState, HomeSideEffect> {
     override val container: Container<HomeState, HomeSideEffect> =
@@ -72,6 +74,7 @@ class HomeViewModel(
                 .onSuccess { folders ->
                     reduce { state.copy(folders = folders, isFoldersLoading = false) }
                 }.onFailure { error ->
+                    analytics.recordException(error)
                     reduce { state.copy(isFoldersLoading = false, errorMessage = error.message) }
                     postSideEffect(HomeSideEffect.ShowError(error.message ?: "Ошибка загрузки папок"))
                 }

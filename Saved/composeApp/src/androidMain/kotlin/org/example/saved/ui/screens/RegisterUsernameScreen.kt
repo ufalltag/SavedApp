@@ -25,8 +25,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import org.example.saved.R
 import org.example.saved.presentation.auth.RegisterUsernameSideEffect
 import org.example.saved.presentation.auth.RegisterUsernameViewModel
 import org.jetbrains.compose.resources.painterResource
@@ -55,10 +57,13 @@ fun RegisterUsernameScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Имя пользователя") },
+                title = { Text(stringResource(R.string.auth_register_username_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
-                        Icon(painter = painterResource(Res.drawable.ic_arrow_back), contentDescription = "Назад")
+                        Icon(
+                            painter = painterResource(Res.drawable.ic_arrow_back),
+                            contentDescription = stringResource(R.string.auth_back_description)
+                        )
                     }
                 },
             )
@@ -67,22 +72,24 @@ fun RegisterUsernameScreen(
         containerColor = MaterialTheme.colorScheme.background,
     ) { paddingValues ->
         Column(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-                    .padding(32.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(32.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(text = "Шаг 2: Как вас называть?", style = MaterialTheme.typography.titleMedium)
+            Text(
+                text = stringResource(R.string.auth_register_step_2_title),
+                style = MaterialTheme.typography.titleMedium
+            )
 
             Spacer(modifier = Modifier.height(32.dp))
 
             OutlinedTextField(
                 value = state.username,
                 onValueChange = { viewModel.onUsernameChanged(it) },
-                label = { Text("Username") },
+                label = { Text(stringResource(R.string.auth_username_label)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 enabled = !state.isLoading,
@@ -92,16 +99,15 @@ fun RegisterUsernameScreen(
 
             Button(
                 onClick = { viewModel.submit() },
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .height(50.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
                 enabled = !state.isLoading,
             ) {
                 if (state.isLoading) {
                     CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary)
                 } else {
-                    Text("Завершить регистрацию")
+                    Text(stringResource(R.string.auth_complete_registration_button))
                 }
             }
         }

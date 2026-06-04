@@ -1,14 +1,89 @@
 <resources>
+    <!-- Основные разделы и заголовки -->
     <string name="app_name">Saved</string>
-    <string name="bookmarks_header_name">Artur</string>
-    <string name="bookmarks_header_date">Sunday, 17 May</string>
-    <string name="bookmarks_section_folders_title">My folders</string>
-    <string name="bookmarks_section_folders_action">See all ></string>
-    <string name="bookmarks_add_folder_title">Add folder</string>
-    <string name="bookmarks_section_links_title">Last links</string>
-    <string name="bookmark_date_placeholder">16.05.2026</string>
-    <string name="dialog_create_folder_title">Создать папку</string>
-    <string name="dialog_create_folder_label">Название папки</string>
-    <string name="dialog_create_folder_confirm">Создать</string>
-    <string name="dialog_create_folder_dismiss">Отмена</string>
+    <string name="bookmarks_header_name">User</string>
+    <string name="bookmarks_header_date">Thursday, 4 June</string>
+    <string name="bookmarks_section_folders_title">My Folders</string>
+    <string name="bookmarks_section_folders_action">See All</string>
+    <string name="bookmarks_add_folder_title">New Folder</string>
+    <string name="bookmarks_section_links_title">Recent Links</string>
+
+    <!-- Даты в элементах списка -->
+    <string name="bookmark_date_recently">Recently</string>
+    <string name="bookmark_date_search_result">Search result</string>
+
+    <!-- Ошибки -->
+    <string name="error_open_link">Could not open link</string>
+
+    <!-- Поиск -->
+    <string name="search_empty_input_hint">Type bookmark name</string>
+    <string name="search_no_results">No results found</string>
+
+    <!-- Общие действия в диалогах -->
+    <string name="dialog_action_cancel">Cancel</string>
+    <string name="dialog_action_delete">Delete</string>
+    <string name="dialog_action_save">Save</string>
+
+    <!-- Диалог создания папки -->
+    <string name="dialog_create_folder_title">Create Folder</string>
+    <string name="dialog_create_folder_label">Folder name</string>
+    <string name="dialog_create_folder_confirm">Create</string>
+    <string name="dialog_create_folder_dismiss">Cancel</string>
+
+    <!-- Диалог удаления закладки -->
+    <string name="dialog_delete_bookmark_title">Delete bookmark?</string>
+    <string name="dialog_delete_bookmark_message">Are you sure you want to delete \"%1$s\"?</string>
+
+    <!-- Диалог ИИ предложения папки -->
+    <string name="dialog_ai_folder_title">Create new folder?</string>
+    <string name="dialog_ai_folder_message">AI suggests creating folder \"%1$s\" for this link. Do you agree?</string>
+    <string name="dialog_ai_folder_confirm">Create and Save</string>
+    <string name="ai_folder_fallback_name">Miscellaneous</string>
+
+    <!-- Диалог удаления папки -->
+    <string name="dialog_delete_folder_title">Delete folder?</string>
+    <string name="dialog_delete_folder_message">Folder \"%1$s\" and all its links will be permanently deleted. This action cannot be undone.</string>
+
+    <!-- Диалог переименования папки -->
+    <string name="dialog_rename_folder_title">Rename folder</string>
+    <string name="dialog_rename_folder_label">New name</string>
+
+    <!-- Экран регистрации (Шаг 1) -->
+    <string name="auth_register_title">Sign Up</string>
+    <string name="auth_back_description">Back</string>
+    <string name="auth_register_step_1_title">Step 1: Email and Password</string>
+    <string name="auth_email_label">Email</string>
+    <string name="auth_password_label">Password</string>
+    <string name="auth_next_button">Next</string>
+
+    <!-- Экран регистрации (Шаг 2) -->
+    <string name="auth_register_username_title">Username</string>
+    <string name="auth_register_step_2_title">Step 2: What should we call you?</string>
+    <string name="auth_username_label">Username</string>
+    <string name="auth_complete_registration_button">Complete Registration</string>
+
+    <!-- Экран входа -->
+    <string name="auth_login_title">Sign in to Saved</string>
+    <string name="auth_login_button">Sign In</string>
+    <string name="auth_register_prompt_button">Don\'t have an account? Sign Up</string>
+
+    <!-- Экран деталей папки -->
+    <string name="action_back">Back</string>
+    <string name="folder_detail_empty">Folder is empty</string>
+    <string name="bookmark_date_just_now">Just now</string>
+
+    <!-- Экран аккаунта -->
+    <string name="account_title">Account</string>
+    <string name="account_dark_mode">Dark Theme</string>
+    <string name="account_change_password">Change Password</string>
+    <string name="account_logout">Log Out</string>
+    <string name="account_password_changed_success">Password changed successfully</string>
+
+    <!-- Диалог смены пароля -->
+    <string name="dialog_change_password_title">Change Password</string>
+    <string name="dialog_change_password_old_hint">Current password</string>
+    <string name="dialog_change_password_new_hint">New password</string>
+
+    <string name="all_folders_header">All folders</string>
+    <string name="all_folders_back">Back</string>
 </resources>

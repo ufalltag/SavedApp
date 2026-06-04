@@ -1,4 +1,4 @@
-package org.example.saved.ui.screens.folders
+package org.example.saved.ui.screens.allfolders
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

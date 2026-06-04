@@ -19,9 +19,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import org.example.saved.R
 
 @Composable
 fun ChangePasswordDialog(
@@ -34,13 +36,13 @@ fun ChangePasswordDialog(
 
     AlertDialog(
         onDismissRequest = { if (!isChanging) onDismiss() },
-        title = { Text("Смена пароля") },
+        title = { Text(stringResource(R.string.dialog_change_password_title)) },
         text = {
             Column {
                 OutlinedTextField(
                     value = oldPassword,
                     onValueChange = { oldPassword = it },
-                    label = { Text("Текущий пароль") },
+                    label = { Text(stringResource(R.string.dialog_change_password_old_hint)) },
                     singleLine = true,
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -50,7 +52,7 @@ fun ChangePasswordDialog(
                 OutlinedTextField(
                     value = newPassword,
                     onValueChange = { newPassword = it },
-                    label = { Text("Новый пароль") },
+                    label = { Text(stringResource(R.string.dialog_change_password_new_hint)) },
                     singleLine = true,
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -70,7 +72,7 @@ fun ChangePasswordDialog(
                         strokeWidth = 2.dp,
                     )
                 } else {
-                    Text("Сохранить")
+                    Text(stringResource(R.string.dialog_action_save))
                 }
             }
         },
@@ -79,7 +81,7 @@ fun ChangePasswordDialog(
                 onClick = onDismiss,
                 enabled = !isChanging,
             ) {
-                Text("Отмена")
+                Text(stringResource(R.string.dialog_action_cancel))
             }
         },
     )

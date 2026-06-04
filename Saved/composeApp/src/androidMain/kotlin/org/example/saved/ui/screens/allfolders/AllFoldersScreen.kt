@@ -11,7 +11,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.collectLatest
 import org.example.saved.presentation.folders.AllFoldersSideEffect
 import org.example.saved.presentation.folders.AllFoldersViewModel
-import org.example.saved.ui.screens.folders.AllFoldersGrid
 import org.example.saved.ui.theme.LocalSnackbarHostState
 import org.koin.androidx.compose.koinViewModel
 
@@ -24,7 +23,6 @@ fun AllFoldersScreen(
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
     val snackbarHostState = LocalSnackbarHostState.current
 
-    // Подписка на шину событий (сайд-эффекты)
     LaunchedEffect(Unit) {
         viewModel.container.sideEffectFlow.collectLatest { effect ->
             when (effect) {

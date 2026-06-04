@@ -24,21 +24,30 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import org.example.saved.R
+import org.example.saved.domain.analytics.AnalyticsTracker
 import org.example.saved.presentation.auth.LoginSideEffect
 import org.example.saved.presentation.auth.LoginViewModel
+import org.koin.compose.koinInject
 
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel,
+    analyticsTracker: AnalyticsTracker = koinInject(),
     onNavigateToHome: () -> Unit,
     onNavigateToRegister: () -> Unit,
 ) {
     val state by viewModel.viewStates.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(Unit) {
+        analyticsTracker.logScreen("launch_login")
+    }
 
     LaunchedEffect(Unit) {
         viewModel.viewSideEffects.collect { effect ->
@@ -54,22 +63,24 @@ fun LoginScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { paddingValues ->
         Column(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-                    .padding(32.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(32.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(text = "Вход в Saved", style = MaterialTheme.typography.headlineMedium)
+            Text(
+                text = stringResource(R.string.auth_login_title),
+                style = MaterialTheme.typography.headlineMedium
+            )
 
             Spacer(modifier = Modifier.height(32.dp))
 
             OutlinedTextField(
                 value = state.email,
                 onValueChange = { viewModel.onEmailChanged(it) },
-                label = { Text("Email") },
+                label = { Text(stringResource(R.string.auth_email_label)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
@@ -80,7 +91,7 @@ fun LoginScreen(
             OutlinedTextField(
                 value = state.password,
                 onValueChange = { viewModel.onPasswordChanged(it) },
-                label = { Text("Пароль") },
+                label = { Text(stringResource(R.string.auth_password_label)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 visualTransformation = PasswordVisualTransformation(),
@@ -91,7 +102,9 @@ fun LoginScreen(
 
             Button(
                 onClick = { viewModel.submit() },
-                modifier = Modifier.fillMaxWidth().height(50.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
                 enabled = !state.isLoading,
             ) {
                 if (state.isLoading) {
@@ -100,14 +113,14 @@ fun LoginScreen(
                         modifier = Modifier.size(24.dp),
                     )
                 } else {
-                    Text("Войти")
+                    Text(stringResource(R.string.auth_login_button))
                 }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             TextButton(onClick = onNavigateToRegister) {
-                Text("Нет аккаунта? Зарегистрироваться")
+                Text(stringResource(R.string.auth_register_prompt_button))
             }
         }
     }

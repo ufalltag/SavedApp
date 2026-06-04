@@ -42,6 +42,9 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.ktor.client.okhttp)
             implementation(libs.koin.android)
+            implementation(project.dependencies.platform("com.google.firebase:firebase-bom:32.7.0"))
+            implementation(libs.firebase.analytics)
+            implementation(libs.firebase.crashlytics)
         }
 
         iosMain.dependencies {

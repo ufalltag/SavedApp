@@ -1,4 +1,4 @@
-package org.example.saved.ui.screens
+package org.example.saved.ui.screens.account
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,17 +19,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.collectLatest
 import org.example.saved.R
+import org.example.saved.domain.analytics.AnalyticsTracker
 import org.example.saved.presentation.account.AccountSideEffect
 import org.example.saved.presentation.account.AccountViewModel
-import org.example.saved.ui.screens.account.AccountActionCards
-import org.example.saved.ui.screens.account.ChangePasswordDialog
-import org.example.saved.ui.screens.account.ProfileHeader
 import org.example.saved.ui.theme.LocalSnackbarHostState
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.koinInject
 import saved.composeapp.generated.resources.Res
 import saved.composeapp.generated.resources.ic_arrow_back
 
@@ -37,6 +36,7 @@ import saved.composeapp.generated.resources.ic_arrow_back
 @Composable
 fun AccountScreen(
     viewModel: AccountViewModel,
+    analytics: AnalyticsTracker = koinInject(),
     isDarkMode: Boolean,
     onThemeToggle: (Boolean) -> Unit,
     onBackClick: () -> Unit,
@@ -45,8 +45,13 @@ fun AccountScreen(
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
     val snackbarHostState = LocalSnackbarHostState.current
 
-    // Стейт видимости диалога живет здесь, так как управляет наличием узла в дереве
     var showPasswordDialog by remember { mutableStateOf(false) }
+
+    val passwordChangedSuccessMsg = stringResource(R.string.account_password_changed_success)
+
+    LaunchedEffect(Unit) {
+        analytics.logScreen("launch_profile")
+    }
 
     LaunchedEffect(Unit) {
         viewModel.container.sideEffectFlow.collectLatest { effect ->
@@ -61,7 +66,7 @@ fun AccountScreen(
 
                 is AccountSideEffect.PasswordChanged -> {
                     showPasswordDialog = false
-                    snackbarHostState.showSnackbar("Пароль успешно изменен")
+                    snackbarHostState.showSnackbar(passwordChangedSuccessMsg)
                 }
             }
         }
@@ -70,10 +75,13 @@ fun AccountScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Аккаунт") },
+                title = { Text(stringResource(R.string.account_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
-                        Icon(painterResource(Res.drawable.ic_arrow_back), "Назад")
+                        Icon(
+                            painter = painterResource(Res.drawable.ic_arrow_back),
+                            contentDescription = stringResource(R.string.action_back)
+                        )
                     }
                 },
             )

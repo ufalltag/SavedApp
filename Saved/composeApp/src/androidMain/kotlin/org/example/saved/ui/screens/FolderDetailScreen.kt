@@ -24,15 +24,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import org.example.saved.R
+import org.example.saved.domain.analytics.AnalyticsTracker
 import org.example.saved.presentation.folder.FolderDetailSideEffect
 import org.example.saved.presentation.folder.FolderDetailViewModel
 import org.example.saved.ui.components.bookmarks.BookmarkItem
 import org.example.saved.ui.theme.LocalSnackbarHostState
 import org.jetbrains.compose.resources.painterResource
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
 import saved.composeapp.generated.resources.Res
 import saved.composeapp.generated.resources.ic_arrow_back
 
@@ -40,6 +44,7 @@ import saved.composeapp.generated.resources.ic_arrow_back
 @Composable
 fun FolderDetailScreen(
     viewModel: FolderDetailViewModel = koinViewModel(),
+    analytics: AnalyticsTracker = koinInject(),
     folderId: String,
     folderName: String,
     onBackClick: () -> Unit,
@@ -47,6 +52,11 @@ fun FolderDetailScreen(
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val snackbarHostState = LocalSnackbarHostState.current
+
+    LaunchedEffect(Unit) {
+        analytics.logScreen("launch_folder")
+        analytics.logEvent("folder_opened", mapOf("folder_id" to folderId))
+    }
 
     LaunchedEffect(folderId) {
         viewModel.initFolder(folderId, folderName)
@@ -79,7 +89,7 @@ fun FolderDetailScreen(
                     IconButton(onClick = onBackClick) {
                         Icon(
                             painter = painterResource(Res.drawable.ic_arrow_back),
-                            contentDescription = "Back",
+                            contentDescription = stringResource(R.string.action_back),
                         )
                     }
                 },
@@ -88,16 +98,15 @@ fun FolderDetailScreen(
         containerColor = MaterialTheme.colorScheme.background,
     ) { paddingValues ->
         Box(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
         ) {
             if (state.isLoading) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             } else if (state.bookmarks.isEmpty()) {
                 Text(
-                    text = "Папка пуста",
+                    text = stringResource(R.string.folder_detail_empty),
                     modifier = Modifier.align(Alignment.Center),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
@@ -114,7 +123,7 @@ fun FolderDetailScreen(
                         BookmarkItem(
                             title = bookmark.title,
                             url = bookmark.url,
-                            date = "Только что",
+                            date = stringResource(R.string.bookmark_date_just_now),
                             onClick = { viewModel.onBookmarkClick(bookmark.url) },
                             onDelete = { viewModel.onDeleteBookmark(bookmark.id) },
                             modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),

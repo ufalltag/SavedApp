@@ -15,16 +15,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import org.example.saved.R
 import org.jetbrains.compose.resources.painterResource
 import saved.composeapp.generated.resources.Res
 import saved.composeapp.generated.resources.ic_exit
@@ -39,28 +37,25 @@ fun AccountActionCards(
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.padding(horizontal = 16.dp)) {
-        // 1. Секция: Внешний вид (Тумблер)
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
             color = MaterialTheme.colorScheme.surfaceVariant,
         ) {
             SettingsRow(
-                title = "Тёмная тема",
-                // Используем стандартную иконку настроек или любую другую
+                title = stringResource(R.string.account_dark_mode),
                 icon = {
                     Icon(
-                        painter = painterResource(id = android.R.drawable.ic_menu_preferences),
+                        painter = androidx.compose.ui.res.painterResource(id = android.R.drawable.ic_menu_preferences),
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.primary,
                     )
                 },
-                // При клике на саму строку тоже меняем тему (улучшает UX)
                 onClick = { onThemeToggle(!isDarkMode) },
                 trailingContent = {
                     androidx.compose.material3.Switch(
                         checked = isDarkMode,
-                        onCheckedChange = { onThemeToggle(it) }, // Переключаем стейт
+                        onCheckedChange = { onThemeToggle(it) },
                     )
                 },
             )
@@ -75,7 +70,7 @@ fun AccountActionCards(
             color = MaterialTheme.colorScheme.surfaceVariant,
         ) {
             SettingsRow(
-                title = "Сменить пароль",
+                title = stringResource(R.string.account_change_password),
                 icon = {
                     Icon(
                         painter = painterResource(Res.drawable.ic_lock),
@@ -96,7 +91,7 @@ fun AccountActionCards(
             color = MaterialTheme.colorScheme.errorContainer,
         ) {
             SettingsRow(
-                title = "Выйти из аккаунта",
+                title = stringResource(R.string.account_logout),
                 textColor = MaterialTheme.colorScheme.onErrorContainer,
                 icon = {
                     Icon(
@@ -124,25 +119,21 @@ private fun SettingsRow(
         color = androidx.compose.ui.graphics.Color.Transparent,
     ) {
         Row(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-            // Внутренний отступ карточки
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween, // Расталкиваем края
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            // Левая часть (Иконка + Текст)
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.weight(1f), // Занимает всё доступное место
+                modifier = Modifier.weight(1f),
             ) {
                 Box(
-                    modifier =
-                        Modifier
-                            .size(40.dp)
-                            .clip(RoundedCornerShape(8.dp))
-                            .background(MaterialTheme.colorScheme.surface),
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(MaterialTheme.colorScheme.surface),
                     contentAlignment = Alignment.Center,
                 ) {
                     icon()
@@ -157,10 +148,7 @@ private fun SettingsRow(
                     fontWeight = androidx.compose.ui.text.font.FontWeight.Medium,
                 )
             }
-
-            // Правая часть (Тумблер)
             if (trailingContent != null) {
-                // Оборачиваем в Box для надежного позиционирования
                 Box(modifier = Modifier.padding(start = 16.dp)) {
                     trailingContent()
                 }

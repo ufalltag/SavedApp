@@ -38,6 +38,7 @@ import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.collectLatest
 import org.example.saved.R
+import org.example.saved.domain.analytics.AnalyticsTracker
 import org.example.saved.presentation.home.HomeSideEffect
 import org.example.saved.presentation.home.HomeViewModel
 import org.example.saved.ui.components.bookmarks.BookmarkItem
@@ -47,10 +48,12 @@ import org.example.saved.ui.components.bookmarks.ScreenHeader
 import org.example.saved.ui.components.bookmarks.SectionTitle
 import org.example.saved.ui.theme.LocalSnackbarHostState
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
 
 @Composable
 fun MainScreen(
     viewModel: HomeViewModel = koinViewModel(),
+    analytics: AnalyticsTracker = koinInject(),
     onFolderClick: (String, String) -> Unit,
     onSeeAllFoldersClick: () -> Unit,
     onProfileClick: () -> Unit,
@@ -62,13 +65,22 @@ fun MainScreen(
     var showCreateFolderDialog by remember { mutableStateOf(false) }
     var newFolderName by remember { mutableStateOf("") }
 
-    // ПАТЧ: Локальный стейт для инпута
     var inputText by remember { mutableStateOf("") }
 
-    // Состояние для диалога предложения папки от ИИ
     var aiFolderSuggestion by remember { mutableStateOf<HomeSideEffect.RequireFolderSelection?>(null) }
 
-    // Слушаем ошибки и другие эффекты прямо здесь
+    val errorOpenLinkUrl = stringResource(R.string.error_open_link)
+
+    LaunchedEffect(Unit) {
+        analytics.logScreen("launch_home")
+    }
+
+    LaunchedEffect(state.isSearchMode) {
+        if (state.isSearchMode) {
+            analytics.logScreen("launch_search")
+        }
+    }
+
     LaunchedEffect(Unit) {
         viewModel.container.sideEffectFlow.collectLatest { effect ->
             when (effect) {
@@ -81,7 +93,7 @@ fun MainScreen(
                         val intent = Intent(Intent.ACTION_VIEW, effect.url.toUri())
                         context.startActivity(intent)
                     } catch (e: Exception) {
-                        snackbarHostState.showSnackbar("Не удалось открыть ссылку")
+                        snackbarHostState.showSnackbar(errorOpenLinkUrl)
                     }
                 }
 
@@ -120,16 +132,12 @@ fun MainScreen(
     ) { paddingValues ->
 
         if (state.isSearchMode) {
-            // ==========================================
-            // РЕЖИМ ПОИСКА
-            // ==========================================
             when {
                 state.isSearching -> {
                     Box(
-                        modifier =
-                            Modifier
-                                .fillMaxSize()
-                                .padding(paddingValues),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues),
                         contentAlignment = Alignment.Center,
                     ) {
                         CircularProgressIndicator()
@@ -138,14 +146,13 @@ fun MainScreen(
 
                 inputText.isBlank() -> {
                     Box(
-                        modifier =
-                            Modifier
-                                .fillMaxSize()
-                                .padding(paddingValues),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues),
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
-                            text = "Введите название закладки",
+                            text = stringResource(R.string.search_empty_input_hint),
                             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                         )
                     }
@@ -153,14 +160,13 @@ fun MainScreen(
 
                 state.searchResults.isEmpty() -> {
                     Box(
-                        modifier =
-                            Modifier
-                                .fillMaxSize()
-                                .padding(paddingValues),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues),
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
-                            text = "Ничего не найдено",
+                            text = stringResource(R.string.search_no_results),
                             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                         )
                     }
@@ -168,10 +174,9 @@ fun MainScreen(
 
                 else -> {
                     LazyColumn(
-                        modifier =
-                            Modifier
-                                .fillMaxSize()
-                                .padding(paddingValues),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues),
                         contentPadding = PaddingValues(vertical = 16.dp),
                     ) {
                         items(
@@ -181,7 +186,7 @@ fun MainScreen(
                             BookmarkItem(
                                 title = bookmark.title,
                                 url = bookmark.url,
-                                date = "Результат поиска",
+                                date = stringResource(R.string.bookmark_date_search_result),
                                 onClick = { viewModel.openBookmark(bookmark.url) },
                                 onDelete = { viewModel.requestDeleteBookmark(bookmark) },
                                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
@@ -193,10 +198,9 @@ fun MainScreen(
         } else {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(3),
-                modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
                 contentPadding = PaddingValues(16.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -269,7 +273,7 @@ fun MainScreen(
                         BookmarkItem(
                             title = bookmark.title,
                             url = bookmark.url,
-                            date = "Recently",
+                            date = stringResource(R.string.bookmark_date_recently),
                             onClick = { viewModel.openBookmark(bookmark.url) },
                             onDelete = { viewModel.requestDeleteBookmark(bookmark) },
                         )
@@ -311,86 +315,79 @@ fun MainScreen(
                 )
             }
 
-            // Диалог подтверждения удаления закладки
             state.bookmarkPendingDelete?.let { bookmark ->
                 AlertDialog(
                     onDismissRequest = { viewModel.dismissDeleteBookmark() },
-                    title = { Text("Удалить закладку?") },
-                    text = { Text("Вы уверены, что хотите удалить \"${bookmark.title}\"?") },
+                    title = { Text(stringResource(R.string.dialog_delete_bookmark_title)) },
+                    text = { Text(stringResource(R.string.dialog_delete_bookmark_message, bookmark.title)) },
                     confirmButton = {
                         TextButton(onClick = { viewModel.confirmDeleteBookmark() }) {
-                            Text("Удалить", color = MaterialTheme.colorScheme.error)
+                            Text(stringResource(R.string.dialog_action_delete), color = MaterialTheme.colorScheme.error)
                         }
                     },
                     dismissButton = {
                         TextButton(onClick = { viewModel.dismissDeleteBookmark() }) {
-                            Text("Отмена")
+                            Text(stringResource(R.string.dialog_action_cancel))
                         }
                     },
                 )
             }
 
-            // Диалог предложения новой папки от ИИ
             aiFolderSuggestion?.let { suggestion ->
+                val fallbackFolder = stringResource(R.string.ai_folder_fallback_name)
                 AlertDialog(
                     onDismissRequest = { aiFolderSuggestion = null },
-                    title = { Text("Создать новую папку?") },
+                    title = { Text(stringResource(R.string.dialog_ai_folder_title)) },
                     text = {
-                        Text(
-                            "Нейросеть предлагает создать папку \"${suggestion.suggestedFolderName}\" для этой ссылки. Согласны?",
-                        )
+                        Text(stringResource(R.string.dialog_ai_folder_message, suggestion.suggestedFolderName ?: fallbackFolder))
                     },
                     confirmButton = {
                         Button(onClick = {
                             viewModel.saveToNewFolder(
                                 suggestion.url,
-                                suggestion.suggestedFolderName ?: "Разное",
+                                suggestion.suggestedFolderName ?: fallbackFolder,
                                 suggestion.bookmarkTitle,
                             )
                             aiFolderSuggestion = null
-                        }) { Text("Создать и сохранить") }
+                        }) { Text(stringResource(R.string.dialog_ai_folder_confirm)) }
                     },
                     dismissButton = {
-                        TextButton(onClick = { aiFolderSuggestion = null }) { Text("Отмена") }
+                        TextButton(onClick = { aiFolderSuggestion = null }) { Text(stringResource(R.string.dialog_action_cancel)) }
                     },
                 )
             }
 
-            // Диалог удаления папки
             state.folderPendingDelete?.let { folder ->
                 AlertDialog(
                     onDismissRequest = { viewModel.dismissDeleteFolder() },
-                    title = { Text("Удалить папку?") },
+                    title = { Text(stringResource(R.string.dialog_delete_folder_title)) },
                     text = {
-                        Text(
-                            "Папка \"${folder.name}\" и все её ссылки будут безвозвратно удалены. Это действие нельзя отменить.",
-                        )
+                        Text(stringResource(R.string.dialog_delete_folder_message, folder.name))
                     },
                     confirmButton = {
                         TextButton(onClick = { viewModel.confirmDeleteFolder() }) {
-                            Text("Удалить", color = MaterialTheme.colorScheme.error)
+                            Text(stringResource(R.string.dialog_action_delete), color = MaterialTheme.colorScheme.error)
                         }
                     },
                     dismissButton = {
                         TextButton(onClick = { viewModel.dismissDeleteFolder() }) {
-                            Text("Отмена")
+                            Text(stringResource(R.string.dialog_action_cancel))
                         }
                     },
                 )
             }
 
-            // Диалог переименования папки
             state.folderPendingRename?.let { folder ->
                 var renameText by remember { mutableStateOf(folder.name) }
 
                 AlertDialog(
                     onDismissRequest = { viewModel.dismissRenameFolder() },
-                    title = { Text("Переименовать папку") },
+                    title = { Text(stringResource(R.string.dialog_rename_folder_title)) },
                     text = {
                         OutlinedTextField(
                             value = renameText,
                             onValueChange = { renameText = it },
-                            label = { Text("Новое название") },
+                            label = { Text(stringResource(R.string.dialog_rename_folder_label)) },
                             singleLine = true,
                             modifier = Modifier.fillMaxWidth(),
                         )
@@ -400,12 +397,12 @@ fun MainScreen(
                             onClick = { viewModel.confirmRenameFolder(renameText) },
                             enabled = renameText.isNotBlank() && renameText != folder.name,
                         ) {
-                            Text("Сохранить")
+                            Text(stringResource(R.string.dialog_action_save))
                         }
                     },
                     dismissButton = {
                         TextButton(onClick = { viewModel.dismissRenameFolder() }) {
-                            Text("Отмена")
+                            Text(stringResource(R.string.dialog_action_cancel))
                         }
                     },
                 )

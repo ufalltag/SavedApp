@@ -10,7 +10,7 @@ import androidx.navigation.compose.composable
 import kotlinx.serialization.Serializable
 import org.example.saved.presentation.account.AccountViewModel
 import org.example.saved.presentation.app.AppViewModel
-import org.example.saved.ui.screens.AccountScreen
+import org.example.saved.ui.screens.account.AccountScreen
 import org.koin.androidx.compose.koinViewModel
 
 @Serializable

@@ -26,9 +26,6 @@ kotlin {
             implementation(libs.compose.material3)
             implementation(libs.compose.ui)
             implementation(libs.koin.androidx.compose)
-            implementation(project.dependencies.platform("com.google.firebase:firebase-bom:32.7.0"))
-            implementation(libs.firebase.analytics)
-            implementation(libs.firebase.crashlytics)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
