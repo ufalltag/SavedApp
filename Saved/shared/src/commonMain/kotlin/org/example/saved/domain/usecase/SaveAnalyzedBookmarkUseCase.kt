@@ -6,6 +6,9 @@ import org.example.saved.domain.repository.BookmarkRepository
 class SaveAnalyzedBookmarkUseCase(
     private val bookmarkRepository: BookmarkRepository,
 ) {
-    suspend operator fun invoke(url: String, folderId: String, title: String): Result<Bookmark> =
-        bookmarkRepository.saveBookmark(url = url, folderId = folderId, title = title)
+    suspend operator fun invoke(
+        url: String,
+        folderId: String,
+        title: String,
+    ): Result<Bookmark> = bookmarkRepository.saveBookmark(url = url, folderId = folderId, title = title)
 }

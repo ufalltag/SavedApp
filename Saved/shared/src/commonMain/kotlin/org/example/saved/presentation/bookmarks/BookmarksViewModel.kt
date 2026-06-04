@@ -73,25 +73,28 @@ class BookmarksViewModel(
                 }
         }
 
-    fun analyzeAndSaveUrl(url: String) =
-        intent {
-            if (state.isAnalyzing) return@intent
-            if (state.folders.isEmpty()) {
-                postSideEffect(BookmarksSideEffect.ShowToast("Сначала создайте хотя бы одну папку"))
-                return@intent
-            }
-            reduce { state.copy(isAnalyzing = true) }
-
-            saveAnalyzedBookmarkUseCase(url = url)
-                .onSuccess {
-                    reduce { state.copy(isAnalyzing = false) }
-                    postSideEffect(BookmarksSideEffect.ShowToast("Закладка успешно сохранена!"))
-                    loadFolders()
-                }.onFailure { error ->
-                    reduce { state.copy(isAnalyzing = false) }
-                    postSideEffect(BookmarksSideEffect.ShowToast(error.message ?: "Ошибка сохранения"))
-                }
+    fun analyzeAndSaveUrl(
+        url: String,
+        folderId: String,
+        title: String,
+    ) = intent {
+        if (state.isAnalyzing) return@intent
+        if (state.folders.isEmpty()) {
+            postSideEffect(BookmarksSideEffect.ShowToast("Сначала создайте хотя бы одну папку"))
+            return@intent
         }
+        reduce { state.copy(isAnalyzing = true) }
+
+        saveAnalyzedBookmarkUseCase(url = url, folderId = folderId, title = title)
+            .onSuccess {
+                reduce { state.copy(isAnalyzing = false) }
+                postSideEffect(BookmarksSideEffect.ShowToast("Закладка успешно сохранена!"))
+                loadFolders()
+            }.onFailure { error ->
+                reduce { state.copy(isAnalyzing = false) }
+                postSideEffect(BookmarksSideEffect.ShowToast(error.message ?: "Ошибка сохранения"))
+            }
+    }
 
     /**
      * Создаёт новую папку и добавляет её в стейт локально (без перезапроса с сервера).

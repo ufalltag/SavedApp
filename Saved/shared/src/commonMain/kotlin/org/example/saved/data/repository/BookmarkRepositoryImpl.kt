@@ -1,6 +1,5 @@
 package org.example.saved.data.repository
 
-import org.example.saved.data.network.ApiException
 import org.example.saved.data.network.BookmarkApiService
 import org.example.saved.data.network.model.toDomain
 import org.example.saved.domain.model.AnalyzeResult
@@ -50,7 +49,11 @@ class BookmarkRepositoryImpl(
 
     override suspend fun deleteBookmark(bookmarkId: String): Result<Unit> = api.deleteBookmark(bookmarkId)
 
-    override suspend fun searchBookmarks(query: String, page: Int, limit: Int): Result<List<Bookmark>> =
+    override suspend fun searchBookmarks(
+        query: String,
+        page: Int,
+        limit: Int,
+    ): Result<List<Bookmark>> =
         api.searchBookmarks(query, page, limit).map { dto -> dto.bookmarks.orEmpty().map { it.toDomain() } }
 
     override suspend fun analyzeUrl(url: String): Result<AnalyzeResult> =
@@ -63,14 +66,4 @@ class BookmarkRepositoryImpl(
                 confidence = dto.confidence,
             )
         }
-
-    override suspend fun searchBookmarks(
-        query: String,
-        page: Int,
-        limit: Int
-    ): Result<List<Bookmark>> {
-        return api.searchBookmarks(query, page, limit).map { dto ->
-            dto.bookmarks.orEmpty().map { it.toDomain() }
-        }
-    }
 }

@@ -45,55 +45,56 @@ import org.koin.dsl.module
 
 expect fun platformModule(): Module
 
-val commonModule = module {
-    single<TokenStorage> { TokenStorageImpl(get()) }
+val commonModule =
+    module {
+        single<TokenStorage> { TokenStorageImpl(get()) }
 
-    // Network
-    single { HttpClientProvider(get()) }
-    single { AuthApiService(get()) }
-    single { BookmarkApiService(get()) }
+        // Network
+        single { HttpClientProvider(get()) }
+        single { AuthApiService(get()) }
+        single { BookmarkApiService(get()) }
 
-    // Repositories
-    single<AuthRepository> { AuthRepositoryImpl(get(), get(), get()) }
-    single<BookmarkRepository> { BookmarkRepositoryImpl(get()) }
-    single<SettingsStorage> { SettingsStorageImpl(get()) }
+        // Repositories
+        single<AuthRepository> { AuthRepositoryImpl(get(), get(), get()) }
+        single<BookmarkRepository> { BookmarkRepositoryImpl(get()) }
+        single<SettingsStorage> { SettingsStorageImpl(get()) }
 
-    // Use cases
-    factoryOf(::LoginUseCase)
-    factoryOf(::RegisterUseCase)
-    factoryOf(::ChangePasswordUseCase)
-    factoryOf(::GetProfileUseCase)
-    factoryOf(::IsLoggedInUseCase)
-    factoryOf(::GetFoldersUseCase)
-    factoryOf(::GetBookmarksUseCase)
-    factoryOf(::CreateFolderUseCase)
-    factoryOf(::RenameFolderUseCase)
-    factoryOf(::DeleteFolderUseCase)
-    factoryOf(::UpdateBookmarkUseCase)
-    factoryOf(::DeleteBookmarkUseCase)
-    factoryOf(::GetRecentBookmarksUseCase)
-    factoryOf(::AnalyzeUrlUseCase)
-    factoryOf(::SaveAnalyzedBookmarkUseCase)
-    factoryOf(::SearchBookmarksUseCase)
+        // Use cases
+        factoryOf(::LoginUseCase)
+        factoryOf(::RegisterUseCase)
+        factoryOf(::ChangePasswordUseCase)
+        factoryOf(::GetProfileUseCase)
+        factoryOf(::IsLoggedInUseCase)
+        factoryOf(::GetFoldersUseCase)
+        factoryOf(::GetBookmarksUseCase)
+        factoryOf(::CreateFolderUseCase)
+        factoryOf(::RenameFolderUseCase)
+        factoryOf(::DeleteFolderUseCase)
+        factoryOf(::UpdateBookmarkUseCase)
+        factoryOf(::DeleteBookmarkUseCase)
+        factoryOf(::GetRecentBookmarksUseCase)
+        factoryOf(::AnalyzeUrlUseCase)
+        factoryOf(::SaveAnalyzedBookmarkUseCase)
+        factoryOf(::SearchBookmarksUseCase)
 
-    // ViewModels
-    factoryOf(::LoginViewModel)
-    factoryOf(::RegisterCredentialsViewModel)
-    factory { (email: String, password: String) ->
-        RegisterUsernameViewModel(get(), email, password)
+        // ViewModels
+        factoryOf(::LoginViewModel)
+        factoryOf(::RegisterCredentialsViewModel)
+        factory { (email: String, password: String) ->
+            RegisterUsernameViewModel(get(), email, password)
+        }
+        factoryOf(::BookmarksViewModel)
+        factoryOf(::HomeViewModel)
+        factoryOf(::AllFoldersViewModel)
+        factory { (folderId: String, folderName: String) ->
+            FolderDetailViewModel(get())
+        }
+        factory { (folderId: String, folderName: String) ->
+            FolderLinksViewModel(folderId, folderName, get(), get(), get(), get())
+        }
+        factoryOf(::AccountViewModel)
+        factoryOf(::AppViewModel)
     }
-    factoryOf(::BookmarksViewModel)
-    factoryOf(::HomeViewModel)
-    factoryOf(::AllFoldersViewModel)
-    factory { (folderId: String, folderName: String) ->
-        FolderDetailViewModel(get())
-    }
-    factory { (folderId: String, folderName: String) ->
-        FolderLinksViewModel(folderId, folderName, get(), get(), get(), get())
-    }
-    factoryOf(::AccountViewModel)
-    factoryOf(::AppViewModel)
-}
 
 fun initKoin(appDeclaration: KoinAppDeclaration = {}) {
     startKoin {

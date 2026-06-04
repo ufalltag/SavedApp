@@ -49,7 +49,7 @@ import org.example.saved.ui.theme.LocalSnackbarHostState
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun BookmarksScreen(
+fun MainScreen(
     viewModel: HomeViewModel = koinViewModel(),
     onFolderClick: (String, String) -> Unit,
     onSeeAllFoldersClick: () -> Unit,
@@ -114,9 +114,9 @@ fun BookmarksScreen(
                     val newSearchMode = !state.isSearchMode
                     viewModel.toggleSearchMode(newSearchMode)
                     if (!newSearchMode) inputText = ""
-                }
+                },
             )
-        }
+        },
     ) { paddingValues ->
 
         if (state.isSearchMode) {
@@ -126,10 +126,11 @@ fun BookmarksScreen(
             when {
                 state.isSearching -> {
                     Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(paddingValues),
-                        contentAlignment = Alignment.Center
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .padding(paddingValues),
+                        contentAlignment = Alignment.Center,
                     ) {
                         CircularProgressIndicator()
                     }
@@ -137,42 +138,45 @@ fun BookmarksScreen(
 
                 inputText.isBlank() -> {
                     Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(paddingValues),
-                        contentAlignment = Alignment.Center
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .padding(paddingValues),
+                        contentAlignment = Alignment.Center,
                     ) {
                         Text(
                             text = "Введите название закладки",
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                         )
                     }
                 }
 
                 state.searchResults.isEmpty() -> {
                     Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(paddingValues),
-                        contentAlignment = Alignment.Center
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .padding(paddingValues),
+                        contentAlignment = Alignment.Center,
                     ) {
                         Text(
                             text = "Ничего не найдено",
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                         )
                     }
                 }
 
                 else -> {
                     LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(paddingValues),
-                        contentPadding = PaddingValues(vertical = 16.dp)
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .padding(paddingValues),
+                        contentPadding = PaddingValues(vertical = 16.dp),
                     ) {
                         items(
                             items = state.searchResults,
-                            key = { "search_${it.id}" }
+                            key = { "search_${it.id}" },
                         ) { bookmark ->
                             BookmarkItem(
                                 title = bookmark.title,
@@ -180,7 +184,7 @@ fun BookmarksScreen(
                                 date = "Результат поиска",
                                 onClick = { viewModel.openBookmark(bookmark.url) },
                                 onDelete = { viewModel.requestDeleteBookmark(bookmark) },
-                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
                             )
                         }
                     }
@@ -189,9 +193,10 @@ fun BookmarksScreen(
         } else {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(3),
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues),
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
                 contentPadding = PaddingValues(16.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),

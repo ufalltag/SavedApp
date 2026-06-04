@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import org.example.saved.ui.theme.AccentBlue
 import org.jetbrains.compose.resources.painterResource
 import saved.composeapp.generated.resources.Res
+import saved.composeapp.generated.resources.ic_arrow_back
 import saved.composeapp.generated.resources.ic_delete
 import saved.composeapp.generated.resources.ic_search
 import saved.composeapp.generated.resources.ic_send
@@ -81,15 +82,16 @@ fun FloatingInputBar(
                 TextField(
                     value = text,
                     onValueChange = onTextChange,
-                    modifier = Modifier
-                        .weight(1f)
-                        .onFocusChanged { focusState ->
-                            isFocused.value = focusState.isFocused
-                        },
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .onFocusChanged { focusState ->
+                                isFocused.value = focusState.isFocused
+                            },
                     placeholder = {
                         Text(
                             text = if (isSearchMode) "Search bookmarks..." else "Type Here",
-                            color = Color.Gray
+                            color = Color.Gray,
                         )
                     },
                     singleLine = true,
@@ -110,13 +112,10 @@ fun FloatingInputBar(
                             .background(
                                 when {
                                     isAnalyzing -> Color.Gray
-
                                     text.isNotBlank() -> AccentBlue
-
                                     else -> MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f)
                                 },
-                            )
-                            .clickable(enabled = !isAnalyzing) {
+                            ).clickable(enabled = !isAnalyzing) {
                                 if (text.isNotBlank()) {
                                     if (isSearchMode) {
                                         onTextChange("")
@@ -128,7 +127,8 @@ fun FloatingInputBar(
                                         focusManager.clearFocus()
                                     }
                                 }
-                            }
+                            },
+                    contentAlignment = Alignment.Center,
                 ) {
                     if (isAnalyzing) {
                         CircularProgressIndicator(
@@ -138,7 +138,10 @@ fun FloatingInputBar(
                         )
                     } else if (text.isNotBlank()) {
                         Icon(
-                            painter = painterResource(if (isSearchMode) Res.drawable.ic_delete else Res.drawable.ic_send),
+                            painter =
+                                painterResource(
+                                    if (isSearchMode) Res.drawable.ic_arrow_back else Res.drawable.ic_search,
+                                ),
                             contentDescription = if (isSearchMode) "Clear" else "Send",
                             tint = Color.White,
                             modifier = Modifier.size(20.dp),
@@ -168,7 +171,7 @@ fun FloatingInputBar(
                 shape = CircleShape,
                 color = MaterialTheme.colorScheme.surface,
             ) {
-                IconButton(onClick = { onSearchToggle }) {
+                IconButton(onClick = { onSearchToggle() }) {
                     Icon(
                         painter = painterResource(Res.drawable.ic_search),
                         contentDescription = "Search",

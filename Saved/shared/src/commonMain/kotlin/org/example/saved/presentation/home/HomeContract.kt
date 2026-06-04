@@ -11,24 +11,27 @@ data class HomeState(
     val isAnalyzing: Boolean = false,
     val errorMessage: String? = null,
     val username: String? = null,
-
     // Search
     val isSearchMode: Boolean = false,
     val isSearching: Boolean = false,
     val searchResults: List<Bookmark> = emptyList(),
-
     // Bookmark actions
     val bookmarkPendingDelete: Bookmark? = null,
     val bookmarkPendingMove: Bookmark? = null,
-
     // Folder actions
     val folderPendingDelete: Folder? = null,
     val folderPendingRename: Folder? = null,
 )
 
 sealed interface HomeSideEffect {
-    data class OpenUrl(val url: String) : HomeSideEffect
-    data class ShowError(val message: String) : HomeSideEffect
+    data class OpenUrl(
+        val url: String,
+    ) : HomeSideEffect
+
+    data class ShowError(
+        val message: String,
+    ) : HomeSideEffect
+
     data class RequireFolderSelection(
         val url: String,
         val suggestedFolderName: String?,

@@ -88,7 +88,11 @@ class BookmarkApiService(
     suspend fun deleteBookmark(bookmarkId: String): Result<Unit> =
         safeApiCallNoContent { client.delete("bookmarks/$bookmarkId") }
 
-    suspend fun searchBookmarks(q: String, page: Int = 1, limit: Int = 20): Result<BookmarksListResponseDto> =
+    suspend fun searchBookmarks(
+        q: String,
+        page: Int = 1,
+        limit: Int = 20,
+    ): Result<BookmarksListResponseDto> =
         safeApiCall {
             client.get("bookmarks/search") {
                 parameter("q", q)
@@ -99,16 +103,4 @@ class BookmarkApiService(
 
     suspend fun analyze(url: String): Result<AnalyzeResponseDto> =
         safeApiCall { client.post("analyze") { setBody(AnalyzeRequestDto(url)) } }
-
-    suspend fun searchBookmarks(
-        query: String,
-        page: Int = 1,
-        limit: Int = 20
-    ): Result<BookmarksListResponseDto> = safeApiCall {
-        client.get("/bookmarks/search") {
-            parameter("q", query)
-            parameter("page", page)
-            parameter("limit", limit)
-        }
-    }
 }
