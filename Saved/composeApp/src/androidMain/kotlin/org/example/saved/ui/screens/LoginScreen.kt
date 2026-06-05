@@ -21,7 +21,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -44,6 +46,8 @@ fun LoginScreen(
 ) {
     val state by viewModel.viewStates.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
+    var emailText by remember(state.email) { mutableStateOf(state.email) }
+    var passwordText by remember(state.password) { mutableStateOf(state.password) }
 
     LaunchedEffect(Unit) {
         analyticsTracker.logScreen("launch_login")
@@ -63,23 +67,27 @@ fun LoginScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { paddingValues ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(32.dp),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(32.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
                 text = stringResource(R.string.auth_login_title),
-                style = MaterialTheme.typography.headlineMedium
+                style = MaterialTheme.typography.headlineMedium,
             )
 
             Spacer(modifier = Modifier.height(32.dp))
 
             OutlinedTextField(
-                value = state.email,
-                onValueChange = { viewModel.onEmailChanged(it) },
+                value = emailText,
+                onValueChange = { newEmail ->
+                    emailText = newEmail
+                    viewModel.onEmailChanged(newEmail)
+                },
                 label = { Text(stringResource(R.string.auth_email_label)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
@@ -89,8 +97,11 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
-                value = state.password,
-                onValueChange = { viewModel.onPasswordChanged(it) },
+                value = passwordText,
+                onValueChange = { newPassword ->
+                    passwordText = newPassword
+                    viewModel.onPasswordChanged(newPassword)
+                },
                 label = { Text(stringResource(R.string.auth_password_label)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
@@ -102,9 +113,10 @@ fun LoginScreen(
 
             Button(
                 onClick = { viewModel.submit() },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(50.dp),
                 enabled = !state.isLoading,
             ) {
                 if (state.isLoading) {

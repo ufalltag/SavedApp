@@ -22,7 +22,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -44,6 +46,7 @@ fun RegisterUsernameScreen(
 ) {
     val state by viewModel.viewStates.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
+    var usernameText by remember(state.username) { mutableStateOf(state.username) }
 
     LaunchedEffect(Unit) {
         viewModel.viewSideEffects.collect { effect ->
@@ -62,7 +65,7 @@ fun RegisterUsernameScreen(
                     IconButton(onClick = onBackClick) {
                         Icon(
                             painter = painterResource(Res.drawable.ic_arrow_back),
-                            contentDescription = stringResource(R.string.auth_back_description)
+                            contentDescription = stringResource(R.string.auth_back_description),
                         )
                     }
                 },
@@ -72,23 +75,27 @@ fun RegisterUsernameScreen(
         containerColor = MaterialTheme.colorScheme.background,
     ) { paddingValues ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(32.dp),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(32.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
                 text = stringResource(R.string.auth_register_step_2_title),
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium,
             )
 
             Spacer(modifier = Modifier.height(32.dp))
 
             OutlinedTextField(
-                value = state.username,
-                onValueChange = { viewModel.onUsernameChanged(it) },
+                value = usernameText,
+                onValueChange = { newUsername ->
+                    usernameText = newUsername
+                    viewModel.onUsernameChanged(newUsername)
+                },
                 label = { Text(stringResource(R.string.auth_username_label)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
@@ -99,9 +106,10 @@ fun RegisterUsernameScreen(
 
             Button(
                 onClick = { viewModel.submit() },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(50.dp),
                 enabled = !state.isLoading,
             ) {
                 if (state.isLoading) {

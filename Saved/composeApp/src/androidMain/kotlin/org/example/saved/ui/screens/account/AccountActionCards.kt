@@ -46,7 +46,9 @@ fun AccountActionCards(
                 title = stringResource(R.string.account_dark_mode),
                 icon = {
                     Icon(
-                        painter = androidx.compose.ui.res.painterResource(id = android.R.drawable.ic_menu_preferences),
+                        painter =
+                            androidx.compose.ui.res
+                                .painterResource(id = android.R.drawable.ic_menu_preferences),
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.primary,
                     )
@@ -119,9 +121,10 @@ private fun SettingsRow(
         color = androidx.compose.ui.graphics.Color.Transparent,
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
@@ -130,10 +133,11 @@ private fun SettingsRow(
                 modifier = Modifier.weight(1f),
             ) {
                 Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(MaterialTheme.colorScheme.surface),
+                    modifier =
+                        Modifier
+                            .size(40.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(MaterialTheme.colorScheme.surface),
                     contentAlignment = Alignment.Center,
                 ) {
                     icon()

@@ -4,7 +4,7 @@
     <string name="bookmarks_header_name">User</string>
     <string name="bookmarks_header_date">Thursday, 4 June</string>
     <string name="bookmarks_section_folders_title">My Folders</string>
-    <string name="bookmarks_section_folders_action">See All</string>
+    <string name="bookmarks_section_folders_action">See all ➜</string>
     <string name="bookmarks_add_folder_title">New Folder</string>
     <string name="bookmarks_section_links_title">Recent Links</string>
 

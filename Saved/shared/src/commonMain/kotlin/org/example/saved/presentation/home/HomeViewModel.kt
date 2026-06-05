@@ -37,7 +37,7 @@ class HomeViewModel(
     private val renameFolderUseCase: RenameFolderUseCase,
     private val getProfileUseCase: GetProfileUseCase,
     private val searchBookmarksUseCase: SearchBookmarksUseCase,
-    private val analytics: AnalyticsTracker
+    private val analytics: AnalyticsTracker,
 ) : ViewModel(),
     ContainerHost<HomeState, HomeSideEffect> {
     override val container: Container<HomeState, HomeSideEffect> =

@@ -7,10 +7,12 @@ import org.example.saved.domain.analytics.AnalyticsTracker
 
 class AndroidAnalyticsTracker(
     private val firebaseAnalytics: FirebaseAnalytics,
-    private val crashlytics: FirebaseCrashlytics
+    private val crashlytics: FirebaseCrashlytics,
 ) : AnalyticsTracker {
-
-    override fun logEvent(eventName: String, params: Map<String, String>) {
+    override fun logEvent(
+        eventName: String,
+        params: Map<String, String>,
+    ) {
         firebaseAnalytics.logEvent(eventName) {
             params.forEach { (key, value) -> param(key, value) }
         }

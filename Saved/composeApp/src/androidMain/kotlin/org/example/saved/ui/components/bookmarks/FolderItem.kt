@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.example.saved.ui.theme.AccentBlue
@@ -63,14 +64,14 @@ fun FolderItem(
                 onDismissRequest = { showMenu = false },
             ) {
                 DropdownMenuItem(
-                    text = { Text("Переименовать") },
+                    text = { Text("Rename") },
                     onClick = {
                         showMenu = false
                         onRenameClick?.invoke()
                     },
                 )
                 DropdownMenuItem(
-                    text = { Text("Удалить", color = MaterialTheme.colorScheme.error) },
+                    text = { Text("Delete", color = MaterialTheme.colorScheme.error) },
                     onClick = {
                         showMenu = false
                         onDeleteClick?.invoke()
@@ -119,7 +120,8 @@ fun FolderItem(
                     color = if (isSelected) AccentBlue else MaterialTheme.colorScheme.onSurface,
                 ),
             textAlign = TextAlign.Center,
-            maxLines = 1,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
         )
 
         if (!isAddButton) {

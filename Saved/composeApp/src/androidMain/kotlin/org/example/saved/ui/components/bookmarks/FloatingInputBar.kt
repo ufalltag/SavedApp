@@ -140,7 +140,7 @@ fun FloatingInputBar(
                         Icon(
                             painter =
                                 painterResource(
-                                    if (isSearchMode) Res.drawable.ic_arrow_back else Res.drawable.ic_search,
+                                    if (isSearchMode) Res.drawable.ic_arrow_back else Res.drawable.ic_send,
                                 ),
                             contentDescription = if (isSearchMode) "Clear" else "Send",
                             tint = Color.White,

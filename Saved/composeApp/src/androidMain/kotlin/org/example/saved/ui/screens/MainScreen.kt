@@ -135,9 +135,10 @@ fun MainScreen(
             when {
                 state.isSearching -> {
                     Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(paddingValues),
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .padding(paddingValues),
                         contentAlignment = Alignment.Center,
                     ) {
                         CircularProgressIndicator()
@@ -146,9 +147,10 @@ fun MainScreen(
 
                 inputText.isBlank() -> {
                     Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(paddingValues),
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .padding(paddingValues),
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
@@ -160,9 +162,10 @@ fun MainScreen(
 
                 state.searchResults.isEmpty() -> {
                     Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(paddingValues),
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .padding(paddingValues),
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
@@ -174,9 +177,10 @@ fun MainScreen(
 
                 else -> {
                     LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(paddingValues),
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .padding(paddingValues),
                         contentPadding = PaddingValues(vertical = 16.dp),
                     ) {
                         items(
@@ -198,9 +202,10 @@ fun MainScreen(
         } else {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(3),
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues),
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
                 contentPadding = PaddingValues(16.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -339,7 +344,12 @@ fun MainScreen(
                     onDismissRequest = { aiFolderSuggestion = null },
                     title = { Text(stringResource(R.string.dialog_ai_folder_title)) },
                     text = {
-                        Text(stringResource(R.string.dialog_ai_folder_message, suggestion.suggestedFolderName ?: fallbackFolder))
+                        Text(
+                            stringResource(
+                                R.string.dialog_ai_folder_message,
+                                suggestion.suggestedFolderName ?: fallbackFolder,
+                            ),
+                        )
                     },
                     confirmButton = {
                         Button(onClick = {
@@ -352,7 +362,9 @@ fun MainScreen(
                         }) { Text(stringResource(R.string.dialog_ai_folder_confirm)) }
                     },
                     dismissButton = {
-                        TextButton(onClick = { aiFolderSuggestion = null }) { Text(stringResource(R.string.dialog_action_cancel)) }
+                        TextButton(
+                            onClick = { aiFolderSuggestion = null },
+                        ) { Text(stringResource(R.string.dialog_action_cancel)) }
                     },
                 )
             }
