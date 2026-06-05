@@ -5,9 +5,9 @@
 *Документация по бэкенду и настройке локальной LLM находится в [репозитории бэкенда](https://github.com/ufalltag/GoProject).*
 
 <p align="center">
-  <img src="docs/android_demo.gif" alt="Android Demo" width="300" />
+  <img src="docs/android_demo.mp4" alt="Android Demo" width="300" />
   &nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="docs/ios_demo.gif" alt="iOS Demo" width="300" />
+  <img src="docs/ios_demo.mp4" alt="iOS Demo" width="300" />
 </p>
 
 ## Состав команды
