@@ -1,18 +1,12 @@
-package org.example.saved.ui.screens
+package org.example.saved.ui.screens.auth
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -35,6 +29,9 @@ import org.example.saved.R
 import org.example.saved.domain.analytics.AnalyticsTracker
 import org.example.saved.presentation.auth.LoginSideEffect
 import org.example.saved.presentation.auth.LoginViewModel
+import org.example.saved.ui.screens.auth.components.AuthBrandHeader
+import org.example.saved.ui.screens.auth.components.AuthField
+import org.example.saved.ui.screens.auth.components.AuthPrimaryButton
 import org.koin.compose.koinInject
 
 @Composable
@@ -71,63 +68,47 @@ fun LoginScreen(
                 Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
-                    .padding(32.dp),
+                    .padding(horizontal = 32.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(
-                text = stringResource(R.string.auth_login_title),
-                style = MaterialTheme.typography.headlineMedium,
+            AuthBrandHeader(
+                title = stringResource(R.string.auth_login_title),
+                subtitle = stringResource(R.string.auth_login_subtitle),
             )
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            OutlinedTextField(
+            AuthField(
                 value = emailText,
                 onValueChange = { newEmail ->
                     emailText = newEmail
                     viewModel.onEmailChanged(newEmail)
                 },
-                label = { Text(stringResource(R.string.auth_email_label)) },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
+                label = stringResource(R.string.auth_email_label),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            OutlinedTextField(
+            AuthField(
                 value = passwordText,
                 onValueChange = { newPassword ->
                     passwordText = newPassword
                     viewModel.onPasswordChanged(newPassword)
                 },
-                label = { Text(stringResource(R.string.auth_password_label)) },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
+                label = stringResource(R.string.auth_password_label),
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Button(
+            AuthPrimaryButton(
+                text = stringResource(R.string.auth_login_button),
                 onClick = { viewModel.submit() },
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .height(50.dp),
-                enabled = !state.isLoading,
-            ) {
-                if (state.isLoading) {
-                    CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        modifier = Modifier.size(24.dp),
-                    )
-                } else {
-                    Text(stringResource(R.string.auth_login_button))
-                }
-            }
+                isLoading = state.isLoading,
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 

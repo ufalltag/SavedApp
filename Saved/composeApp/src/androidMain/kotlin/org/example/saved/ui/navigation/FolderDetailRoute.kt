@@ -6,7 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import kotlinx.serialization.Serializable
 import org.example.saved.presentation.folder.FolderDetailViewModel
-import org.example.saved.ui.screens.FolderDetailScreen
+import org.example.saved.ui.screens.folderdetails.FolderDetailScreen
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 

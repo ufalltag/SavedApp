@@ -1,19 +1,16 @@
-package org.example.saved.ui.screens
+package org.example.saved.ui.screens.auth
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -36,6 +33,9 @@ import org.example.saved.R
 import org.example.saved.domain.analytics.AnalyticsTracker
 import org.example.saved.presentation.auth.RegisterCredentialsSideEffect
 import org.example.saved.presentation.auth.RegisterCredentialsViewModel
+import org.example.saved.ui.screens.auth.components.AuthBrandHeader
+import org.example.saved.ui.screens.auth.components.AuthField
+import org.example.saved.ui.screens.auth.components.AuthPrimaryButton
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
 import saved.composeapp.generated.resources.Res
@@ -79,7 +79,7 @@ fun RegisterCredentialsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.auth_register_title)) },
+                title = { Text("") },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
@@ -98,52 +98,47 @@ fun RegisterCredentialsScreen(
                 Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
-                    .padding(32.dp),
+                    .padding(horizontal = 32.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(
-                text = stringResource(R.string.auth_register_step_1_title),
-                style = MaterialTheme.typography.titleMedium,
+            AuthBrandHeader(
+                title = stringResource(R.string.auth_register_title),
+                subtitle = stringResource(R.string.auth_register_step_1_title),
             )
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            OutlinedTextField(
+            AuthField(
                 value = emailText,
                 onValueChange = { newEmail ->
                     emailText = newEmail
                     viewModel.onEmailChanged(newEmail)
                 },
-                label = { Text(stringResource(R.string.auth_email_label)) },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
+                label = stringResource(R.string.auth_email_label),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            OutlinedTextField(
+            AuthField(
                 value = passwordText,
                 onValueChange = { newPassword ->
                     passwordText = newPassword
                     viewModel.onPasswordChanged(newPassword)
                 },
-                label = { Text(stringResource(R.string.auth_password_label)) },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
+                label = stringResource(R.string.auth_password_label),
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Button(
+            AuthPrimaryButton(
+                text = stringResource(R.string.auth_next_button),
                 onClick = { viewModel.next() },
-                modifier = Modifier.fillMaxWidth().height(50.dp),
-            ) {
-                Text(stringResource(R.string.auth_next_button))
-            }
+                isLoading = false,
+            )
         }
     }
 }

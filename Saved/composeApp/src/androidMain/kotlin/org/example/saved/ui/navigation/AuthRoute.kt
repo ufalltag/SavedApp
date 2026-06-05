@@ -8,9 +8,9 @@ import kotlinx.serialization.Serializable
 import org.example.saved.presentation.auth.LoginViewModel
 import org.example.saved.presentation.auth.RegisterCredentialsViewModel
 import org.example.saved.presentation.auth.RegisterUsernameViewModel
-import org.example.saved.ui.screens.LoginScreen
-import org.example.saved.ui.screens.RegisterCredentialsScreen
-import org.example.saved.ui.screens.RegisterUsernameScreen
+import org.example.saved.ui.screens.auth.LoginScreen
+import org.example.saved.ui.screens.auth.RegisterCredentialsScreen
+import org.example.saved.ui.screens.auth.RegisterUsernameScreen
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 

@@ -18,6 +18,8 @@
     <!-- Поиск -->
     <string name="search_empty_input_hint">Type bookmark name</string>
     <string name="search_no_results">No results found</string>
+    <string name="search_placeholder">Search bookmarks…</string>
+    <string name="input_placeholder">Type Here</string>
 
     <!-- Общие действия в диалогах -->
     <string name="dialog_action_cancel">Cancel</string>
@@ -64,6 +66,7 @@
 
     <!-- Экран входа -->
     <string name="auth_login_title">Sign in to Saved</string>
+    <string name="auth_login_subtitle">Welcome back to your bookmarks</string>
     <string name="auth_login_button">Sign In</string>
     <string name="auth_register_prompt_button">Don\'t have an account? Sign Up</string>
 
@@ -86,4 +89,6 @@
 
     <string name="all_folders_header">All folders</string>
     <string name="all_folders_back">Back</string>
+    <string name="all_folders_empty">No folders found</string>
+    <string name="all_folders_title">All Folders</string>
 </resources>

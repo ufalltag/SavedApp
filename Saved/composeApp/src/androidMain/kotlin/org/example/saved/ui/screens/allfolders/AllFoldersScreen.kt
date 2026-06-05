@@ -2,39 +2,45 @@ package org.example.saved.ui.screens.allfolders
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import kotlinx.coroutines.flow.collectLatest
+import org.example.saved.domain.analytics.AnalyticsTracker
 import org.example.saved.presentation.folders.AllFoldersSideEffect
 import org.example.saved.presentation.folders.AllFoldersViewModel
 import org.example.saved.ui.theme.LocalSnackbarHostState
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
 
 @Composable
 fun AllFoldersScreen(
-    viewModel: AllFoldersViewModel = koinViewModel(),
     onBackClick: () -> Unit,
     onFolderClick: (String, String) -> Unit,
+    viewModel: AllFoldersViewModel = koinViewModel(),
+    analyticsTracker: AnalyticsTracker = koinInject(),
 ) {
     val state by viewModel.container.stateFlow.collectAsStateWithLifecycle()
     val snackbarHostState = LocalSnackbarHostState.current
 
     LaunchedEffect(Unit) {
-        viewModel.container.sideEffectFlow.collectLatest { effect ->
+        analyticsTracker.logScreen("launch_all_folders")
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.container.sideEffectFlow.collect { effect ->
             when (effect) {
-                is AllFoldersSideEffect.ShowError -> {
-                    snackbarHostState.showSnackbar(effect.message)
-                }
+                is AllFoldersSideEffect.ShowError -> snackbarHostState.showSnackbar(effect.message)
             }
         }
     }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             AllFoldersTopBar(onBackClick = onBackClick)
         },
