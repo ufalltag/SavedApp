@@ -16,7 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.example.saved.presentation.folders.AllFoldersState
-import org.example.saved.ui.components.bookmarks.FolderItem
+import org.example.saved.ui.screens.home.components.FolderItem
 
 @Composable
 fun AllFoldersGrid(

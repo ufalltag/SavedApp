@@ -1,4 +1,4 @@
-package org.example.saved.ui.components.bookmarks
+package org.example.saved.ui.screens.home.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandHorizontally
@@ -38,7 +38,6 @@ import org.example.saved.ui.theme.AccentBlue
 import org.jetbrains.compose.resources.painterResource
 import saved.composeapp.generated.resources.Res
 import saved.composeapp.generated.resources.ic_arrow_back
-import saved.composeapp.generated.resources.ic_delete
 import saved.composeapp.generated.resources.ic_search
 import saved.composeapp.generated.resources.ic_send
 
