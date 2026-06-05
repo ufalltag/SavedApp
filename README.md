@@ -4,11 +4,10 @@
 
 *Документация по бэкенду и настройке локальной LLM находится в [репозитории бэкенда](https://github.com/ufalltag/GoProject).*
 
-<p align="center">
-  <img src="docs/android_demo.mp4" alt="Android Demo" width="300" />
-  &nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="docs/ios_demo.mp4" alt="iOS Demo" width="300" />
-</p>
+## Скринкасты
+
+https://github.com/user-attachments/assets/574994a2-e01e-4084-8354-561228e5e30a
+
 
 ## Состав команды
 - **Артур Минеев** - Android
@@ -27,6 +26,7 @@
 - **Сеть:** Ktor Client
 - **DI:** Koin
 - **Аналитика:** Firebase Analytics & Crashlytics
+- Настроен **CI/CD** c линтером и сборкой проекта
 
 ## Firebase
 
