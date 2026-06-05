@@ -6,7 +6,7 @@
 
 ## Скринкасты
 
-https://github.com/user-attachments/assets/574994a2-e01e-4084-8354-561228e5e30a
+https://github.com/user-attachments/assets/fb9a5d60-ee77-4e2c-9491-0cfe01d74aa2
 
 
 ## Состав команды
