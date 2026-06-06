@@ -26,7 +26,7 @@ https://github.com/user-attachments/assets/08fa51da-7073-4534-bbd8-2bbba64d6226
 5. **Профиль и Настройки** (Управление аккаунтом, смена пароля, переключение светлой/темной темы).
 
 ## Стек технологий 
-- **Язык:** Kotlin Multiplatform
+- **Язык:** Swift + Kotlin Multiplatform (shared logic)
 - **Архитектура:** Clean Architecture + Orbit MVI
 - **Сеть:** Ktor Client
 - **DI:** Koin
