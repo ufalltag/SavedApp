@@ -29,7 +29,7 @@ final class SpeechRecognizer: ObservableObject {
 
     func start() async {
         guard await requestAuthorization() else {
-            errorMessage = "Нет доступа к микрофону или распознаванию речи"
+            errorMessage = "Microphone or speech recognition access denied"
             return
         }
         do {
@@ -76,7 +76,7 @@ final class SpeechRecognizer: ObservableObject {
             throw NSError(
                 domain: "SpeechRecognizer",
                 code: -1,
-                userInfo: [NSLocalizedDescriptionKey: "Распознавание речи недоступно"]
+                userInfo: [NSLocalizedDescriptionKey: "Speech recognition is unavailable"]
             )
         }
 

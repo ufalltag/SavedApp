@@ -98,13 +98,13 @@ private extension CGFloat {
 
 private extension String {
 
-    static let navTitle = "Регистрация"
-    static let title = "Создайте аккаунт"
-    static let subtitle = "Введите почту и придумайте пароль"
+    static let navTitle = "Sign Up"
+    static let title = "Create an account"
+    static let subtitle = "Enter your email and choose a password"
     static let emailPlaceholder = "Email"
-    static let passwordPlaceholder = "Пароль"
-    static let nextButton = "Далее"
-    static let errorTitle = "Ошибка"
+    static let passwordPlaceholder = "Password"
+    static let nextButton = "Next"
+    static let errorTitle = "Error"
     static let okButton = "OK"
     static let emailIcon = "envelope"
     static let passwordIcon = "lock"

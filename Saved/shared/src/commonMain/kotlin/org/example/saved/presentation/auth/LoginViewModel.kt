@@ -3,6 +3,7 @@ package org.example.saved.presentation.auth
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
+import org.example.saved.data.network.ApiException
 import org.example.saved.domain.usecase.LoginUseCase
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
@@ -45,7 +46,15 @@ class LoginViewModel(
             result
                 .onSuccess { postSideEffect(LoginSideEffect.NavigateToHome) }
                 .onFailure { error ->
-                    postSideEffect(LoginSideEffect.ShowError(error.message ?: "Неизвестная ошибка"))
+                    val message = when {
+                        error is ApiException && error.code in listOf(400, 401, 404) ->
+                            "Incorrect email or password"
+                        error is ApiException ->
+                            "Something went wrong. Please try again"
+                        else ->
+                            "No internet connection"
+                    }
+                    postSideEffect(LoginSideEffect.ShowError(message))
                 }
         }
 }

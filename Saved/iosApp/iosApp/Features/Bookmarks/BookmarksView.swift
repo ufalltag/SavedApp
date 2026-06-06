@@ -33,7 +33,7 @@ struct BookmarksView: View {
                     Divider()
                     bookmarksSection
                 }
-                .navigationTitle("Сохранённое")
+                .navigationTitle("Saved")
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button {
@@ -56,7 +56,7 @@ struct BookmarksView: View {
                     ProgressView()
                         .scaleEffect(1.5)
                         .tint(.white)
-                    Text("Нейросеть анализирует…")
+                    Text("AI is analyzing…")
                         .foregroundColor(.white)
                         .font(.subheadline.weight(.medium))
                 }
@@ -76,37 +76,37 @@ struct BookmarksView: View {
             )
         }
         // Create folder
-        .alert("Новая папка", isPresented: $showCreateFolderAlert) {
-            TextField("Название папки", text: $newFolderName)
-            Button("Создать") { wrapper.createFolder(newFolderName) }
-            Button("Отмена", role: .cancel) {}
+        .alert("New Folder", isPresented: $showCreateFolderAlert) {
+            TextField("Folder name", text: $newFolderName)
+            Button("Create") { wrapper.createFolder(newFolderName) }
+            Button("Cancel", role: .cancel) {}
         }
         // Rename folder
-        .alert("Переименовать папку", isPresented: Binding(
+        .alert("Rename Folder", isPresented: Binding(
             get: { folderToRenameId != nil },
             set: { if !$0 { folderToRenameId = nil } }
         )) {
-            TextField("Название папки", text: $renameFolderText)
-            Button("Сохранить") {
+            TextField("Folder name", text: $renameFolderText)
+            Button("Save") {
                 if let id = folderToRenameId { wrapper.renameFolder(id, renameFolderText) }
                 folderToRenameId = nil
             }
-            Button("Отмена", role: .cancel) { folderToRenameId = nil }
+            Button("Cancel", role: .cancel) { folderToRenameId = nil }
         }
         // Rename bookmark
-        .alert("Переименовать закладку", isPresented: Binding(
+        .alert("Rename Bookmark", isPresented: Binding(
             get: { bookmarkToRenameId != nil },
             set: { if !$0 { bookmarkToRenameId = nil } }
         )) {
-            TextField("Название", text: $renameBookmarkText)
-            Button("Сохранить") {
+            TextField("Title", text: $renameBookmarkText)
+            Button("Save") {
                 if let id = bookmarkToRenameId { wrapper.renameBookmark(id, renameBookmarkText) }
                 bookmarkToRenameId = nil
             }
-            Button("Отмена", role: .cancel) { bookmarkToRenameId = nil }
+            Button("Cancel", role: .cancel) { bookmarkToRenameId = nil }
         }
         // Toast notification
-        .alert("Уведомление", isPresented: Binding(
+        .alert("Notice", isPresented: Binding(
             get: { toastMessage != nil },
             set: { if !$0 { toastMessage = nil } }
         )) {
@@ -120,7 +120,7 @@ struct BookmarksView: View {
 
     private var analyzeSection: some View {
         HStack(spacing: 10) {
-            TextField("Вставьте ссылку…", text: $urlInput)
+            TextField("Paste a link…", text: $urlInput)
                 .textFieldStyle(.roundedBorder)
                 .keyboardType(.URL)
                 .autocapitalization(.none)
@@ -131,7 +131,7 @@ struct BookmarksView: View {
                 wrapper.analyzeAndSaveUrl(trimmed)
                 urlInput = ""
             } label: {
-                Text("Анализ")
+                Text("Analyze")
                     .frame(width: 64)
             }
             .buttonStyle(.borderedProminent)
@@ -150,7 +150,7 @@ struct BookmarksView: View {
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 20)
             } else if wrapper.folders.isEmpty {
-                Text("Нет папок — создайте первую")
+                Text("No folders yet — create one")
                     .font(.caption)
                     .foregroundColor(.secondary)
                     .frame(maxWidth: .infinity)
@@ -189,13 +189,13 @@ struct BookmarksView: View {
                 renameFolderText = folder.name
                 folderToRenameId = folder.id
             } label: {
-                Label("Переименовать", systemImage: "pencil")
+                Label("Rename", systemImage: "pencil")
             }
 
             Button(role: .destructive) {
                 wrapper.deleteFolder(folder.id)
             } label: {
-                Label("Удалить", systemImage: "trash")
+                Label("Delete", systemImage: "trash")
             }
         }
     }
@@ -212,7 +212,7 @@ struct BookmarksView: View {
                 Image(systemName: "bookmark.slash")
                     .font(.system(size: 44))
                     .foregroundColor(.secondary)
-                Text("Нет закладок в этой папке")
+                Text("No bookmarks in this folder")
                     .foregroundColor(.secondary)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -249,13 +249,13 @@ struct BookmarksView: View {
                 renameBookmarkText = bookmark.title
                 bookmarkToRenameId = bookmark.id
             } label: {
-                Label("Переименовать", systemImage: "pencil")
+                Label("Rename", systemImage: "pencil")
             }
 
             Button(role: .destructive) {
                 wrapper.deleteBookmark(bookmark.id)
             } label: {
-                Label("Удалить", systemImage: "trash")
+                Label("Delete", systemImage: "trash")
             }
         }
     }

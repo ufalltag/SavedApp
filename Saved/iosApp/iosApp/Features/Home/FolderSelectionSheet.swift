@@ -145,10 +145,10 @@ private extension Double {
 
 private extension String {
     static let sparklesSymbol = "sparkles"
-    static let folderPickerTitle = "Выберите существующую папку"
-    static let sheetTitle = "Нейросеть предлагает создать папку"
-    static let sheetSubtitle = "Текущие папки не подходят для этой ссылки. Создайте новую или выберите существующую."
-    static let createButtonPrefix = "Создать папку "
-    static let chooseExistingButton = "Выбрать существующую"
-    static let cancelButton = "Отмена"
+    static let folderPickerTitle = "Choose an existing folder"
+    static let sheetTitle = "AI suggests creating a folder"
+    static let sheetSubtitle = "None of your current folders fit this link. Create a new one or pick an existing one."
+    static let createButtonPrefix = "Create folder "
+    static let chooseExistingButton = "Choose existing"
+    static let cancelButton = "Cancel"
 }

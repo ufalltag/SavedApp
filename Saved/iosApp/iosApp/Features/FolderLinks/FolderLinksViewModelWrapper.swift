@@ -37,7 +37,9 @@ final class FolderLinksViewModelWrapper {
 
         apply(col.currentState)
         col.observeState { [weak self] newState in
-            self?.apply(newState)
+            Task { @MainActor [weak self] in
+                self?.apply(newState)
+            }
         }
     }
 

@@ -1,6 +1,7 @@
 package org.example.saved.presentation.bookmarks
 
 import androidx.lifecycle.ViewModel
+import org.example.saved.domain.usecase.AnalyzeUrlUseCase
 import org.example.saved.domain.usecase.CreateFolderUseCase
 import org.example.saved.domain.usecase.DeleteBookmarkUseCase
 import org.example.saved.domain.usecase.DeleteFolderUseCase
@@ -21,6 +22,7 @@ class BookmarksViewModel(
     private val deleteFolderUseCase: DeleteFolderUseCase,
     private val updateBookmarkUseCase: UpdateBookmarkUseCase,
     private val deleteBookmarkUseCase: DeleteBookmarkUseCase,
+    private val analyzeUrlUseCase: AnalyzeUrlUseCase,
     private val saveAnalyzedBookmarkUseCase: SaveAnalyzedBookmarkUseCase,
 ) : ViewModel(),
     ContainerHost<BookmarksState, BookmarksSideEffect> {

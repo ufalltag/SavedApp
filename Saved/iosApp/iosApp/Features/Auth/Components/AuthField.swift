@@ -120,7 +120,7 @@ private extension String {
 #Preview {
     VStack(spacing: 16) {
         AuthField(icon: "envelope", placeholder: "Email", text: .constant("hi@mail.com"))
-        AuthField(icon: "lock", placeholder: "Пароль", text: .constant("secret"), isSecure: true)
+        AuthField(icon: "lock", placeholder: "Password", text: .constant("secret"), isSecure: true)
     }
     .padding()
     .background(Color(.systemGroupedBackground))

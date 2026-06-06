@@ -152,15 +152,15 @@ private extension CGFloat {
 
 private extension String {
 
-    static let title = "С возвращением"
-    static let subtitle = "Войдите, чтобы вернуться к сохранённому"
+    static let title = "Welcome back"
+    static let subtitle = "Sign in to get back to your saved"
     static let emailPlaceholder = "Email"
-    static let passwordPlaceholder = "Пароль"
-    static let loginButton = "Войти"
-    static let noAccount = "Нет аккаунта?"
-    static let registerButton = "Зарегистрироваться"
-    static let errorTitle = "Ошибка"
-    static let doneTitle = "Готово"
+    static let passwordPlaceholder = "Password"
+    static let loginButton = "Sign In"
+    static let noAccount = "No account?"
+    static let registerButton = "Sign Up"
+    static let errorTitle = "Error"
+    static let doneTitle = "Done"
     static let okButton = "OK"
     static let emailIcon = "envelope"
     static let passwordIcon = "lock"

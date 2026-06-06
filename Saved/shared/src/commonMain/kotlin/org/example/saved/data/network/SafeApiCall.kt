@@ -47,13 +47,13 @@ suspend fun HttpResponse.toApiException(): ApiException {
 
 private fun defaultMessageForCode(code: Int): String =
     when (code) {
-        400 -> "Неверные данные"
-        401 -> "Требуется авторизация"
-        403 -> "Доступ запрещён"
-        404 -> "Не найдено"
-        409 -> "Запись с такими данными уже существует"
-        500 -> "Ошибка сервера"
-        else -> "Ошибка сети (HTTP $code)"
+        400 -> "Bad request"
+        401 -> "Unauthorized"
+        403 -> "Access denied"
+        404 -> "Not found"
+        409 -> "This record already exists"
+        500 -> "Server error"
+        else -> "Network error (HTTP $code)"
     }
 
 /**

@@ -19,7 +19,7 @@ private extension RegistrationProgressBar {
     var content: some View {
         VStack(alignment: .leading, spacing: .spacing) {
             segments
-            Text("Шаг \(currentStep) из \(totalSteps)")
+            Text("Step \(currentStep) of \(totalSteps)")
                 .font(.footnote.weight(.medium))
                 .foregroundStyle(.secondary)
         }

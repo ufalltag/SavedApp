@@ -98,12 +98,12 @@ private extension CGFloat {
 
 private extension String {
 
-    static let navTitle = "Регистрация"
-    static let title = "Как вас называть?"
-    static let subtitle = "Придумайте имя пользователя для профиля"
-    static let usernamePlaceholder = "Имя пользователя"
-    static let doneButton = "Готово"
-    static let errorTitle = "Ошибка"
+    static let navTitle = "Sign Up"
+    static let title = "What's your name?"
+    static let subtitle = "Choose a username for your profile"
+    static let usernamePlaceholder = "Username"
+    static let doneButton = "Done"
+    static let errorTitle = "Error"
     static let okButton = "OK"
     static let usernameIcon = "person"
 }

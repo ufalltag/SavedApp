@@ -69,8 +69,8 @@ private extension ImageResource {
 
 #Preview {
     AuthBrandHeader(
-        title: "С возвращением",
-        subtitle: "Войдите, чтобы продолжить"
+        title: "Welcome back",
+        subtitle: "Sign in to continue"
     )
     .padding()
 }

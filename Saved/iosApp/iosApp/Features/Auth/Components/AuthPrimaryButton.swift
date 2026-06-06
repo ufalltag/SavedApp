@@ -67,9 +67,9 @@ private extension Double {
 
 #Preview {
     VStack(spacing: 16) {
-        AuthPrimaryButton(title: "Войти", action: {})
-        AuthPrimaryButton(title: "Загрузка", isLoading: true, action: {})
-        AuthPrimaryButton(title: "Выключено", isEnabled: false, action: {})
+        AuthPrimaryButton(title: "Sign In", action: {})
+        AuthPrimaryButton(title: "Loading", isLoading: true, action: {})
+        AuthPrimaryButton(title: "Disabled", isEnabled: false, action: {})
     }
     .padding()
 }
