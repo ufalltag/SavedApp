@@ -1,3 +1,7 @@
+
+
+
+
 # Saved - KMP Bookmarks App
 
 Клиент-серверное приложение для сохранения, категоризации и умного анализа ссылок.
@@ -8,6 +12,7 @@
 
 https://github.com/user-attachments/assets/fb9a5d60-ee77-4e2c-9491-0cfe01d74aa2
 
+https://github.com/user-attachments/assets/08fa51da-7073-4534-bbd8-2bbba64d6226
 
 ## Состав команды
 - **Артур Минеев** - Android
