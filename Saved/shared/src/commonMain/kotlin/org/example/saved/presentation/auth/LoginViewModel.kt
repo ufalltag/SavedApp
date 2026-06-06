@@ -46,14 +46,20 @@ class LoginViewModel(
             result
                 .onSuccess { postSideEffect(LoginSideEffect.NavigateToHome) }
                 .onFailure { error ->
-                    val message = when {
-                        error is ApiException && error.code in listOf(400, 401, 404) ->
-                            "Incorrect email or password"
-                        error is ApiException ->
-                            "Something went wrong. Please try again"
-                        else ->
-                            "No internet connection"
-                    }
+                    val message =
+                        when {
+                            error is ApiException && error.code in listOf(400, 401, 404) -> {
+                                "Incorrect email or password"
+                            }
+
+                            error is ApiException -> {
+                                "Something went wrong. Please try again"
+                            }
+
+                            else -> {
+                                "No internet connection"
+                            }
+                        }
                     postSideEffect(LoginSideEffect.ShowError(message))
                 }
         }

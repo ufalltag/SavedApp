@@ -66,11 +66,13 @@ final class BookmarksViewModelWrapper {
         sideEffectsStarted = true
 
         collector.observeSideEffects { effect in
-            switch onEnum(of: effect) {
-            case .showToast(let e):
-                onShowToast(e.message)
-            case .openUrl(let e):
-                onOpenUrl(e.url)
+            Task { @MainActor in
+                switch onEnum(of: effect) {
+                case .showToast(let e):
+                    onShowToast(e.message)
+                case .openUrl(let e):
+                    onOpenUrl(e.url)
+                }
             }
         }
     }

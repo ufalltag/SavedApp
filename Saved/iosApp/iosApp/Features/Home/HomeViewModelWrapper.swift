@@ -73,13 +73,15 @@ final class HomeViewModelWrapper {
         sideEffectsStarted = true
 
         collector.observeSideEffects { effect in
-            switch onEnum(of: effect) {
-            case .openUrl(let e):
-                onOpenUrl(e.url)
-            case .showError(let e):
-                onShowError(e.message)
-            case .requireFolderSelection(let e):
-                onRequireFolderSelection(e.url, e.suggestedFolderName, e.bookmarkTitle)
+            Task { @MainActor in
+                switch onEnum(of: effect) {
+                case .openUrl(let e):
+                    onOpenUrl(e.url)
+                case .showError(let e):
+                    onShowError(e.message)
+                case .requireFolderSelection(let e):
+                    onRequireFolderSelection(e.url, e.suggestedFolderName, e.bookmarkTitle)
+                }
             }
         }
     }

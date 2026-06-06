@@ -1,10 +1,13 @@
 package org.example.saved.di
 
+import org.example.saved.data.analytics.IosAnalyticsTracker
 import org.example.saved.data.local.provideDataStore
+import org.example.saved.domain.analytics.AnalyticsTracker
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
 actual fun platformModule(): Module =
     module {
         single { provideDataStore() }
+        single<AnalyticsTracker> { IosAnalyticsTracker() }
     }
